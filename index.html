@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Multi Lang QA</title>
+    <link rel="icon" type="image/png" href="./logo.png" />
+    <link rel="stylesheet" href="./output.css" />
+    <script src="./tools.js" defer></script>
+    <script src="./script.js" defer></script>
+  </head>
+  <body class="bg-base-100 text-base-content flex min-h-screen flex-col">
+    <div class="navbar focus bg-base-100">
+      <div class="flex-1">
+        <a class="btn btn-ghost text-xl" href="/">Multi Lang QA</a>
+      </div>
+      <div class="flex-none">
+        <ul class="menu menu-horizontal px-1">
+          <li><a href="/">Home</a></li>
+          <li><a href="https://github.com/live-miracles/multi-lang-qa/">GitHub</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mx-auto w-full max-w-[700px]">
+      <select class="select select-sm">
+        <option disabled selected>Question Language</option>
+        <option>English</option>
+        <option>Russian</option>
+        <option>German</option>
+        <option>French</option>
+        <option>Italian</option>
+        <option>Arabic</option>
+      </select>
+      <br />
+      <textarea class="q-text textarea mt-3 w-full" placeholder="Question Text"></textarea>
+      <br />
+      <textarea class="q-translation textarea textarea-primary mt-3 w-full" placeholder="Question Translation"></textarea>
+    </div>
+    <div class="focus flex flex-col items-center">
+      <div class="flex w-full flex-wrap p-2">
+        <div class="flex min-w-full items-center justify-center">
+          <button id="add-question" class="btn btn-outline btn-primary flex">Add Question</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="questions" class="mx-auto w-full max-w-[700px] flex-1">
+      <div class="question bg-base-200 rounded-box mt-5 p-5 shadow-md">
+        <div class="q-translation text-primary">Translation of what is the purpose of life question.</div>
+        <div class="divider q-language">French</div>
+        <div>
+          <span class="q-text">What is the purpose of life?</span>
+        </div>
+      </div>
+
+      <div class="question bg-base-200 rounded-box mt-5 max-w-[700px] p-5 shadow-md">
+        <div class="q-translation">Translation of what is the purpose of life question.</div>
+        <div class="divider q-language">French</div>
+        <div>
+          <span class="q-text">What is the purpose of life?</span>
+        </div>
+      </div>
+    </div>
+
+    <footer class="footer footer-center focus bg-base-300 text-base-content pt-4 pb-10">
+      <aside>
+        <p>
+          For any bug / feature requests, please open an issue in our
+          <a class="link" href="https://github.com/live-miracles/vmix-master/">GitHub</a> repo (ʃƪ˶˘ ﻬ ˘˶).
+        </p>
+        <p>Check out our <a class="link" href="/">homepage</a> for more streaming tools (=ↀωↀ=).</p>
+      </aside>
+    </footer>
+  </body>
+</html>

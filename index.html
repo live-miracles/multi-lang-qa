@@ -6,8 +6,9 @@
     <title>Multi Lang QA</title>
     <link rel="icon" type="image/png" href="./logo.png" />
     <link rel="stylesheet" href="./output.css" />
-    <script src="./tools.js" defer></script>
-    <script src="./script.js" defer></script>
+    <script type="module" crossorigin src="./tools.js" defer></script>
+    <script type="module" crossorigin src="./test-utils.js" defer></script>
+    <script type="module" crossorigin src="./script.js" defer></script>
   </head>
   <body class="bg-base-100 text-base-content flex min-h-screen flex-col">
     <div class="navbar focus bg-base-100">
@@ -22,48 +23,57 @@
       </div>
     </div>
 
-    <div class="mx-auto w-full max-w-[700px]">
-      <select class="select select-sm">
-        <option disabled selected>Question Language</option>
-        <option>English</option>
-        <option>Russian</option>
-        <option>German</option>
-        <option>French</option>
-        <option>Italian</option>
-        <option>Arabic</option>
+    <div class="q-add-form mx-auto w-full max-w-[700px] px-2">
+      <textarea id="add-q-translation" class="textarea mt-2 w-full" placeholder="Question Translation"></textarea>
+      <textarea id="add-q-text" class="textarea textarea-primary text-primary mt-3 w-full" placeholder="Question Text"></textarea>
+      <div class="mt-2">
+        <input id="add-q-name" type="text" placeholder="Person's Name" class="input input-sm max-w-48" />
+        <select id="add-q-language" class="language-select select select-primary select-sm w-fit">
+          <option disabled selected value="">Question Language</option>
+        </select>
+
+        <button id="add-question" class="btn btn-primary btn-sm mx-2">Add Question</button>
+      </div>
+    </div>
+
+    <div class="border-primary rounded-box bg-base-100 fixed right-0 bottom-0 m-1 w-fit border p-1">
+      <label class="swap">
+        <input id="show-q-add-form" type="checkbox" class="show-toggle url-param" checked />
+        <div class="swap-on badge badge-primary font-semibold">Add Form</div>
+        <div class="swap-off badge badge-soft badge-primary font-semibold">Add Form</div>
+      </label>
+
+      <label class="swap">
+        <input id="show-q-text" type="checkbox" class="show-toggle url-param" checked />
+        <div class="swap-on badge badge-primary font-semibold">Original</div>
+        <div class="swap-off badge badge-soft badge-primary font-semibold">Original</div>
+      </label>
+
+      <label class="swap">
+        <input id="show-q-answered" type="checkbox" class="show-toggle url-param" />
+        <div class="swap-on badge badge-primary font-semibold">Answered</div>
+        <div class="swap-off badge badge-soft badge-primary font-semibold">Answered</div>
+      </label>
+
+      <label class="swap">
+        <input id="show-q-skipped" type="checkbox" class="show-toggle url-param" checked />
+        <div class="swap-on badge badge-primary font-semibold">Skipped</div>
+        <div class="swap-off badge badge-soft badge-primary font-semibold">Skipped</div>
+      </label>
+
+      <label class="swap">
+        <input id="show-q-hidden" type="checkbox" class="show-toggle url-param" />
+        <div class="swap-on badge badge-primary font-semibold">Hidden</div>
+        <div class="swap-off badge badge-soft badge-primary font-semibold">Hidden</div>
+      </label>
+
+      <select id="filter-q-language" class="language-select select select-sm w-fit">
+        <option disabled selected value="">All Languages</option>
       </select>
-      <br />
-      <textarea class="q-text textarea mt-3 w-full" placeholder="Question Text"></textarea>
-      <br />
-      <textarea class="q-translation textarea textarea-primary mt-3 w-full" placeholder="Question Translation"></textarea>
     </div>
-    <div class="focus flex flex-col items-center">
-      <div class="flex w-full flex-wrap p-2">
-        <div class="flex min-w-full items-center justify-center">
-          <button id="add-question" class="btn btn-outline btn-primary flex">Add Question</button>
-        </div>
-      </div>
-    </div>
+    <div id="questions" class="mx-auto w-full max-w-[700px] flex-1 px-2"></div>
 
-    <div id="questions" class="mx-auto w-full max-w-[700px] flex-1">
-      <div class="question bg-base-200 rounded-box mt-5 p-5 shadow-md">
-        <div class="q-translation text-primary">Translation of what is the purpose of life question.</div>
-        <div class="divider q-language">French</div>
-        <div>
-          <span class="q-text">What is the purpose of life?</span>
-        </div>
-      </div>
-
-      <div class="question bg-base-200 rounded-box mt-5 max-w-[700px] p-5 shadow-md">
-        <div class="q-translation">Translation of what is the purpose of life question.</div>
-        <div class="divider q-language">French</div>
-        <div>
-          <span class="q-text">What is the purpose of life?</span>
-        </div>
-      </div>
-    </div>
-
-    <footer class="footer footer-center focus bg-base-300 text-base-content pt-4 pb-10">
+    <footer class="footer footer-center focus bg-base-300 text-base-content mt-5 pt-4 pb-13">
       <aside>
         <p>
           For any bug / feature requests, please open an issue in our

@@ -1,5 +1,5 @@
 import { googleMock } from './test-utils.js';
-import { showElements } from './tools.js';
+import { showElements, updateUrlParam, setInputElements } from './tools.js';
 
 const LANGUAGES = ['English', 'Russian', 'German', 'French', 'Italian', 'Arabic'];
 
@@ -91,7 +91,6 @@ function showErrorAlert(msg = 'Error', time = 5000) {
 }
 
 async function getAllQuestions() {
-    showLoadingAlert('Loading questions...');
     try {
         const list = await new Promise((resolve, reject) => {
             window.google.script.run
@@ -99,7 +98,6 @@ async function getAllQuestions() {
                 .withSuccessHandler((data) => resolve(data))
                 .getAllQuestions();
         });
-        showSuccessAlert('Questions loaded successfully!');
         return list;
     } catch (error) {
         showErrorAlert('Error loading questions: ' + error);
@@ -116,12 +114,21 @@ if (typeof google === 'undefined') {
 
 (async () => {
     renderLanguages();
-
-    const questions = await getAllQuestions();
-    renderQuestions(await getAllQuestions());
-
+    setInputElements();
     showElements();
+
     document
         .querySelectorAll('.show-toggle')
         .forEach((elem) => elem.addEventListener('click', showElements));
+
+    document
+        .querySelectorAll('.url-param')
+        .forEach((elem) => elem.addEventListener('change', updateUrlParam));
+
+    renderQuestions(await getAllQuestions());
+    showElements();
+    setInterval(async () => {
+        renderQuestions(await getAllQuestions());
+        showElements();
+    }, 5000);
 })();

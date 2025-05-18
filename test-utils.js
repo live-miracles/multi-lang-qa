@@ -55,16 +55,16 @@ googleMock.script.run = {};
 googleMock.script.run.withFailureHandler = (_) => ({
     withSuccessHandler: (f) => ({
         getAllQuestions: () => {
-            f(getAllQuestionsMock());
+            setTimeout(() => f(getAllQuestionsMock()), 500);
         },
         addQuestion: (q) => {
-            f(addQuestionMock(q));
+            setTimeout(() => f(addQuestionMock(q)), 500);
         },
         updateQuestion: (q) => {
-            f(updateQuestionMock(q));
+            setTimeout(() => f(updateQuestionMock(q)), 500);
         },
         deleteQuestion: (id) => {
-            f(deleteQuestionMock(id));
+            setTimeout(() => f(deleteQuestionMock(id)), 500);
         },
     }),
 });

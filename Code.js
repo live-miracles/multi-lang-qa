@@ -1,20 +1,19 @@
 const props = PropertiesService.getScriptProperties();
 
-const SPREADSHEET_ID = props.getProperty('SPREADSHEET_ID');
-const TAB_NAME = 'Europe Step 7';
+const TAB_NAME = 'QuestionsDB';
 
-function getAllQuestions() {
-    const sheet = SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName(TAB_NAME);
+function getAllQuestions(sheetId) {
+    const sheet = SpreadsheetApp.openById(sheetId).getSheetByName(TAB_NAME);
     const data = sheet.getDataRange().getValues();
     const headers = data.shift();
     return data.map((row) => Object.fromEntries(headers.map((h, i) => [h, row[i]])));
 }
 
-function addQuestion(language, name, text, translation) {
+function addQuestion(sheetId, language, name, text, translation) {
     const lock = LockService.getScriptLock();
     lock.waitLock(5000);
     try {
-        const sheet = SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName(TAB_NAME);
+        const sheet = SpreadsheetApp.openById(sheetId).getSheetByName(TAB_NAME);
         const timestamp = new Date().getTime(); // Will also be used as ID
         const answered = false;
         const skipped = false;
@@ -38,11 +37,11 @@ function addQuestion(language, name, text, translation) {
     }
 }
 
-function updateQuestion(id, newQuestion, currentVersion) {
+function updateQuestion(sheetId, id, newQuestion, currentVersion) {
     const lock = LockService.getScriptLock();
     lock.waitLock(5000);
     try {
-        const sheet = SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName(TAB_NAME);
+        const sheet = SpreadsheetApp.openById(sheetId).getSheetByName(TAB_NAME);
         const data = sheet.getDataRange().getValues();
         for (let i = 1; i < data.length; i++) {
             if (data[i][0] == id) {
@@ -74,11 +73,11 @@ function updateQuestion(id, newQuestion, currentVersion) {
     }
 }
 
-function deleteQuestion(id) {
+function deleteQuestion(sheetId, id) {
     const lock = LockService.getScriptLock();
     lock.waitLock(5000);
     try {
-        const sheet = SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName(TAB_NAME);
+        const sheet = SpreadsheetApp.openById(sheetId).getSheetByName(TAB_NAME);
         const data = sheet.getDataRange().getValues();
         for (let i = 1; i < data.length; i++) {
             if (data[i][0] == id) {

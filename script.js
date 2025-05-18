@@ -17,15 +17,6 @@ class Question {
     }
 }
 
-async function getAllQuestions() {
-    return new Promise((resolve, reject) => {
-        window.google.script.run
-            .withFailureHandler((error) => reject(error))
-            .withSuccessHandler((data) => resolve(data))
-            .getAllQuestions();
-    });
-}
-
 function renderLanguages() {
     const html = LANGUAGES.map(
         (lang) => `
@@ -34,13 +25,11 @@ function renderLanguages() {
     document.querySelectorAll('.language-select').forEach((el) => (el.innerHTML += html));
 }
 
-function addQuestion() {}
-
 function renderQuestions(questions) {
     const html = questions
         .map(
             (q) => `
-            <div class="question bg-base-200 rounded-box mt-5 p-5 shadow-md ${q.status ? 'q-' + q.status : ''}">
+            <div class="question bg-base-200 rounded-box mb-5 p-5 shadow-md ${q.status ? 'q-' + q.status : ''}">
               <div class="q-translation">
                 <div class="badge">${q.language}</div>
                 <span class="font-semibold">${q.name ? q.name + ': ' : ''}</span>
@@ -64,6 +53,62 @@ function renderQuestions(questions) {
         .join('');
     document.getElementById('questions').innerHTML = html;
 }
+
+function showLoadingAlert(msg = 'Loading...') {
+    const loadingElem = document.getElementById('loading-alert');
+    const successElem = document.getElementById('success-alert');
+    const errorElem = document.getElementById('error-alert');
+    loadingElem.innerHTML = msg;
+    loadingElem.classList.remove('hidden');
+    successElem.classList.add('hidden');
+    errorElem.classList.add('hidden');
+}
+
+function showSuccessAlert(msg = 'Success!', time = 3000) {
+    const loadingElem = document.getElementById('loading-alert');
+    const successElem = document.getElementById('success-alert');
+    const errorElem = document.getElementById('error-alert');
+    successElem.innerHTML = msg;
+    loadingElem.classList.add('hidden');
+    successElem.classList.remove('hidden');
+    errorElem.classList.add('hidden');
+    setTimeout(() => {
+        successElem.classList.add('hidden');
+    }, time);
+}
+
+function showErrorAlert(msg = 'Error', time = 5000) {
+    const loadingElem = document.getElementById('loading-alert');
+    const successElem = document.getElementById('success-alert');
+    const errorElem = document.getElementById('error-alert');
+    errorElem.innerHTML = msg;
+    loadingElem.classList.add('hidden');
+    successElem.classList.add('hidden');
+    errorElem.classList.remove('hidden');
+    setTimeout(() => {
+        errorElem.classList.add('hidden');
+    }, time);
+}
+
+async function getAllQuestions() {
+    showLoadingAlert('Loading questions...');
+    try {
+        const list = await new Promise((resolve, reject) => {
+            window.google.script.run
+                .withFailureHandler((error) => reject(error))
+                .withSuccessHandler((data) => resolve(data))
+                .getAllQuestions();
+        });
+        showSuccessAlert('Questions loaded successfully!');
+        return list;
+    } catch (error) {
+        showErrorAlert('Error loading questions: ' + error);
+        console.error(error);
+        return [];
+    }
+}
+
+function addQuestion() {}
 
 if (typeof google === 'undefined') {
     window.google = googleMock;

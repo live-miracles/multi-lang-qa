@@ -1,12 +1,22 @@
 function getAllQuestionsMock() {
     return [
         {
+            timestamp: '108',
+            language: '',
+            name: '',
+            text: 'selected',
+            translation: '1747454696375',
+            status: 'data',
+            version: 0,
+        },
+        {
             timestamp: '1747454396375',
-            language: 'Spanish',
+            language: 'German',
             name: 'Marcelo',
             text: '¿Cuál es la capital de Spain?',
             translation: 'What is the capital of Spain?',
-            status: '',
+            status: 'none',
+            version: 0,
         },
         {
             timestamp: '1747454496375',
@@ -14,7 +24,8 @@ function getAllQuestionsMock() {
             name: 'Rafael',
             text: 'Do you like programming?',
             translation: '',
-            status: '',
+            status: 'skipped',
+            version: 0,
         },
         {
             timestamp: '1747454596375',
@@ -23,6 +34,7 @@ function getAllQuestionsMock() {
             text: 'How many languages do you speak?',
             translation: '',
             status: 'answered',
+            version: 0,
         },
         {
             timestamp: '1747454696375',
@@ -30,7 +42,8 @@ function getAllQuestionsMock() {
             name: 'Donatello',
             text: 'Quelle est la capitale de la France?',
             translation: 'What is the capital of France?',
-            status: 'skipped',
+            status: 'none',
+            version: 0,
         },
         {
             timestamp: '1747454796375',
@@ -39,6 +52,7 @@ function getAllQuestionsMock() {
             text: 'Quelle est la capitale de la Paris?',
             translation: 'What is the capital of Paris?',
             status: 'hidden',
+            version: 0,
         },
     ];
 }
@@ -68,5 +82,3 @@ googleMock.script.run.withFailureHandler = (_) => ({
         },
     }),
 });
-
-export { googleMock };

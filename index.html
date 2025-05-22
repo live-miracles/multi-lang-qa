@@ -6,9 +6,9 @@
     <title>Multi Lang QA</title>
     <link rel="icon" type="image/png" href="./logo.png" />
     <link rel="stylesheet" href="./output.css" />
-    <script type="module" crossorigin src="./tools.js" defer></script>
-    <script type="module" crossorigin src="./test-utils.js" defer></script>
-    <script type="module" crossorigin src="./script.js" defer></script>
+    <script crossorigin src="./tools.js" defer></script>
+    <script crossorigin src="./test-utils.js" defer></script>
+    <script crossorigin src="./script.js" defer></script>
   </head>
   <body class="bg-base-100 text-base-content flex min-h-screen flex-col">
     <div class="navbar focus bg-base-100">
@@ -46,37 +46,31 @@
       <span></span>
     </div>
 
-    <div class="sheet-form mx-auto hidden w-full max-w-[700px] px-2">
+    <div class="focus mx-auto hidden w-full max-w-[700px] px-2">
       <input id="sheet-id" type="text" placeholder="Google spreadsheet ID" class="input url-param" />
       <button id="update-sheet-id" class="btn btn-primary btn-sm mx-2">Update</button>
     </div>
-    <div class="divider sheet-form hidden"></div>
+    <div class="divider focus hidden"></div>
 
-    <div class="q-add-form mx-auto w-full max-w-[700px] px-2">
+    <div class="focus mx-auto w-full max-w-[700px] px-2">
       <textarea id="add-q-translation" class="textarea mt-2 w-full" placeholder="Question Translation"></textarea>
       <textarea id="add-q-text" class="textarea textarea-primary text-primary mt-3 w-full" placeholder="Question Text"></textarea>
       <div class="mt-2">
         <input id="add-q-name" type="text" placeholder="Person's Name" class="input input-sm max-w-48" />
-        <select id="add-q-language" class="language-select select select-primary select-sm w-fit">
+        <select id="add-q-language" class="language-select select select-primary text-primary select-sm w-fit">
           <option disabled selected value="">Question Language</option>
         </select>
 
         <button id="add-question" class="btn btn-primary btn-sm mx-2">Add Question</button>
       </div>
     </div>
-    <div class="divider q-add-form"></div>
+    <div class="divider focus"></div>
 
-    <div class="border-primary rounded-box bg-base-100 fixed right-0 bottom-0 m-1 w-fit border p-1">
+    <div class="border-primary rounded-box bg-base-100 fixed right-0 bottom-0 z-100 m-1 w-fit border p-1">
       <label class="swap">
-        <input id="show-sheet-form" type="checkbox" class="show-toggle url-param" />
-        <div class="swap-on badge badge-primary font-semibold">Sheet Form</div>
-        <div class="swap-off badge badge-soft badge-primary font-semibold">Sheet Form</div>
-      </label>
-
-      <label class="swap">
-        <input id="show-q-add-form" type="checkbox" class="show-toggle url-param" checked />
-        <div class="swap-on badge badge-primary font-semibold">Add Form</div>
-        <div class="swap-off badge badge-soft badge-primary font-semibold">Add Form</div>
+        <input id="show-focus" type="checkbox" class="show-toggle url-param" />
+        <div class="swap-off badge badge-primary font-semibold">Focus</div>
+        <div class="swap-on badge badge-soft badge-primary font-semibold">Focus</div>
       </label>
 
       <label class="swap">
@@ -87,8 +81,8 @@
 
       <label class="swap">
         <input id="show-q-answered" type="checkbox" class="show-toggle url-param" />
-        <div class="swap-on badge badge-primary font-semibold">Answered</div>
-        <div class="swap-off badge badge-soft badge-primary font-semibold">Answered</div>
+        <div class="swap-on badge badge-primary font-semibold">Done</div>
+        <div class="swap-off badge badge-soft badge-primary font-semibold">Done</div>
       </label>
 
       <label class="swap">
@@ -103,11 +97,47 @@
         <div class="swap-off badge badge-soft badge-primary font-semibold">Hidden</div>
       </label>
 
-      <select id="filter-q-language" class="language-select select select-sm w-fit">
-        <option disabled selected value="">All Languages</option>
+      <select id="filter-q-language" class="language-select select select-xs text-primary w-fit">
+        <option disabled value="">Filter</option>
+        <option selected value="">All</option>
       </select>
     </div>
     <div id="questions" class="mx-auto w-full max-w-[700px] flex-1 px-2"></div>
+
+    <dialog id="edit-question-modal" class="modal">
+      <div class="modal-box">
+        <div class="q-timestamp hidden"></div>
+        <div class="q-version hidden"></div>
+        <textarea class="q-translation textarea mt-2 w-full" placeholder="Question Translation"></textarea>
+        <textarea class="q-text textarea textarea-primary text-primary mt-3 w-full" placeholder="Question Text"></textarea>
+        <div class="mt-2">
+          <input type="text" placeholder="Person's Name" class="q-name input input-sm max-w-48" />
+          <select class="q-language language-select select select-primary text-primary select-sm w-fit">
+            <option disabled selected value="">Question Language</option>
+          </select>
+        </div>
+
+        <div class="modal-action">
+          <form method="dialog">
+            <button class="btn">Cancel</button>
+            <button class="update-question btn btn-primary">Update</button>
+          </form>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog id="delete-question-modal" class="modal">
+      <div class="modal-box">
+        <div class="question-timestamp hidden"></div>
+        <p class="py-4">Do you want to delete this question?</p>
+        <div class="modal-action">
+          <form method="dialog">
+            <button class="btn">Cancel</button>
+            <button class="delete-question btn btn-error">Yes</button>
+          </form>
+        </div>
+      </div>
+    </dialog>
 
     <footer class="footer footer-center focus bg-base-300 text-base-content mt-5 pt-4 pb-13">
       <aside>

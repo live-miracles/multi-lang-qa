@@ -64,5 +64,3 @@ function setInputElements() {
         setInputValue(key, value);
     });
 }
-
-export { showElements, updateUrlParam, setInputElements };

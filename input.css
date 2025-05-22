@@ -3,3 +3,15 @@
 @plugin "daisyui" {
     themes: light;
 }
+
+.q-skipped {
+    @apply bg-warning/10;
+}
+
+.q-answered {
+    @apply bg-success-content/10;
+}
+
+.q-hidden {
+    @apply opacity-50;
+}

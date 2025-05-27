@@ -10,27 +10,24 @@ function getAllQuestions() {
     return data.map((row) => Object.fromEntries(headers.map((h, i) => [h, row[i]])));
 }
 
-function addQuestion(sheetId, language, name, text, translation) {
+function addQuestion(q) {
     const lock = LockService.getScriptLock();
     lock.waitLock(5000);
     try {
         const sheet = SpreadsheetApp.openById(sheetId).getSheetByName(TAB_NAME);
         const timestamp = new Date().getTime(); // Will also be used as ID
-        const answered = false;
-        const skipped = false;
-        const hidden = false;
+        const status = 'none';
         const version = 1;
 
         sheet.appendRow([
             timestamp,
-            language,
-            name,
-            text,
-            translation,
-            answered,
-            skipped,
-            hidden,
+            status,
             version,
+            q.language,
+            q.name,
+            q.nameTranslation,
+            q.text,
+            q.translation,
         ]);
         return { success: true, timestamp };
     } finally {
@@ -38,33 +35,29 @@ function addQuestion(sheetId, language, name, text, translation) {
     }
 }
 
-function updateQuestion(id, newQuestion) {
+function updateQuestion(newQ) {
     const lock = LockService.getScriptLock();
     lock.waitLock(5000);
     try {
         const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(TAB_NAME);
         const data = sheet.getDataRange().getValues();
+        const headers = data[0];
         for (let i = 1; i < data.length; i++) {
-            if (data[i][0] == id) {
-                const sheetVersion = data[i][5];
-                if (sheetVersion != newQuestion.version) {
+            const q = {};
+            headers.forEach((key, i) => {
+                q[key] = row[i];
+            });
+
+            if (q.timestamp == newQ.timestamp) {
+                if (q.version != newQ.version) {
                     return {
                         success: false,
                         error: 'Conflict: another user has updated this question.',
                     };
                 }
                 // Update row
-                sheet
-                    .getRange(i + 1, 2, 1, 5)
-                    .setValues([
-                        [
-                            new Date().toISOString(),
-                            newQuestion.language,
-                            newQuestion.text,
-                            newQuestion.translation,
-                            sheetVersion + 1,
-                        ],
-                    ]);
+                const newRow = headers.map((h) => newQ[h]);
+                sheet.getRange(i + 1, 1, 1, headers.length).setValues([newRow]);
                 return { success: true };
             }
         }

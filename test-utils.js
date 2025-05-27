@@ -63,8 +63,8 @@ function getAllQuestionsMock() {
     ];
 }
 
-function addQuestionMock(sheetId, q) {
-    if (!sheetId || !q) {
+function addQuestionMock(q) {
+    if (!q) {
         return {
             success: false,
             error: 'Invalid parameters',
@@ -86,11 +86,11 @@ googleMock.script = {};
 googleMock.script.run = {};
 googleMock.script.run.withFailureHandler = (_) => ({
     withSuccessHandler: (f) => ({
-        getAllQuestions: (sheetId) => {
-            setTimeout(() => f(getAllQuestionsMock(sheetId)), 500);
+        getAllQuestions: () => {
+            setTimeout(() => f(getAllQuestionsMock()), 500);
         },
-        addQuestion: (sheetId, q) => {
-            setTimeout(() => f(addQuestionMock(sheetId, q)), 500);
+        addQuestion: (q) => {
+            setTimeout(() => f(addQuestionMock(q)), 500);
         },
         updateQuestion: (q) => {
             setTimeout(() => f(updateQuestionMock(q)), 500);

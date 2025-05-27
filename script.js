@@ -195,6 +195,11 @@ let questions = [];
             language: document.getElementById('add-q-language').value,
         };
 
+        if (!q.text) {
+            showErrorAlert('Please specify question text');
+            return;
+        }
+
         addQuestion(q);
     });
 

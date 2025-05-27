@@ -14,14 +14,14 @@ async function getAllQuestions(sheetId) {
     }
 }
 
-async function addQuestion(q, sheetId) {
+async function addQuestion(q) {
     try {
         showLoadingAlert('Adding question...');
         const res = await new Promise((resolve, reject) => {
             window.google.script.run
                 .withFailureHandler((error) => reject(error))
                 .withSuccessHandler((data) => resolve(data))
-                .addQuestion(sheetId, q);
+                .addQuestion(q);
         });
         if (res.success === false) {
             showErrorAlert("Something went wrong, couldn't add question :(");

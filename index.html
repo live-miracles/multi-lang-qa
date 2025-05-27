@@ -4,19 +4,24 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Multi Lang QA</title>
+
     <link rel="icon" type="image/png" href="./logo.png" />
     <link rel="stylesheet" href="./output.css" />
+    <script src="./bundle.umd.min.js"></script>
     <script crossorigin src="./tools.js" defer></script>
     <script crossorigin src="./test-utils.js" defer></script>
     <script crossorigin src="./google-api.js" defer></script>
     <script crossorigin src="./script.js" defer></script>
 
-    <!-- <link rel="icon" type="image/png" href="https://live-miracles.github.io/multi-lang-qa/logo.png" />
+    <!--
+    <link rel="icon" type="image/png" href="https://live-miracles.github.io/multi-lang-qa/logo.png" />
     <link rel="stylesheet" href="https://live-miracles.github.io/multi-lang-qa/output.css" />
+    <script src="https://cdn.jsdelivr.net/npm/transliteration/dist/browser/bundle.umd.min.js"></script>
     <script crossorigin src="https://live-miracles.github.io/multi-lang-qa/tools.js" defer></script>
     <script crossorigin src="https://live-miracles.github.io/multi-lang-qa/test-utils.js" defer></script>
     <script crossorigin src="https://live-miracles.github.io/multi-lang-qa/google-api.js" defer></script>
-    <script crossorigin src="https://live-miracles.github.io/multi-lang-qa/script.js" defer></script>-->
+    <script crossorigin src="https://live-miracles.github.io/multi-lang-qa/script.js" defer></script>
+    -->
   </head>
   <body class="bg-base-100 text-base-content flex min-h-screen flex-col">
     <div class="navbar focus bg-base-100">
@@ -54,26 +59,6 @@
       <span class="msg"></span>
     </div>
 
-    <div class="focus mx-auto hidden w-full max-w-[700px] px-2">
-      <input id="sheet-id" type="text" placeholder="Google spreadsheet ID" class="input url-param" />
-      <button id="update-sheet-id" class="btn btn-primary btn-sm mx-2" onclick="location.reload()">Update</button>
-    </div>
-    <div class="divider focus hidden"></div>
-
-    <div class="focus mx-auto w-full max-w-[700px] px-2">
-      <textarea id="add-q-translation" class="textarea mt-2 w-full" placeholder="Question Translation"></textarea>
-      <textarea id="add-q-text" class="textarea textarea-primary text-primary mt-3 w-full" placeholder="Question Text"></textarea>
-      <div class="mt-2">
-        <input id="add-q-name" type="text" placeholder="Person's Name" class="input input-sm max-w-48" />
-        <select id="add-q-language" class="language-select select select-primary text-primary select-sm w-fit">
-          <option disabled selected value="">Question Language</option>
-        </select>
-
-        <button id="add-question" class="btn btn-primary btn-sm mx-2">Add Question</button>
-      </div>
-    </div>
-    <div class="divider focus"></div>
-
     <div class="border-primary rounded-box bg-base-100 fixed right-0 bottom-0 z-100 m-1 w-fit border p-1">
       <label class="swap">
         <input id="show-focus" type="checkbox" class="show-toggle url-param" checked />
@@ -110,7 +95,6 @@
         <option selected value="">All</option>
       </select>
     </div>
-    <div id="questions" class="mx-auto w-full max-w-[700px] flex-1 px-2"></div>
 
     <dialog id="edit-question-modal" class="modal">
       <div class="modal-box">
@@ -146,6 +130,23 @@
         </div>
       </div>
     </dialog>
+
+    <div class="focus mx-auto w-full max-w-[700px] px-2">
+      <textarea id="add-q-text" class="textarea textarea-primary text-primary mt-3 w-full" placeholder="Question Text"></textarea>
+      <textarea id="add-q-translation" class="textarea mt-2 w-full" placeholder="Question Translation (leave empty for English)"></textarea>
+      <div class="mt-2">
+        <select id="add-q-language" class="language-select select select-primary text-primary select-sm w-fit">
+          <option disabled selected value="">Question Language</option>
+        </select>
+        <input id="add-q-name" type="text" placeholder="Person's Name" class="input input-primary text-primary input-sm max-w-48" />
+        <input id="add-q-name-translation" type="text" placeholder="Name Translation" class="input input-sm max-w-48" />
+
+        <button id="add-question" class="btn btn-primary btn-sm mx-2">Add Question</button>
+      </div>
+    </div>
+    <div class="divider focus"></div>
+
+    <div id="questions" class="mx-auto w-full max-w-[700px] flex-1 px-2"></div>
 
     <footer class="footer footer-center focus bg-base-300 text-base-content mt-5 pt-4 pb-13">
       <aside>

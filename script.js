@@ -64,14 +64,15 @@ function getQuestionHtml(q, selectedId, stats) {
                 rounded-box mb-5 p-5 shadow-md ${'q-' + q.status}" id="${q.timestamp}">
             <div class="q-translation">
             <div class="badge">${q.language} ${stat}</div>
-            <span class="font-semibold">${q.name ? q.name + ': ' : ''}</span>
-            ${q.translation ? q.translation : q.text}
+                <span class="font-semibold">${q.nameTranslation ? q.nameTranslation + ': ' : ''}</span>
+                ${q.translation ? q.translation : q.text}
             </div>
 
-            <div class="q-text mt-1">
-            <span class="text-primary">${q.translation ? q.text : ''}</span>
+            <div class="q-text text-primary mt-1">
+                <span class="font-semibold">${q.translation ? q.name + ': ' : ''}</span>
+                <span>${q.translation ? q.text : ''}</span>
             </div>
-                
+
             <div class="mt-2 flex items-center">
             <button class="btn btn-sm btn-primary ${q.timestamp === selectedId ? '' : 'btn-soft'} mr-2">Select</button>
             <button class="btn btn-sm btn-primary ${q.status === 'answered' ? '' : 'btn-soft'} mr-2">Done</button>
@@ -175,22 +176,16 @@ let questions = [];
 
 (async () => {
     renderLanguages();
-    setInputElements();
     showElements();
 
     document
         .querySelectorAll('.show-toggle')
         .forEach((elem) => elem.addEventListener('click', showElements));
 
-    document
-        .querySelectorAll('.url-param')
-        .forEach((elem) => elem.addEventListener('change', updateUrlParam));
-
-    const sheetId = getUrlParam('sheet-id');
-    if (!sheetId) {
-        showErrorAlert('Error: sheetId is not valid');
-        return;
-    }
+    //  setInputElements();
+    //  document
+    //      .querySelectorAll('.url-param')
+    //      .forEach((elem) => elem.addEventListener('change', updateUrlParam));
 
     document.getElementById('add-question').addEventListener('click', async () => {
         const q = {
@@ -200,7 +195,7 @@ let questions = [];
             language: document.getElementById('add-q-language').value,
         };
 
-        addQuestion(sheetId, q);
+        addQuestion(q);
     });
 
     questions = await getAllQuestions();
@@ -208,7 +203,7 @@ let questions = [];
     showElements();
 
     setInterval(async () => {
-        questions = await getAllQuestions(sheetId);
+        questions = await getAllQuestions();
         renderQuestions(questions);
         showElements();
     }, 5000);

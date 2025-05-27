@@ -4,6 +4,7 @@ function getAllQuestionsMock() {
             timestamp: '108',
             language: '',
             name: '',
+            nameTranslation: '',
             text: 'selected',
             translation: '1747454696375',
             status: 'data',
@@ -12,7 +13,8 @@ function getAllQuestionsMock() {
         {
             timestamp: '1747454396375',
             language: 'German',
-            name: 'Marcelo',
+            name: 'Migüel',
+            nameTranslation: 'Miguel',
             text: '¿Cuál es la capital de Spain?',
             translation: 'What is the capital of Spain?',
             status: 'none',
@@ -21,7 +23,8 @@ function getAllQuestionsMock() {
         {
             timestamp: '1747454496375',
             language: 'English',
-            name: 'Rafael',
+            name: 'Rafåel',
+            nameTranslation: 'Rafael',
             text: 'Do you like programming?',
             translation: '',
             status: 'skipped',
@@ -30,7 +33,8 @@ function getAllQuestionsMock() {
         {
             timestamp: '1747454596375',
             language: 'English',
-            name: 'Miguel',
+            name: 'Marceslo',
+            nameTranslation: '',
             text: 'How many languages do you speak?',
             translation: '',
             status: 'answered',
@@ -39,7 +43,8 @@ function getAllQuestionsMock() {
         {
             timestamp: '1747454696375',
             language: 'French',
-            name: 'Donatello',
+            name: 'Donœtello',
+            nameTranslation: 'Donatello',
             text: 'Quelle est la capitale de la France?',
             translation: 'What is the capital of France?',
             status: 'none',
@@ -48,7 +53,8 @@ function getAllQuestionsMock() {
         {
             timestamp: '1747454796375',
             language: 'French',
-            name: 'Donatello',
+            name: 'Миша',
+            nameTranslation: 'Misha',
             text: 'Quelle est la capitale de la Paris?',
             translation: 'What is the capital of Paris?',
             status: 'hidden',

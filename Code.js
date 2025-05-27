@@ -1,9 +1,10 @@
 const props = PropertiesService.getScriptProperties();
 
 const TAB_NAME = 'QuestionsDB';
+const SHEET_ID = props.getProperty('SPREADSHEET_ID');
 
-function getAllQuestions(sheetId) {
-    const sheet = SpreadsheetApp.openById(sheetId).getSheetByName(TAB_NAME);
+function getAllQuestions() {
+    const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(TAB_NAME);
     const data = sheet.getDataRange().getValues();
     const headers = data.shift();
     return data.map((row) => Object.fromEntries(headers.map((h, i) => [h, row[i]])));
@@ -37,16 +38,16 @@ function addQuestion(sheetId, language, name, text, translation) {
     }
 }
 
-function updateQuestion(sheetId, id, newQuestion, currentVersion) {
+function updateQuestion(id, newQuestion) {
     const lock = LockService.getScriptLock();
     lock.waitLock(5000);
     try {
-        const sheet = SpreadsheetApp.openById(sheetId).getSheetByName(TAB_NAME);
+        const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(TAB_NAME);
         const data = sheet.getDataRange().getValues();
         for (let i = 1; i < data.length; i++) {
             if (data[i][0] == id) {
                 const sheetVersion = data[i][5];
-                if (sheetVersion != currentVersion) {
+                if (sheetVersion != newQuestion.version) {
                     return {
                         success: false,
                         error: 'Conflict: another user has updated this question.',
@@ -73,11 +74,11 @@ function updateQuestion(sheetId, id, newQuestion, currentVersion) {
     }
 }
 
-function deleteQuestion(sheetId, id) {
+function deleteQuestion(id) {
     const lock = LockService.getScriptLock();
     lock.waitLock(5000);
     try {
-        const sheet = SpreadsheetApp.openById(sheetId).getSheetByName(TAB_NAME);
+        const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(TAB_NAME);
         const data = sheet.getDataRange().getValues();
         for (let i = 1; i < data.length; i++) {
             if (data[i][0] == id) {
@@ -90,7 +91,6 @@ function deleteQuestion(sheetId, id) {
         lock.releaseLock();
     }
 }
-
 
 function doGet() {
     return HtmlService.createHtmlOutputFromFile('Index');

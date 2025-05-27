@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="./output.css" />
     <script crossorigin src="./tools.js" defer></script>
     <script crossorigin src="./test-utils.js" defer></script>
+    <script crossorigin src="./google-api.js" defer></script>
     <script crossorigin src="./script.js" defer></script>
   </head>
   <body class="bg-base-100 text-base-content flex min-h-screen flex-col">
@@ -25,14 +26,14 @@
 
     <div id="loading-alert" role="alert" class="alert alert-info fixed top-3 left-1/2 hidden w-fit -translate-x-1/2 transform">
       <span class="loading loading-infinity loading-md"></span>
-      <span>Loading...</span>
+      <span class="msg">Loading...</span>
     </div>
 
     <div id="success-alert" role="alert" class="alert alert-success fixed top-3 left-1/2 hidden w-fit max-w-[700px] -translate-x-1/2 transform">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
       </svg>
-      <span></span>
+      <span class="msg"></span>
     </div>
 
     <div id="error-alert" role="alert" class="alert alert-error fixed top-3 left-1/2 hidden w-fit max-w-[700px] -translate-x-1/2 transform">
@@ -43,12 +44,12 @@
           stroke-width="2"
           d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
       </svg>
-      <span></span>
+      <span class="msg"></span>
     </div>
 
     <div class="focus mx-auto hidden w-full max-w-[700px] px-2">
       <input id="sheet-id" type="text" placeholder="Google spreadsheet ID" class="input url-param" />
-      <button id="update-sheet-id" class="btn btn-primary btn-sm mx-2">Update</button>
+      <button id="update-sheet-id" class="btn btn-primary btn-sm mx-2" onclick="location.reload()">Update</button>
     </div>
     <div class="divider focus hidden"></div>
 
@@ -68,7 +69,7 @@
 
     <div class="border-primary rounded-box bg-base-100 fixed right-0 bottom-0 z-100 m-1 w-fit border p-1">
       <label class="swap">
-        <input id="show-focus" type="checkbox" class="show-toggle url-param" />
+        <input id="show-focus" type="checkbox" class="show-toggle url-param" checked />
         <div class="swap-off badge badge-primary font-semibold">Focus</div>
         <div class="swap-on badge badge-soft badge-primary font-semibold">Focus</div>
       </label>

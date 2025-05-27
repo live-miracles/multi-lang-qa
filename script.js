@@ -73,7 +73,7 @@ function getQuestionHtml(q, selectedId, stats) {
             </div>
                 
             <div class="mt-2 flex items-center">
-            <button class="btn btn-sm btn-primary ${q.status === '' ? '' : 'btn-soft'} mr-2">Select</button>
+            <button class="btn btn-sm btn-primary ${q.timestamp === selectedId ? '' : 'btn-soft'} mr-2">Select</button>
             <button class="btn btn-sm btn-primary ${q.status === 'answered' ? '' : 'btn-soft'} mr-2">Done</button>
             <button class="btn btn-sm btn-primary ${q.status === 'skipped' ? '' : 'btn-soft'} mr-2">Skip</button>
             <button class="btn btn-sm btn-primary ${q.status === 'hidden' ? '' : 'btn-soft'}">Hide</button>
@@ -105,7 +105,7 @@ function showLoadingAlert(msg = 'Loading...') {
     const loadingElem = document.getElementById('loading-alert');
     const successElem = document.getElementById('success-alert');
     const errorElem = document.getElementById('error-alert');
-    loadingElem.innerHTML = msg;
+    loadingElem.querySelector('.msg').innerHTML = msg;
     loadingElem.classList.remove('hidden');
     successElem.classList.add('hidden');
     errorElem.classList.add('hidden');
@@ -115,7 +115,7 @@ function showSuccessAlert(msg = 'Success!', time = 3000) {
     const loadingElem = document.getElementById('loading-alert');
     const successElem = document.getElementById('success-alert');
     const errorElem = document.getElementById('error-alert');
-    successElem.innerHTML = msg;
+    successElem.querySelector('.msg').innerHTML = msg;
     loadingElem.classList.add('hidden');
     successElem.classList.remove('hidden');
     errorElem.classList.add('hidden');
@@ -128,29 +128,13 @@ function showErrorAlert(msg = 'Error', time = 5000) {
     const loadingElem = document.getElementById('loading-alert');
     const successElem = document.getElementById('success-alert');
     const errorElem = document.getElementById('error-alert');
-    errorElem.innerHTML = msg;
+    errorElem.querySelector('.msg').innerHTML = msg;
     loadingElem.classList.add('hidden');
     successElem.classList.add('hidden');
     errorElem.classList.remove('hidden');
     setTimeout(() => {
         errorElem.classList.add('hidden');
     }, time);
-}
-
-async function getAllQuestions() {
-    try {
-        const list = await new Promise((resolve, reject) => {
-            window.google.script.run
-                .withFailureHandler((error) => reject(error))
-                .withSuccessHandler((data) => resolve(data))
-                .getAllQuestions();
-        });
-        return list;
-    } catch (error) {
-        showErrorAlert('Error loading questions: ' + error);
-        console.error(error);
-        return [];
-    }
 }
 
 function showEditQuestionForm(e) {
@@ -183,8 +167,6 @@ function showDeleteQuestionForm(e) {
     modal.showModal();
 }
 
-function addQuestion() {}
-
 if (typeof google === 'undefined') {
     window.google = googleMock;
 }
@@ -204,12 +186,29 @@ let questions = [];
         .querySelectorAll('.url-param')
         .forEach((elem) => elem.addEventListener('change', updateUrlParam));
 
+    const sheetId = getUrlParam('sheet-id');
+    if (!sheetId) {
+        showErrorAlert('Error: sheetId is not valid');
+        return;
+    }
+
+    document.getElementById('add-question').addEventListener('click', async () => {
+        const q = {
+            name: document.getElementById('add-q-name').value,
+            text: document.getElementById('add-q-text').value,
+            translation: document.getElementById('add-q-translation').value,
+            language: document.getElementById('add-q-language').value,
+        };
+
+        addQuestion(sheetId, q);
+    });
+
     questions = await getAllQuestions();
     renderQuestions(questions);
     showElements();
 
     setInterval(async () => {
-        questions = await getAllQuestions();
+        questions = await getAllQuestions(sheetId);
         renderQuestions(questions);
         showElements();
     }, 5000);

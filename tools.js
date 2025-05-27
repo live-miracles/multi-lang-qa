@@ -47,15 +47,10 @@ function updateUrlParam(e) {
     urlParams.set(name, getInputValue(e.target));
     window.history.replaceState({}, '', '?' + urlParams.toString());
 }
-function getConfigUrlParams() {
-    const url = window.location.href;
-    const searchParams = new URLSearchParams(new URL(url).search);
-    const params = [];
-    searchParams.forEach(function (value, key) {
-        if (key === '' || !key.startsWith('__')) return;
-        params.push({ key: key.substring(2), value: value });
-    });
-    return params;
+
+function getUrlParam(name) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(name) || null;
 }
 
 function setInputElements() {

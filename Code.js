@@ -90,3 +90,8 @@ function deleteQuestion(sheetId, id) {
         lock.releaseLock();
     }
 }
+
+
+function doGet() {
+    return HtmlService.createHtmlOutputFromFile('Index');
+}

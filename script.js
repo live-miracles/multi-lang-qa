@@ -1,24 +1,10 @@
 const LANGUAGES = ['English', 'Russian', 'German', 'French', 'Italian', 'Arabic'];
 const STATUS_RANK = {
-    '': 0,
-    skipped: 1,
-    hidden: 2,
-    answered: 3,
+    none: 0,
+    hidden: 1,
+    answered: 2,
+    data: 3,
 };
-
-class Question {
-    constructor(q) {
-        this.timestamp = q.timestamp;
-        this.name = q.name;
-        this.language = q.language;
-        this.text = q.text;
-        this.translation = q.translation;
-        this.answered = q.answered;
-        this.skipped = q.skipped;
-        this.hidden = q.hidden;
-        this.version = q.version;
-    }
-}
 
 function renderLanguages() {
     const html = LANGUAGES.map(
@@ -47,7 +33,6 @@ function getQuestionStats(questions) {
                     total: 0,
                     none: 0,
                     answered: 0,
-                    skipped: 0,
                     hidden: 0,
                 };
             }
@@ -86,9 +71,8 @@ function getQuestionHtml(q, selectedId, stats, filterLang) {
             </div>
 
             <div class="mt-2 flex items-center z-10">
-            <button class="btn btn-sm btn-primary ${q.timestamp === selectedId ? '' : 'btn-soft'} mr-2">Select</button>
+            <button class="btn btn-sm btn-warning ${q.timestamp === selectedId ? '' : 'btn-soft'} mr-2">Select</button>
             <button class="btn btn-sm btn-primary ${q.status === 'answered' ? '' : 'btn-soft'} mr-2">Done</button>
-            <button class="btn btn-sm btn-primary ${q.status === 'skipped' ? '' : 'btn-soft'} mr-2">Skip</button>
             <button class="btn btn-sm btn-primary ${q.status === 'hidden' ? '' : 'btn-soft'}">Hide</button>
             <div class="flex-grow"></div>
             <button class="focus btn btn-soft btn-sm btn-primary" onclick="showEditQuestionForm(event)">Edit</button> 

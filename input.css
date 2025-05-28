@@ -4,12 +4,8 @@
     themes: light;
 }
 
-.q-skipped {
-    @apply bg-warning/10;
-}
-
-.q-answered {
-    @apply bg-success-content/10;
+.q-answered > .q-translation {
+    @apply line-through;
 }
 
 .q-hidden {

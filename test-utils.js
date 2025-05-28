@@ -16,7 +16,7 @@ const testQuestions = [
         nameTranslation: 'Miguel',
         text: '¿Cuál es la capital de Spain?',
         translation: 'What is the capital of Spain?',
-        status: 'none',
+        status: 'answered',
         version: 0,
     },
     {
@@ -26,7 +26,7 @@ const testQuestions = [
         nameTranslation: 'Rafael',
         text: 'Do you like programming?',
         translation: '',
-        status: 'skipped',
+        status: 'answered',
         version: 0,
     },
     {
@@ -36,7 +36,7 @@ const testQuestions = [
         nameTranslation: '',
         text: 'How many languages do you speak?',
         translation: '',
-        status: 'answered',
+        status: 'none',
         version: 0,
     },
     {

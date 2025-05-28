@@ -257,6 +257,7 @@ let questions = [];
 
     document.getElementById('add-question-btn').addEventListener('click', async (e) => {
         const container = e.target.parentElement;
+        console.log(container, container.querySelector('.q-text'));
         const q = {
             language: container.querySelector('.q-language').value,
             name: container.querySelector('.q-name').value,

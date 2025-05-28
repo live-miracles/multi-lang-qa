@@ -196,6 +196,12 @@ let questions = [];
     //  document
     //      .querySelectorAll('.url-param')
     //      .forEach((elem) => elem.addEventListener('change', updateUrlParam));
+    //
+
+    document.getElementById('add-q-name').addEventListener('change', (e) => {
+        const input = e.target;
+        input.nextElementSibling.value = transliterate(input.value);
+    });
 
     document.getElementById('add-question').addEventListener('click', async () => {
         const q = {

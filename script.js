@@ -17,7 +17,7 @@ function renderLanguages() {
 function getSelectedQuestion(questions) {
     questions = questions.filter((q) => q.status === 'data' && q.name === 'selected');
     if (questions.length === 0) {
-        assert(false, 'There should always be a selected question');
+        console.assert(false, 'There should always be a selected question');
         return null;
     }
     console.assert(questions.length === 1, 'Only one question can be selected');

@@ -66,7 +66,7 @@ function getQuestionHtml(q, selectedId, stats, filterLang) {
             </div>
 
             <div class="q-text text-primary mt-1 z-10">
-                <span class="font-semibold">${q.translation ? q.name + ': ' : ''}</span>
+                <span class="font-semibold">${q.translation && q.name ? q.name + ': ' : ''}</span>
                 <span>${q.translation ? q.text : ''}</span>
             </div>
 
@@ -82,9 +82,27 @@ function getQuestionHtml(q, selectedId, stats, filterLang) {
 }
 
 async function renderQuestions(questions) {
-    const filterLang = document.getElementById('filter-q-language').value;
-    const selectedId = getSelectedQuestion(questions);
     const stats = getQuestionStats(questions);
+    const filterLang = document.getElementById('filter-q-language');
+    for (let i = 0; i < filterLang.options.length; i++) {
+        const option = filterLang.options[i];
+        const val = option.value;
+        if (val === '') {
+            continue;
+        }
+        if (!stats[val]) {
+            option.classList.add('hidden');
+        } else {
+            const text = `${val} ${stats[val].answered}/${stats[val].total}`;
+            if (option.text != text) {
+                // otherwise the dropdown refreshes even if no changes
+                option.text = text;
+            }
+            option.classList.remove('hidden');
+        }
+    }
+
+    const selectedId = getSelectedQuestion(questions);
     const html = questions
         .filter((q) => q.status !== 'data')
         .sort((a, b) => {
@@ -93,7 +111,7 @@ async function renderQuestions(questions) {
             }
             b.timestamp - a.timestamp;
         })
-        .map((q) => getQuestionHtml(q, selectedId, stats, filterLang))
+        .map((q) => getQuestionHtml(q, selectedId, stats, filterLang.value))
         .join('');
     document.getElementById('questions').innerHTML = html;
     showElements();

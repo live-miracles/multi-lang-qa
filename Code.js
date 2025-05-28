@@ -14,10 +14,10 @@ function addQuestion(q) {
     const lock = LockService.getScriptLock();
     lock.waitLock(5000);
     try {
-        const sheet = SpreadsheetApp.openById(sheetId).getSheetByName(TAB_NAME);
-        const timestamp = new Date().getTime(); // Will also be used as ID
+        const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(TAB_NAME);
+        const timestamp = String(new Date().getTime()); // Will also be used as ID
         const status = 'none';
-        const version = 0;
+        const version = '0';
 
         sheet.appendRow([
             timestamp,

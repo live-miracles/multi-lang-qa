@@ -74,8 +74,8 @@ function addQuestionMock(q) {
     }
 
     q.status = 'none';
-    q.timestamp = new Date().getTime();
-    q.version = 0;
+    q.timestamp = String(new Date().getTime());
+    q.version = '0';
     testQuestions.push(q);
 
     return {

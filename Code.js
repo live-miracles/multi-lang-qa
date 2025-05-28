@@ -53,7 +53,7 @@ function updateQuestion(newQ) {
             if (q.timestamp !== newQ.timestamp) {
                 continue;
             }
-            if (q.version != newQ.version) {
+            if (q.version != newQ.version && q.status !== 'data') {
                 return {
                     success: false,
                     error: 'Conflict: another user has updated this question.',

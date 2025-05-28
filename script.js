@@ -133,8 +133,9 @@ async function renderQuestions(questions) {
 }
 
 async function fetchAndRenderQuestions() {
-    if ( Date.now() - updateTime > 5000) {
-        questions = await getAllQuestions();
+    const newQuestions = await getAllQuestions();
+    if (Date.now() - updateTime > 5000) {
+        questions = newQuestions;
         renderQuestions(questions);
     }
 }
@@ -335,7 +336,7 @@ let updateTime = 0;
         await deleteQuestion(timestamp);
     });
 
-    showLoadingAlert("Loading questions...", 2000);
+    showLoadingAlert('Loading questions...', 3000);
     await fetchAndRenderQuestions();
     setInterval(async () => await fetchAndRenderQuestions(), 5000);
 })();

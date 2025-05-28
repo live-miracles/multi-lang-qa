@@ -57,11 +57,13 @@ function getQuestionStats(questions) {
     return stats;
 }
 
-function getQuestionHtml(q, selectedId, stats) {
+function getQuestionHtml(q, selectedId, stats, filterLang) {
     const stat = stats[q.language].answered + '/' + stats[q.language].total;
     const starUrl = 'https://live-miracles.github.io/multi-lang-qa/star-solid.svg';
     return `
-        <div class="question relative bg-base-200 rounded-box mb-5 p-2 pb-2 shadow-md ${'q-' + q.status}" id="${q.timestamp}">
+        <div class="question relative bg-base-200 rounded-box mb-5 p-2 pb-2 shadow-md
+        ${'q-' + q.status} ${filterLang === '' || q.language === filterLang ? '' : 'hidden'}" 
+        id="${q.timestamp}">
             ${
                 q.timestamp === selectedId
                     ? `
@@ -95,9 +97,8 @@ function getQuestionHtml(q, selectedId, stats) {
         </div>`;
 }
 
-async function renderQuestions() {
-    questions = await getAllQuestions();
-
+async function renderQuestions(questions) {
+    const filterLang = document.getElementById('filter-q-language').value;
     const selectedId = getSelectedQuestion(questions);
     const stats = getQuestionStats(questions);
     const html = questions
@@ -108,10 +109,15 @@ async function renderQuestions() {
             }
             b.timestamp - a.timestamp;
         })
-        .map((q) => getQuestionHtml(q, selectedId, stats))
+        .map((q) => getQuestionHtml(q, selectedId, stats, filterLang))
         .join('');
     document.getElementById('questions').innerHTML = html;
     showElements();
+}
+
+async function fetchAndRenderQuestions() {
+    questions = await getAllQuestions();
+    renderQuestions(questions);
 }
 
 function showLoadingAlert(msg = 'Loading...') {
@@ -198,7 +204,10 @@ let questions = [];
     //  document
     //      .querySelectorAll('.url-param')
     //      .forEach((elem) => elem.addEventListener('change', updateUrlParam));
-    //
+
+    document
+        .getElementById('filter-q-language')
+        .addEventListener('change', () => renderQuestions(questions));
 
     document.getElementById('add-q-name').addEventListener('change', (e) => {
         const input = e.target;
@@ -221,12 +230,12 @@ let questions = [];
 
         await addQuestion(q);
 
-        await renderQuestions();
+        await fetchAndRenderQuestions();
     });
 
-    renderQuestions();
+    await fetchAndRenderQuestions();
 
     setInterval(async () => {
-        await renderQuestions();
+        await fetchAndRenderQuestions();
     }, 5000);
 })();

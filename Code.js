@@ -3,39 +3,39 @@ const props = PropertiesService.getScriptProperties();
 const TAB_NAME = 'QuestionsDB';
 const SHEET_ID = props.getProperty('SPREADSHEET_ID');
 
-function getAllQuestions() {
-    const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(TAB_NAME);
+function getHeaders(sheet) {
+    return sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+}
+
+function parseQuestions(sheet) {
     const data = sheet.getDataRange().getValues();
     const headers = data.shift();
-    return data.map((row) => Object.fromEntries(headers.map((h, i) => [h, row[i]])));
+    return data.map((row) => Object.fromEntries(headers.map((h, i) => [h, String(row[i])])));
+}
+
+function getAllQuestions() {
+    const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(TAB_NAME);
+    return parseQuestions(sheet);
 }
 
 function addQuestion(q) {
     const lock = LockService.getScriptLock();
     lock.waitLock(5000);
     try {
+        const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(TAB_NAME);
         if (q.text === '') {
             return {
                 success: false,
                 error: "Invalid data: the question text can't be empty.",
             };
         }
-        const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(TAB_NAME);
-        const timestamp = String(new Date().getTime()); // Will also be used as ID
-        const status = 'none';
-        const version = '0';
+        q.timestamp = String(new Date().getTime());
+        q.status = 'none';
+        q.version = '0';
 
-        sheet.appendRow([
-            timestamp,
-            status,
-            version,
-            q.language,
-            q.name,
-            q.nameTranslation,
-            q.text,
-            q.translation,
-        ]);
-        return { success: true, timestamp };
+        const newRow = getHeaders(sheet).map((h) => q[h]);
+        sheet.appendRow(newRow);
+        return { success: true };
     } finally {
         lock.releaseLock();
     }
@@ -46,12 +46,10 @@ function updateQuestion(newQ) {
     lock.waitLock(5000);
     try {
         const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(TAB_NAME);
-        const data = sheet.getDataRange().getValues();
-        const headers = data[0];
-        for (let i = 1; i < data.length; i++) {
-            const q = {};
-            headers.forEach((key, i) => (q[key] = row[i]));
+        const questions = parseQuestions(sheet);
+        const headers = getHeaders(sheet);
 
+        for (const [i, q] of questions.entries()) {
             if (q.timestamp !== newQ.timestamp) {
                 continue;
             }
@@ -69,7 +67,7 @@ function updateQuestion(newQ) {
             }
             newQ.version = String(parseInt(q.version) + 1);
             const newRow = headers.map((h) => newQ[h]);
-            sheet.getRange(i + 1, 1, 1, headers.length).setValues([newRow]);
+            sheet.getRange(i + 2, 1, 1, headers.length).setValues([newRow]);
             return { success: true };
         }
         return { success: false, error: 'Question not found.' };
@@ -78,21 +76,19 @@ function updateQuestion(newQ) {
     }
 }
 
-function updateStatus(newQ) {
+function updateQuestionStatus(newQ) {
     const lock = LockService.getScriptLock();
     lock.waitLock(5000);
     try {
         const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(TAB_NAME);
-        const data = sheet.getDataRange().getValues();
-        const headers = data[0];
-        for (let i = 1; i < data.length; i++) {
-            const q = {};
-            headers.forEach((key, i) => (q[key] = row[i]));
+        const questions = parseQuestions(sheet);
+        const headers = getHeaders(sheet);
 
+        for (const [i, q] of questions.entries()) {
             if (q.timestamp === newQ.timestamp) {
                 q.status = newQ.status;
                 const newRow = headers.map((h) => q[h]);
-                sheet.getRange(i + 1, 1, 1, headers.length).setValues([newRow]);
+                sheet.getRange(i + 2, 1, 1, headers.length).setValues([newRow]);
                 return { success: true };
             }
         }
@@ -107,14 +103,11 @@ function deleteQuestion(timestamp) {
     lock.waitLock(5000);
     try {
         const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(TAB_NAME);
-        const data = sheet.getDataRange().getValues();
-        const headers = data[0];
-        for (let i = 1; i < data.length; i++) {
-            const q = {};
-            headers.forEach((key, i) => (q[key] = row[i]));
+        const questions = getAllQuestions();
 
+        for (const [i, q] of questions.entries()) {
             if (q.timestamp === timestamp) {
-                sheet.deleteRow(i + 1);
+                sheet.deleteRow(i + 2);
                 return { success: true };
             }
         }

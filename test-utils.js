@@ -107,14 +107,24 @@ function updateQuestionMock(newQ) {
         return { success: true };
     }
 
-    return {
-        success: true,
-        timestamp: new Date().getTime(),
-    };
+    return { success: false, error: 'Question not found.' };
+}
+
+function updateQuestionStatusMock(newQ) {
+    for (let i = 0; i < testQuestions.length; i++) {
+        const q = testQuestions[i];
+        if (q.timestamp !== newQ.timestamp) {
+            continue;
+        }
+        q.status = newQ.status;
+        return { success: true };
+    }
+
+    return { success: false, error: 'Question not found.' };
 }
 
 function deleteQuestionMock(timestamp) {
-    const index = testQuestions.findIndex((q) => (q.timestamp === timestamp));
+    const index = testQuestions.findIndex((q) => q.timestamp === timestamp);
     if (index === -1) {
         return { success: false, error: 'Question not found.' };
     } else {
@@ -136,6 +146,9 @@ googleMock.script.run.withFailureHandler = (_) => ({
         },
         updateQuestion: (q) => {
             setTimeout(() => f(updateQuestionMock(q)), 500);
+        },
+        updateQuestionStatus: (q) => {
+            setTimeout(() => f(updateQuestionStatusMock(q)), 500);
         },
         deleteQuestion: (id) => {
             setTimeout(() => f(deleteQuestionMock(id)), 500);

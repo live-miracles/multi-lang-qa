@@ -17,10 +17,11 @@ function renderLanguages() {
 function getSelectedQuestion(questions) {
     questions = questions.filter((q) => q.status === 'data' && q.name === 'selected');
     if (questions.length === 0) {
+        assert(false, 'There should always be a selected question');
         return null;
     }
     console.assert(questions.length === 1, 'Only one question can be selected');
-    return questions[0].text;
+    return questions[0];
 }
 
 function getQuestionStats(questions) {
@@ -71,11 +72,14 @@ function getQuestionHtml(q, selectedId, stats, filterLang) {
             </div>
 
             <div class="mt-2 flex items-center z-10">
-            <button class="btn btn-sm btn-warning ${q.timestamp === selectedId ? '' : 'btn-soft'} mr-2">Select</button>
-            <button class="btn btn-sm btn-primary ${q.status === 'answered' ? '' : 'btn-soft'} mr-2">Done</button>
-            <button class="btn btn-sm btn-primary ${q.status === 'hidden' ? '' : 'btn-soft'}">Hide</button>
+            <button class="btn btn-sm btn-warning ${q.timestamp === selectedId ? '' : 'btn-soft'} mr-2"
+                onclick="updateStatus(event)">Select</button>
+            <button class="btn btn-sm btn-primary ${q.status === 'answered' ? '' : 'btn-soft'} mr-2"
+                onclick="updateStatus(event)">Done</button>
+            <button class="btn btn-sm btn-primary ${q.status === 'hidden' ? '' : 'btn-soft'}"
+                onclick="updateStatus(event)">Hide</button>
             <div class="flex-grow"></div>
-            <button class="focus btn btn-soft btn-sm btn-primary" onclick="showEditQuestionForm(event)">Edit</button> 
+            <button class="focus btn btn-soft btn-sm btn-primary" onclick="showEditQuestionForm(event)">Edit</button>
             <button class="focus btn btn-soft btn-sm btn-error ml-1" onclick="showDeleteQuestionForm(event)">Delete</button>
             </div>
         </div>`;
@@ -102,7 +106,7 @@ async function renderQuestions(questions) {
         }
     }
 
-    const selectedId = getSelectedQuestion(questions);
+    const selectedId = getSelectedQuestion(questions).text;
     const html = questions
         .filter((q) => q.status !== 'data')
         .sort((a, b) => {
@@ -187,14 +191,43 @@ function showEditQuestionForm(e) {
 
 function showDeleteQuestionForm(e) {
     const timestamp = e.target.closest('.question').id;
-    const q = questions.find((q) => q.timestamp === timestamp);
-    if (!q) {
-        showErrorAlert('Error: Question not found ' + timestamp);
-        return;
-    }
     const modal = document.getElementById('delete-question-modal');
     modal.querySelector('.q-timestamp').value = timestamp;
     modal.showModal();
+}
+
+async function updateStatus(e) {
+    const timestamp = e.target.closest('.question').id;
+    const status = {
+        Select: 'selected',
+        Done: 'answered',
+        Hide: 'hidden',
+    }[e.target.innerText];
+
+    const isOn = !e.target.classList.contains('btn-soft');
+
+    if (status === 'selected') {
+        const selectedQ = getSelectedQuestion(questions);
+        if (selectedQ.text === timestamp) {
+            selectedQ.text = '-1';
+        } else {
+            selectedQ.text = timestamp;
+        }
+        await updateQuestion(selectedQ);
+    } else {
+        const q = questions.find((q) => q.timestamp === timestamp);
+        if (!q) {
+            showErrorAlert('Error: Question not found ' + timestamp);
+            return;
+        }
+        if (isOn) {
+            q.status = 'none';
+        } else {
+            q.status = status;
+        }
+        await updateQuestionStatus(q);
+    }
+    await fetchAndRenderQuestions();
 }
 
 if (typeof google === 'undefined') {

@@ -59,17 +59,17 @@ function getQuestionStats(questions) {
 
 function getQuestionHtml(q, selectedId, stats) {
     const stat = stats[q.language].answered + '/' + stats[q.language].total;
+    const starUrl = 'https://live-miracles.github.io/multi-lang-qa/star-solid.svg';
     return `
         <div class="question relative bg-base-200 rounded-box mb-5 p-2 pb-2 shadow-md ${'q-' + q.status}" id="${q.timestamp}">
             ${
                 q.timestamp === selectedId
                     ? `
-              <img src="star-solid.svg" class="absolute w-[10%] left-[60%] top-[50%] -translate-x-1/2 -translate-y-1/2 transform opacity-20 pointer-events-none"></img>
-              <img src="star-solid.svg" class="absolute w-[5%] left-[10%] top-[15%] -translate-x-1/2 -translate-y-1/2 transform opacity-10 pointer-events-none"></img>
-              <img src="star-solid.svg" class="absolute w-[5%] left-[30%] top-[80%] -translate-x-1/2 -translate-y-1/2 transform opacity-15 pointer-events-none"></img>
-              <img src="star-solid.svg" class="absolute w-[8%] left-[90%] top-[40%] -translate-x-1/2 -translate-y-1/2 transform opacity-25 pointer-events-none"></img>
-              <img src="star-solid.svg" class="absolute w-[7%] left-[40%] top-[20%] -translate-x-1/2 -translate-y-1/2 transform opacity-15 pointer-events-none"></img>
-            `
+              <img src="${starUrl}" class="absolute w-[10%] left-[60%] top-[50%] -translate-x-1/2 -translate-y-1/2 transform opacity-20 pointer-events-none"></img>
+              <img src="${starUrl}" class="absolute w-[5%] left-[10%] top-[15%] -translate-x-1/2 -translate-y-1/2 transform opacity-10 pointer-events-none"></img>
+              <img src="${starUrl}" class="absolute w-[5%] left-[30%] top-[80%] -translate-x-1/2 -translate-y-1/2 transform opacity-15 pointer-events-none"></img>
+              <img src="${starUrl}" class="absolute w-[8%] left-[90%] top-[40%] -translate-x-1/2 -translate-y-1/2 transform opacity-25 pointer-events-none"></img>
+              <img src="${starUrl}" class="absolute w-[7%] left-[40%] top-[20%] -translate-x-1/2 -translate-y-1/2 transform opacity-15 pointer-events-none"></img>`
                     : ''
             }
             <div class="q-translation z-10">

@@ -1764,6 +1764,10 @@
     --badge-color: var(--color-primary);
     --badge-fg: var(--color-primary-content);
   }
+  .badge-warning {
+    --badge-color: var(--color-warning);
+    --badge-fg: var(--color-warning-content);
+  }
   .btn-error {
     --btn-color: var(--color-error);
     --btn-fg: var(--color-error-content);
@@ -1771,10 +1775,6 @@
   .btn-primary {
     --btn-color: var(--color-primary);
     --btn-fg: var(--color-primary-content);
-  }
-  .btn-warning {
-    --btn-color: var(--color-warning);
-    --btn-fg: var(--color-warning-content);
   }
   .input-primary {
     &, &:focus, &:focus-within {

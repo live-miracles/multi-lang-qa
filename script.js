@@ -47,8 +47,8 @@ function getQuestionHtml(q, selectedId, stats, filterLang) {
     const starUrl = 'https://live-miracles.github.io/multi-lang-qa/star-solid.svg';
     return `
         <div class="question relative bg-base-200 rounded-box mb-5 p-2 pb-2 shadow-md
-        ${'q-' + q.status} ${filterLang === '' || q.language === filterLang ? '' : 'hidden'}" 
-        id="${q.timestamp}">
+          ${'q-' + q.status} ${filterLang === '' || q.language === filterLang ? '' : 'hidden'}" 
+          id="${q.timestamp}">
             ${
                 q.timestamp === selectedId
                     ? `
@@ -60,27 +60,39 @@ function getQuestionHtml(q, selectedId, stats, filterLang) {
                     : ''
             }
             <div class="q-translation z-10">
-                <div class="badge">${q.language} ${stat}</div>
-                <span class="font-semibold">${q.nameTranslation ? q.nameTranslation + ': ' : ''}</span>
-                ${q.translation ? q.translation : q.text}
+              <div class="badge">${q.language} ${stat}</div>
+              <span class="font-semibold">${q.nameTranslation ? q.nameTranslation + ': ' : ''}</span>
+              ${q.translation ? q.translation : q.text}
             </div>
 
             <div class="q-text text-primary mt-1 z-10">
-                <span class="font-semibold">${q.translation && q.name ? q.name + ': ' : ''}</span>
-                <span>${q.translation ? q.text : ''}</span>
+              <span class="font-semibold">${q.translation && q.name ? q.name + ': ' : ''}</span>
+              <span>${q.translation ? q.text : ''}</span>
             </div>
 
             <div class="mt-2 flex items-center z-10">
-            <button class="btn btn-sm btn-warning ${q.timestamp === selectedId ? '' : 'btn-soft'} mr-2"
-                onclick="updateStatus(event)">Select</button>
-            <button class="btn btn-sm btn-primary ${q.status === 'answered' ? '' : 'btn-soft'} mr-2"
-                onclick="updateStatus(event)">Done</button>
-            <button class="btn btn-sm btn-primary ${q.status === 'hidden' ? '' : 'btn-soft'}"
-                onclick="updateStatus(event)">Hide</button>
+              <label class="swap mr-2">
+                <input type="checkbox" ${q.timestamp === selectedId ? 'checked' : ''} onchange="updateStatus(event)" />
+                <div class="swap-on badge badge-warning">Select</div>
+                <div class="swap-off badge badge-warning badge-soft">Select</div>
+              </label>
+
+              <label class="swap mr-2">
+                <input type="checkbox" ${q.status === 'answered' ? 'checked' : ''} onchange="updateStatus(event)" />
+                <div class="swap-on badge badge-primary">Done</div>
+                <div class="swap-off badge badge-primary badge-soft">Done</div>
+              </label>
+
+              <label class="swap mr-2">
+                <input type="checkbox" ${q.status === 'hidden' ? 'checked' : ''} onchange="updateStatus(event)" />
+                <div class="swap-on badge badge-primary">Hide</div>
+                <div class="swap-off badge badge-primary badge-soft">Hide</div>
+              </label>
             <div class="flex-grow"></div>
+
             <button class="focus btn btn-soft btn-sm btn-primary" onclick="showEditQuestionForm(event)">Edit</button>
             <button class="focus btn btn-soft btn-sm btn-error ml-1" onclick="showDeleteQuestionForm(event)">Delete</button>
-            </div>
+          </div>
         </div>`;
 }
 
@@ -108,12 +120,12 @@ async function renderQuestions(questions) {
     const selectedId = getSelectedQuestion(questions).text;
     const html = questions
         .filter((q) => q.status !== 'data')
-        .sort((a, b) => {
-            if (STATUS_RANK[a.status] !== STATUS_RANK[b.status]) {
-                return STATUS_RANK[a.status] - STATUS_RANK[b.status];
-            }
-            b.timestamp - a.timestamp;
-        })
+        //      .sort((a, b) => {
+        //          if (STATUS_RANK[a.status] !== STATUS_RANK[b.status]) {
+        //              return STATUS_RANK[a.status] - STATUS_RANK[b.status];
+        //          }
+        //          b.timestamp - a.timestamp;
+        //      })
         .map((q) => getQuestionHtml(q, selectedId, stats, filterLang.value))
         .join('');
     document.getElementById('questions').innerHTML = html;
@@ -125,7 +137,7 @@ async function fetchAndRenderQuestions() {
     renderQuestions(questions);
 }
 
-function showLoadingAlert(msg = 'Loading...') {
+function showLoadingAlert(msg = 'Loading...', time = 5000) {
     const loadingElem = document.getElementById('loading-alert');
     const successElem = document.getElementById('success-alert');
     const errorElem = document.getElementById('error-alert');
@@ -133,6 +145,9 @@ function showLoadingAlert(msg = 'Loading...') {
     loadingElem.classList.remove('hidden');
     successElem.classList.add('hidden');
     errorElem.classList.add('hidden');
+    setTimeout(() => {
+        loadingElem.classList.add('hidden');
+    }, time);
 }
 
 function showSuccessAlert(msg = 'Success!', time = 3000) {
@@ -201,10 +216,9 @@ async function updateStatus(e) {
         Select: 'selected',
         Done: 'answered',
         Hide: 'hidden',
-    }[e.target.innerText];
+    }[e.target.nextElementSibling.innerText];
 
-    const isOn = !e.target.classList.contains('btn-soft');
-
+    const isOn = !e.target.checked;
     if (status === 'selected') {
         const selectedQ = getSelectedQuestion(questions);
         if (selectedQ.text === timestamp) {
@@ -276,6 +290,7 @@ let questions = [];
         questions.push(newQ);
         renderQuestions(questions);
         await addQuestion(newQ);
+        await fetchAndRenderQuestions();
     });
 
     document.getElementById('update-question-btn').addEventListener('click', async (e) => {
@@ -300,6 +315,7 @@ let questions = [];
             renderQuestions(questions);
         }
         await updateQuestion(newQ);
+        await fetchAndRenderQuestions();
     });
 
     document.getElementById('delete-question-btn').addEventListener('click', async (e) => {
@@ -312,11 +328,15 @@ let questions = [];
             renderQuestions(questions);
         }
         await deleteQuestion(timestamp);
+        await fetchAndRenderQuestions();
     });
 
     await fetchAndRenderQuestions();
 
     setInterval(async () => {
-        await fetchAndRenderQuestions();
-    }, 5000);
+        const loadingElem = document.getElementById('loading-alert');
+        if (loadingElem.classList.contains('hidden')) {
+            await fetchAndRenderQuestions();
+        }
+    }, 500000);
 })();

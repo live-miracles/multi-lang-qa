@@ -15,12 +15,12 @@ function renderLanguages() {
 }
 
 function getSelectedQuestion(questions) {
-    questions = questions.filter((q) => q.status === 'data' && q.text === 'selected');
+    questions = questions.filter((q) => q.status === 'data' && q.name === 'selected');
     if (questions.length === 0) {
         return null;
     }
     console.assert(questions.length === 1, 'Only one question can be selected');
-    return questions[0].translation;
+    return questions[0].text;
 }
 
 function getQuestionStats(questions) {
@@ -158,33 +158,42 @@ function showErrorAlert(msg = 'Error', time = 5000) {
     }, time);
 }
 
+function hideAlerts() {
+    const loadingElem = document.getElementById('loading-alert');
+    const successElem = document.getElementById('success-alert');
+    const errorElem = document.getElementById('error-alert');
+    loadingElem.classList.add('hidden');
+    successElem.classList.add('hidden');
+    errorElem.classList.add('hidden');
+}
+
 function showEditQuestionForm(e) {
-    const questionId = e.target.closest('.question').id;
-    const q = questions.find((q) => q.timestamp === questionId);
+    const timestamp = e.target.closest('.question').id;
+    const q = questions.find((q) => q.timestamp === timestamp);
     if (!q) {
-        showErrorAlert('Error: Question not found');
+        showErrorAlert('Error: Question not found ' + timestamp);
         return;
     }
     const modal = document.getElementById('edit-question-modal');
-    modal.querySelector('.q-timestamp').innerText = questionId;
-    modal.querySelector('.q-text').value = q.text;
-    modal.querySelector('.q-translation').value = q.translation;
+    modal.querySelector('.q-timestamp').value = timestamp;
+    modal.querySelector('.q-version').value = q.version;
     modal.querySelector('.q-language').value = q.language;
     modal.querySelector('.q-name').value = q.name;
-    modal.querySelector('.q-version').innerText = q.version;
+    modal.querySelector('.q-name-translation').value = q.nameTranslation;
+    modal.querySelector('.q-text').value = q.text;
+    modal.querySelector('.q-translation').value = q.translation;
     modal.showModal();
 }
 
 function showDeleteQuestionForm(e) {
-    const questionId = e.target.closest('.question').id;
-    const q = questions.find((q) => q.timestamp === questionId);
-    console.log(e, questionId, q);
+    const timestamp = e.target.closest('.question').id;
+    const q = questions.find((q) => q.timestamp === timestamp);
     if (!q) {
-        showErrorAlert('Error: Question not found ' + questionId);
+        showErrorAlert('Error: Question not found ' + timestamp);
         return;
     }
     const modal = document.getElementById('delete-question-modal');
-    modal.querySelector('.question-timestamp').innerText = questionId;
+    modal.querySelector('.q-timestamp').value = timestamp;
     modal.showModal();
 }
 
@@ -202,36 +211,57 @@ let questions = [];
         .querySelectorAll('.show-toggle')
         .forEach((elem) => elem.addEventListener('click', showElements));
 
-    //  setInputElements();
-    //  document
-    //      .querySelectorAll('.url-param')
-    //      .forEach((elem) => elem.addEventListener('change', updateUrlParam));
-
     document
         .getElementById('filter-q-language')
         .addEventListener('change', () => renderQuestions(questions));
 
-    document.getElementById('add-q-name').addEventListener('change', (e) => {
-        const input = e.target;
-        input.nextElementSibling.value = transliterate(input.value);
-    });
+    document.querySelectorAll('.q-name').forEach((elem) =>
+        elem.addEventListener('change', (e) => {
+            const input = e.target;
+            input.nextElementSibling.value = transliterate(input.value);
+        }),
+    );
 
-    document.getElementById('add-question-btn').addEventListener('click', async () => {
+    document.getElementById('add-question-btn').addEventListener('click', async (e) => {
+        const container = e.target.parentElement;
         const q = {
-            language: document.getElementById('add-q-language').value,
-            name: document.getElementById('add-q-name').value,
-            nameTranslation: document.getElementById('add-q-name-translation').value,
-            text: document.getElementById('add-q-text').value,
-            translation: document.getElementById('add-q-translation').value,
+            language: container.querySelector('.q-language').value,
+            name: container.querySelector('.q-name').value,
+            nameTranslation: container.querySelector('.q-name-translation').value,
+            text: container.querySelector('.q-text').value,
+            translation: container.querySelector('.q-translation').value,
         };
-
         if (!q.text) {
             showErrorAlert('Please specify question text');
             return;
         }
-
         await addQuestion(q);
+        await fetchAndRenderQuestions();
+    });
 
+    document.getElementById('update-question-btn').addEventListener('click', async (e) => {
+        const container = e.target.parentElement.parentElement.parentElement;
+        const q = {
+            timestamp: container.querySelector('.q-timestamp').value,
+            version: container.querySelector('.q-version').value,
+            language: container.querySelector('.q-language').value,
+            name: container.querySelector('.q-name').value,
+            nameTranslation: container.querySelector('.q-name-translation').value,
+            text: container.querySelector('.q-text').value,
+            translation: container.querySelector('.q-translation').value,
+        };
+        if (!q.text) {
+            showErrorAlert('Please specify question text');
+            return;
+        }
+        await updateQuestion(q);
+        await fetchAndRenderQuestions();
+    });
+
+    document.getElementById('delete-question-btn').addEventListener('click', async (e) => {
+        const container = e.target.parentElement.parentElement.parentElement;
+        const timestamp = container.querySelector('.q-timestamp').value;
+        await deleteQuestion(timestamp);
         await fetchAndRenderQuestions();
     });
 

@@ -24,21 +24,72 @@ async function addQuestion(q) {
                 .addQuestion(q);
         });
         if (res.success === false) {
-            showErrorAlert("Something went wrong, couldn't add question :(");
-            return null;
+            showErrorAlert(res.error);
         } else {
             showSuccessAlert('Question added successfully');
-            return res;
         }
     } catch (error) {
-        showErrorAlert('Error adding question: ' + error);
+        showErrorAlert(error);
         console.error(error);
-        return [];
     }
 }
 
-function updateQuestion() {}
+async function updateQuestion(newQ) {
+    try {
+        showLoadingAlert('Updating...');
+        const res = await new Promise((resolve, reject) => {
+            window.google.script.run
+                .withFailureHandler((error) => reject(error))
+                .withSuccessHandler((data) => resolve(data))
+                .updateQuestion(newQ);
+        });
+        if (res.success === false) {
+            showErrorAlert(res.error);
+        } else {
+            hideAlerts();
+        }
+    } catch (error) {
+        showErrorAlert(error);
+        console.error(error);
+    }
+}
 
-function updateQuestionStatus() {}
+async function updateQuestionStatus(newQ) {
+    try {
+        showLoadingAlert('Updating...');
+        const res = await new Promise((resolve, reject) => {
+            window.google.script.run
+                .withFailureHandler((error) => reject(error))
+                .withSuccessHandler((data) => resolve(data))
+                .updateQuestionStatus(newQ);
+        });
+        if (res.success === false) {
+            showErrorAlert(res.error);
+        } else {
+            hideAlerts();
+        }
+    } catch (error) {
+        showErrorAlert(error);
+        console.error(error);
+    }
+}
 
-function deleteQuestion() {}
+async function deleteQuestion(timestamp) {
+    try {
+        showLoadingAlert('Deleting question...');
+        const res = await new Promise((resolve, reject) => {
+            window.google.script.run
+                .withFailureHandler((error) => reject(error))
+                .withSuccessHandler((data) => resolve(data))
+                .deleteQuestion(timestamp);
+        });
+        if (res.success === false) {
+            showErrorAlert(res.error);
+        } else {
+            showSuccessAlert('Question removed');
+        }
+    } catch (error) {
+        showErrorAlert(error);
+        console.error(error);
+    }
+}

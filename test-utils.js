@@ -2,12 +2,12 @@ const testQuestions = [
     {
         timestamp: '108',
         language: '',
-        name: '',
+        name: 'selected',
         nameTranslation: '',
-        text: 'selected',
-        translation: '1747454696375',
+        text: '1747454696375',
+        translation: '',
         status: 'data',
-        version: 0,
+        version: '0',
     },
     {
         timestamp: '1747454396375',
@@ -17,7 +17,7 @@ const testQuestions = [
         text: '¿Cuál es la capital de Spain?',
         translation: 'What is the capital of Spain?',
         status: 'answered',
-        version: 0,
+        version: '0',
     },
     {
         timestamp: '1747454496375',
@@ -27,7 +27,7 @@ const testQuestions = [
         text: 'Do you like programming?',
         translation: '',
         status: 'answered',
-        version: 0,
+        version: '0',
     },
     {
         timestamp: '1747454596375',
@@ -37,7 +37,7 @@ const testQuestions = [
         text: 'How many languages do you speak?',
         translation: '',
         status: 'none',
-        version: 0,
+        version: '0',
     },
     {
         timestamp: '1747454696375',
@@ -47,7 +47,7 @@ const testQuestions = [
         text: 'Quelle est la capitale de la France?',
         translation: 'What is the capital of France?',
         status: 'none',
-        version: 0,
+        version: '0',
     },
     {
         timestamp: '1747454796375',
@@ -57,7 +57,7 @@ const testQuestions = [
         text: 'Quelle est la capitale de la Paris?',
         translation: 'What is the capital of Paris?',
         status: 'hidden',
-        version: 0,
+        version: '0',
     },
 ];
 
@@ -84,9 +84,44 @@ function addQuestionMock(q) {
     };
 }
 
-function updateQuestionMock(q) {}
+function updateQuestionMock(newQ) {
+    for (let i = 0; i < testQuestions.length; i++) {
+        const q = testQuestions[i];
+        if (q.timestamp !== newQ.timestamp) {
+            continue;
+        }
+        if (q.version != newQ.version) {
+            return {
+                success: false,
+                error: 'Conflict: another user has updated this question.',
+            };
+        }
+        if (newQ.text === '') {
+            return {
+                success: false,
+                error: "Invalid data: the question text can't be empty.",
+            };
+        }
+        newQ.version = String(parseInt(q.version) + 1);
+        Object.assign(q, newQ);
+        return { success: true };
+    }
 
-function deleteQuestionMock(id) {}
+    return {
+        success: true,
+        timestamp: new Date().getTime(),
+    };
+}
+
+function deleteQuestionMock(timestamp) {
+    const index = testQuestions.findIndex((q) => (q.timestamp === timestamp));
+    if (index === -1) {
+        return { success: false, error: 'Question not found.' };
+    } else {
+        testQuestions.splice(index, 1);
+    }
+    return { success: true };
+}
 
 const googleMock = {};
 googleMock.script = {};

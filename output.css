@@ -1187,6 +1187,24 @@
     overflow-y: auto;
     overscroll-behavior: contain;
   }
+  .container {
+    width: 100%;
+    @media (width >= 40rem) {
+      max-width: 40rem;
+    }
+    @media (width >= 48rem) {
+      max-width: 48rem;
+    }
+    @media (width >= 64rem) {
+      max-width: 64rem;
+    }
+    @media (width >= 80rem) {
+      max-width: 80rem;
+    }
+    @media (width >= 96rem) {
+      max-width: 96rem;
+    }
+  }
   .divider {
     display: flex;
     height: calc(0.25rem * 4);
@@ -1539,8 +1557,8 @@
   .w-full {
     width: 100%;
   }
-  .max-w-48 {
-    max-width: calc(var(--spacing) * 48);
+  .max-w-40 {
+    max-width: calc(var(--spacing) * 40);
   }
   .max-w-\[700px\] {
     max-width: 700px;

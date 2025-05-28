@@ -85,28 +85,28 @@
       </label>
 
       <select id="filter-q-language" class="language-select select select-xs text-primary w-fit">
-        <option disabled value="">Filter</option>
         <option selected value="">All</option>
       </select>
     </div>
 
     <dialog id="edit-question-modal" class="modal">
       <div class="modal-box">
-        <div class="q-timestamp hidden"></div>
-        <div class="q-version hidden"></div>
+        <input type="text" class="q-timestamp hidden" />
+        <input type="text" class="q-version hidden" />
         <textarea class="q-text textarea textarea-primary text-primary mt-3 w-full" placeholder="*Question Text"></textarea>
         <textarea class="q-translation textarea mt-2 w-full" placeholder="Question Translation"></textarea>
         <div class="mt-2">
-          <input type="text" placeholder="Person's Name" class="q-name input input-sm max-w-48" />
           <select class="q-language language-select select select-primary text-primary select-sm w-fit">
-            <option disabled value="">Question Language</option>
+            <option disabled value="">*Language</option>
           </select>
+          <input type="text" placeholder="Person's Name" class="q-name input input-primary text-primary input-sm max-w-40" />
+          <input type="text" placeholder="Name Translation" class="q-name-translation input input-sm max-w-40" />
         </div>
 
         <div class="modal-action">
           <form method="dialog">
             <button class="btn">Cancel</button>
-            <button class="update-question btn btn-primary">Update</button>
+            <button id="update-question-btn" class="btn btn-primary">Update</button>
           </form>
         </div>
       </div>
@@ -114,26 +114,26 @@
 
     <dialog id="delete-question-modal" class="modal">
       <div class="modal-box">
-        <div class="question-timestamp hidden"></div>
+        <input type="text" class="q-timestamp hidden" />
         <p class="py-4">Do you want to delete this question?</p>
         <div class="modal-action">
           <form method="dialog">
             <button class="btn">Cancel</button>
-            <button class="delete-question btn btn-error">Yes</button>
+            <button id="delete-question-btn" class="btn btn-error">Yes</button>
           </form>
         </div>
       </div>
     </dialog>
 
     <div class="focus mx-auto w-full max-w-[700px] px-2">
-      <textarea id="add-q-text" class="textarea textarea-primary text-primary mt-3 w-full" placeholder="*Question Text"></textarea>
-      <textarea id="add-q-translation" class="textarea mt-2 w-full" placeholder="Question Translation (leave empty for English)"></textarea>
+      <textarea id="" class="q-text textarea textarea-primary text-primary mt-3 w-full" placeholder="*Question Text"></textarea>
+      <textarea class="q-translation textarea mt-2 w-full" placeholder="Question Translation (leave empty for English)"></textarea>
       <div class="mt-2">
-        <select id="add-q-language" class="language-select select select-primary text-primary select-sm w-fit">
-          <option disabled value="">*Question Language</option>
+        <select class="q-language language-select select select-primary text-primary select-sm w-fit">
+          <option disabled value="">*Language</option>
         </select>
-        <input id="add-q-name" type="text" placeholder="*Person's Name" class="input input-primary text-primary input-sm max-w-48" />
-        <input id="add-q-name-translation" type="text" placeholder="Name Translation" class="input input-sm max-w-48" />
+        <input type="text" placeholder="*Person's Name" class="q-name input input-primary text-primary input-sm max-w-40" />
+        <input type="text" placeholder="Name Translation" class="q-name-translation input input-sm max-w-40" />
 
         <button id="add-question-btn" class="btn btn-primary btn-sm mx-2">Add Question</button>
       </div>

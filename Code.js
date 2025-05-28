@@ -20,7 +20,6 @@ function addQuestion(q) {
                 error: "Invalid data: the question text can't be empty.",
             };
         }
-
         const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(TAB_NAME);
         const timestamp = String(new Date().getTime()); // Will also be used as ID
         const status = 'none';
@@ -56,23 +55,19 @@ function updateQuestion(newQ) {
             if (q.timestamp !== newQ.timestamp) {
                 continue;
             }
-
             if (q.version != newQ.version) {
                 return {
                     success: false,
                     error: 'Conflict: another user has updated this question.',
                 };
             }
-
             if (newQ.text === '') {
                 return {
                     success: false,
                     error: "Invalid data: the question text can't be empty.",
                 };
             }
-
             newQ.version = String(parseInt(q.version) + 1);
-
             const newRow = headers.map((h) => newQ[h]);
             sheet.getRange(i + 1, 1, 1, headers.length).setValues([newRow]);
             return { success: true };
@@ -113,6 +108,7 @@ function deleteQuestion(timestamp) {
     try {
         const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(TAB_NAME);
         const data = sheet.getDataRange().getValues();
+        const headers = data[0];
         for (let i = 1; i < data.length; i++) {
             const q = {};
             headers.forEach((key, i) => (q[key] = row[i]));

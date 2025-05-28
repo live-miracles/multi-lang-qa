@@ -17,7 +17,7 @@ function addQuestion(q) {
         const sheet = SpreadsheetApp.openById(sheetId).getSheetByName(TAB_NAME);
         const timestamp = new Date().getTime(); // Will also be used as ID
         const status = 'none';
-        const version = 1;
+        const version = 0;
 
         sheet.appendRow([
             timestamp,
@@ -55,7 +55,8 @@ function updateQuestion(newQ) {
                         error: 'Conflict: another user has updated this question.',
                     };
                 }
-                // Update row
+                newQ.version = parseInt(q.version) + 1;
+
                 const newRow = headers.map((h) => newQ[h]);
                 sheet.getRange(i + 1, 1, 1, headers.length).setValues([newRow]);
                 return { success: true };

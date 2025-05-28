@@ -95,7 +95,9 @@ function getQuestionHtml(q, selectedId, stats) {
         </div>`;
 }
 
-function renderQuestions(questions) {
+async function renderQuestions() {
+    questions = await getAllQuestions();
+
     const selectedId = getSelectedQuestion(questions);
     const stats = getQuestionStats(questions);
     const html = questions
@@ -203,12 +205,13 @@ let questions = [];
         input.nextElementSibling.value = transliterate(input.value);
     });
 
-    document.getElementById('add-question').addEventListener('click', async () => {
+    document.getElementById('add-question-btn').addEventListener('click', async () => {
         const q = {
+            language: document.getElementById('add-q-language').value,
             name: document.getElementById('add-q-name').value,
+            nameTranslation: document.getElementById('add-q-name-translation').value,
             text: document.getElementById('add-q-text').value,
             translation: document.getElementById('add-q-translation').value,
-            language: document.getElementById('add-q-language').value,
         };
 
         if (!q.text) {
@@ -216,16 +219,14 @@ let questions = [];
             return;
         }
 
-        addQuestion(q);
+        await addQuestion(q);
+
+        await renderQuestions();
     });
 
-    questions = await getAllQuestions();
-    renderQuestions(questions);
-    showElements();
+    renderQuestions();
 
     setInterval(async () => {
-        questions = await getAllQuestions();
-        renderQuestions(questions);
-        showElements();
+        await renderQuestions();
     }, 5000);
 })();

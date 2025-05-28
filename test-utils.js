@@ -1,66 +1,68 @@
+const testQuestions = [
+    {
+        timestamp: '108',
+        language: '',
+        name: '',
+        nameTranslation: '',
+        text: 'selected',
+        translation: '1747454696375',
+        status: 'data',
+        version: 0,
+    },
+    {
+        timestamp: '1747454396375',
+        language: 'German',
+        name: 'Migüel',
+        nameTranslation: 'Miguel',
+        text: '¿Cuál es la capital de Spain?',
+        translation: 'What is the capital of Spain?',
+        status: 'none',
+        version: 0,
+    },
+    {
+        timestamp: '1747454496375',
+        language: 'English',
+        name: 'Rafåel',
+        nameTranslation: 'Rafael',
+        text: 'Do you like programming?',
+        translation: '',
+        status: 'skipped',
+        version: 0,
+    },
+    {
+        timestamp: '1747454596375',
+        language: 'English',
+        name: 'Marceslo',
+        nameTranslation: '',
+        text: 'How many languages do you speak?',
+        translation: '',
+        status: 'answered',
+        version: 0,
+    },
+    {
+        timestamp: '1747454696375',
+        language: 'French',
+        name: 'Donœtello',
+        nameTranslation: 'Donatello',
+        text: 'Quelle est la capitale de la France?',
+        translation: 'What is the capital of France?',
+        status: 'none',
+        version: 0,
+    },
+    {
+        timestamp: '1747454796375',
+        language: 'French',
+        name: 'Миша',
+        nameTranslation: 'Misha',
+        text: 'Quelle est la capitale de la Paris?',
+        translation: 'What is the capital of Paris?',
+        status: 'hidden',
+        version: 0,
+    },
+];
+
 function getAllQuestionsMock() {
-    return [
-        {
-            timestamp: '108',
-            language: '',
-            name: '',
-            nameTranslation: '',
-            text: 'selected',
-            translation: '1747454696375',
-            status: 'data',
-            version: 0,
-        },
-        {
-            timestamp: '1747454396375',
-            language: 'German',
-            name: 'Migüel',
-            nameTranslation: 'Miguel',
-            text: '¿Cuál es la capital de Spain?',
-            translation: 'What is the capital of Spain?',
-            status: 'none',
-            version: 0,
-        },
-        {
-            timestamp: '1747454496375',
-            language: 'English',
-            name: 'Rafåel',
-            nameTranslation: 'Rafael',
-            text: 'Do you like programming?',
-            translation: '',
-            status: 'skipped',
-            version: 0,
-        },
-        {
-            timestamp: '1747454596375',
-            language: 'English',
-            name: 'Marceslo',
-            nameTranslation: '',
-            text: 'How many languages do you speak?',
-            translation: '',
-            status: 'answered',
-            version: 0,
-        },
-        {
-            timestamp: '1747454696375',
-            language: 'French',
-            name: 'Donœtello',
-            nameTranslation: 'Donatello',
-            text: 'Quelle est la capitale de la France?',
-            translation: 'What is the capital of France?',
-            status: 'none',
-            version: 0,
-        },
-        {
-            timestamp: '1747454796375',
-            language: 'French',
-            name: 'Миша',
-            nameTranslation: 'Misha',
-            text: 'Quelle est la capitale de la Paris?',
-            translation: 'What is the capital of Paris?',
-            status: 'hidden',
-            version: 0,
-        },
-    ];
+    return testQuestions;
 }
 
 function addQuestionMock(q) {
@@ -70,6 +72,11 @@ function addQuestionMock(q) {
             error: 'Invalid parameters',
         };
     }
+
+    q.status = 'none';
+    q.timestamp = new Date().getTime();
+    q.version = 0;
+    testQuestions.push(q);
 
     return {
         success: true,

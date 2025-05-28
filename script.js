@@ -16,12 +16,11 @@ function renderLanguages() {
 
 function getSelectedQuestion(questions) {
     questions = questions.filter((q) => q.status === 'data' && q.name === 'selected');
-    if (questions.length === 0) {
-        console.assert(false, 'There should always be a selected question');
-        return null;
+    if (questions.length !== 0 || console.assert(false)) {
+        console.assert(questions.length === 1, 'Only one question can be selected');
+        return questions[0];
     }
-    console.assert(questions.length === 1, 'Only one question can be selected');
-    return questions[0];
+    return null;
 }
 
 function getQuestionStats(questions) {
@@ -213,6 +212,7 @@ async function updateStatus(e) {
         } else {
             selectedQ.text = timestamp;
         }
+        renderQuestions(questions);
         await updateQuestion(selectedQ);
     } else {
         const q = questions.find((q) => q.timestamp === timestamp);
@@ -225,6 +225,7 @@ async function updateStatus(e) {
         } else {
             q.status = status;
         }
+        renderQuestions(questions);
         await updateQuestionStatus(q);
     }
     await fetchAndRenderQuestions();
@@ -257,25 +258,29 @@ let questions = [];
 
     document.getElementById('add-question-btn').addEventListener('click', async (e) => {
         const container = e.target.parentElement;
-        console.log(container, container.querySelector('.q-text'));
-        const q = {
+        const newQ = {
+            timestamp: String(new Date().getTime()),
+            status: 'none',
+            version: '0',
             language: container.querySelector('.q-language').value,
             name: container.querySelector('.q-name').value,
             nameTranslation: container.querySelector('.q-name-translation').value,
             text: container.querySelector('.q-text').value,
             translation: container.querySelector('.q-translation').value,
         };
-        if (!q.text) {
+        if (!newQ.text) {
             showErrorAlert('Please specify question text');
             return;
         }
-        await addQuestion(q);
-        await fetchAndRenderQuestions();
+
+        questions.push(newQ);
+        renderQuestions(questions);
+        await addQuestion(newQ);
     });
 
     document.getElementById('update-question-btn').addEventListener('click', async (e) => {
         const container = e.target.parentElement.parentElement.parentElement;
-        const q = {
+        const newQ = {
             timestamp: container.querySelector('.q-timestamp').value,
             version: container.querySelector('.q-version').value,
             language: container.querySelector('.q-language').value,
@@ -284,19 +289,29 @@ let questions = [];
             text: container.querySelector('.q-text').value,
             translation: container.querySelector('.q-translation').value,
         };
-        if (!q.text) {
+        if (!newQ.text) {
             showErrorAlert('Please specify question text');
             return;
         }
-        await updateQuestion(q);
-        await fetchAndRenderQuestions();
+
+        const index = questions.findIndex((q) => q.timestamp === newQ.timestamp);
+        if (index !== -1 || console.assert(false)) {
+            Object.assign(questions[index], newQ);
+            renderQuestions(questions);
+        }
+        await updateQuestion(newQ);
     });
 
     document.getElementById('delete-question-btn').addEventListener('click', async (e) => {
         const container = e.target.parentElement.parentElement.parentElement;
         const timestamp = container.querySelector('.q-timestamp').value;
+
+        const index = questions.findIndex((q) => q.timestamp === timestamp);
+        if (index !== -1 || console.assert(false)) {
+            questions.splice(index, 1);
+            renderQuestions(questions);
+        }
         await deleteQuestion(timestamp);
-        await fetchAndRenderQuestions();
     });
 
     await fetchAndRenderQuestions();

@@ -10,7 +10,7 @@ const testQuestions = [
         version: '0',
     },
     {
-        timestamp: '1747454396375',
+        timestamp: '1',
         language: 'German',
         name: 'Migüel',
         nameTranslation: 'Miguel',
@@ -20,7 +20,7 @@ const testQuestions = [
         version: '0',
     },
     {
-        timestamp: '1747454496375',
+        timestamp: '2',
         language: 'English',
         name: 'Rafåel',
         nameTranslation: 'Rafael',
@@ -30,7 +30,7 @@ const testQuestions = [
         version: '0',
     },
     {
-        timestamp: '1747454596375',
+        timestamp: '3',
         language: 'English',
         name: 'Marceslo',
         nameTranslation: '',
@@ -40,7 +40,7 @@ const testQuestions = [
         version: '0',
     },
     {
-        timestamp: '1747454696375',
+        timestamp: '4',
         language: 'French',
         name: 'Donœtello',
         nameTranslation: 'Donatello',
@@ -50,7 +50,7 @@ const testQuestions = [
         version: '0',
     },
     {
-        timestamp: '1747454796375',
+        timestamp: '5',
         language: 'French',
         name: 'Миша',
         nameTranslation: 'Misha',
@@ -62,7 +62,7 @@ const testQuestions = [
 ];
 
 function getAllQuestionsMock() {
-    return testQuestions;
+    return structuredClone(testQuestions); // important to return copy
 }
 
 function addQuestionMock(q) {
@@ -125,10 +125,10 @@ function updateQuestionStatusMock(newQ) {
 
 function deleteQuestionMock(timestamp) {
     const index = testQuestions.findIndex((q) => q.timestamp === timestamp);
-    if (index === -1) {
-        return { success: false, error: 'Question not found.' };
-    } else {
+    if (index !== -1 || console.assert(false)) {
         testQuestions.splice(index, 1);
+    } else {
+        return { success: false, error: 'Question not found.' };
     }
     return { success: true };
 }

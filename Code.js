@@ -29,7 +29,7 @@ function addQuestion(q) {
                 error: "Invalid data: the question text can't be empty.",
             };
         }
-        q.timestamp = String(new Date().getTime());
+        q.timestamp = String(Date.now());
         q.status = 'none';
         q.version = '0';
 

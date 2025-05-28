@@ -133,8 +133,10 @@ async function renderQuestions(questions) {
 }
 
 async function fetchAndRenderQuestions() {
-    questions = await getAllQuestions();
-    renderQuestions(questions);
+    if ( Date.now() - updateTime > 5000) {
+        questions = await getAllQuestions();
+        renderQuestions(questions);
+    }
 }
 
 function showLoadingAlert(msg = 'Loading...', time = 5000) {
@@ -218,6 +220,12 @@ async function updateStatus(e) {
         Hide: 'hidden',
     }[e.target.nextElementSibling.innerText];
 
+    let q = questions.find((q) => q.timestamp === timestamp);
+    if (!q) {
+        showErrorAlert('Error: Question not found ' + timestamp);
+        return;
+    }
+
     const isOn = !e.target.checked;
     if (status === 'selected') {
         const selectedQ = getSelectedQuestion(questions);
@@ -227,22 +235,18 @@ async function updateStatus(e) {
             selectedQ.text = timestamp;
         }
         renderQuestions(questions);
+        updateTime = Date.now();
         await updateQuestion(selectedQ);
     } else {
-        const q = questions.find((q) => q.timestamp === timestamp);
-        if (!q) {
-            showErrorAlert('Error: Question not found ' + timestamp);
-            return;
-        }
         if (isOn) {
             q.status = 'none';
         } else {
             q.status = status;
         }
         renderQuestions(questions);
+        updateTime = Date.now();
         await updateQuestionStatus(q);
     }
-    await fetchAndRenderQuestions();
 }
 
 if (typeof google === 'undefined') {
@@ -250,6 +254,7 @@ if (typeof google === 'undefined') {
 }
 
 let questions = [];
+let updateTime = 0;
 
 (async () => {
     renderLanguages();
@@ -273,7 +278,7 @@ let questions = [];
     document.getElementById('add-question-btn').addEventListener('click', async (e) => {
         const container = e.target.parentElement;
         const newQ = {
-            timestamp: String(new Date().getTime()),
+            timestamp: String(Date.now()),
             status: 'none',
             version: '0',
             language: container.querySelector('.q-language').value,
@@ -286,11 +291,10 @@ let questions = [];
             showErrorAlert('Please specify question text');
             return;
         }
-
         questions.push(newQ);
         renderQuestions(questions);
+        updateTime = Date.now();
         await addQuestion(newQ);
-        await fetchAndRenderQuestions();
     });
 
     document.getElementById('update-question-btn').addEventListener('click', async (e) => {
@@ -314,8 +318,8 @@ let questions = [];
             Object.assign(questions[index], newQ);
             renderQuestions(questions);
         }
+        updateTime = Date.now();
         await updateQuestion(newQ);
-        await fetchAndRenderQuestions();
     });
 
     document.getElementById('delete-question-btn').addEventListener('click', async (e) => {
@@ -327,16 +331,11 @@ let questions = [];
             questions.splice(index, 1);
             renderQuestions(questions);
         }
+        updateTime = Date.now();
         await deleteQuestion(timestamp);
-        await fetchAndRenderQuestions();
     });
 
+    showLoadingAlert("Loading questions...", 2000);
     await fetchAndRenderQuestions();
-
-    setInterval(async () => {
-        const loadingElem = document.getElementById('loading-alert');
-        if (loadingElem.classList.contains('hidden')) {
-            await fetchAndRenderQuestions();
-        }
-    }, 500000);
+    setInterval(async () => await fetchAndRenderQuestions(), 5000);
 })();

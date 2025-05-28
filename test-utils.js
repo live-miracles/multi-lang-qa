@@ -74,14 +74,11 @@ function addQuestionMock(q) {
     }
 
     q.status = 'none';
-    q.timestamp = String(new Date().getTime());
+    q.timestamp = String(Date.now());
     q.version = '0';
     testQuestions.push(q);
 
-    return {
-        success: true,
-        timestamp: new Date().getTime(),
-    };
+    return { success: true };
 }
 
 function updateQuestionMock(newQ) {

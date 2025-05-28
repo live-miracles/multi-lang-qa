@@ -42,12 +42,11 @@ function getQuestionStats(questions) {
     return stats;
 }
 
-function getQuestionHtml(q, selectedId, stats, filterLang) {
+function getQuestionHtml(q, selectedId, stats) {
     const stat = stats[q.language].answered + '/' + stats[q.language].total;
     const starUrl = 'https://live-miracles.github.io/multi-lang-qa/star-solid.svg';
     return `
-        <div class="question relative bg-base-200 rounded-box mb-5 p-2 pb-2 shadow-md
-          ${'q-' + q.status} ${filterLang === '' || q.language === filterLang ? '' : 'hidden'}" 
+        <div class="question relative bg-base-200 rounded-box mb-5 p-2 pb-2 shadow-md ${'q-' + q.status}"
           id="${q.timestamp}">
             ${
                 q.timestamp === selectedId
@@ -120,13 +119,14 @@ async function renderQuestions(questions) {
     const selectedId = getSelectedQuestion(questions).text;
     const html = questions
         .filter((q) => q.status !== 'data')
+        .filter((q) => filterLang.value === '' || filterLang.value === q.language)
         //      .sort((a, b) => {
         //          if (STATUS_RANK[a.status] !== STATUS_RANK[b.status]) {
         //              return STATUS_RANK[a.status] - STATUS_RANK[b.status];
         //          }
         //          b.timestamp - a.timestamp;
         //      })
-        .map((q) => getQuestionHtml(q, selectedId, stats, filterLang.value))
+        .map((q) => getQuestionHtml(q, selectedId, stats))
         .join('');
     document.getElementById('questions').innerHTML = html;
     showElements();

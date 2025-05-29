@@ -1,10 +1,10 @@
 const LANGUAGES = ['English', 'Russian', 'German', 'French', 'Italian', 'Arabic'];
-const STATUS_RANK = {
-    none: 0,
-    hidden: 1,
-    answered: 2,
-    data: 3,
-};
+//const STATUS_RANK = {
+//    none: 0,
+//    hidden: 1,
+//    answered: 2,
+//    data: 3,
+//};
 
 function renderLanguages() {
     const html = LANGUAGES.map(
@@ -16,11 +16,12 @@ function renderLanguages() {
 
 function getSelectedQuestion(questions) {
     questions = questions.filter((q) => q.status === 'data' && q.name === 'selected');
-    if (questions.length !== 0 || console.assert(false)) {
-        console.assert(questions.length === 1, 'Only one question can be selected');
-        return questions[0];
+    if (questions.length === 0) {
+        console.assert(false, 'Selected question data is missing.');
+        return null;
     }
-    return null;
+    console.assert(questions.length === 1, 'Duplicated selected question data.');
+    return questions[0];
 }
 
 function getQuestionStats(questions) {
@@ -133,10 +134,12 @@ async function renderQuestions(questions) {
 }
 
 async function fetchAndRenderQuestions() {
-    const newQuestions = await getAllQuestions();
     if (Date.now() - updateTime > 5000) {
-        questions = newQuestions;
-        renderQuestions(questions);
+        const newQuestions = await getAllQuestions();
+        if (Date.now() - updateTime > 5000) {
+            questions = newQuestions;
+            renderQuestions(questions);
+        }
     }
 }
 
@@ -223,31 +226,22 @@ async function updateStatus(e) {
 
     let q = questions.find((q) => q.timestamp === timestamp);
     if (!q) {
+        console.assert(false, timestamp);
         showErrorAlert('Error: Question not found ' + timestamp);
         return;
     }
 
     const isOn = !e.target.checked;
     if (status === 'selected') {
-        const selectedQ = getSelectedQuestion(questions);
-        if (selectedQ.text === timestamp) {
-            selectedQ.text = '-1';
-        } else {
-            selectedQ.text = timestamp;
-        }
-        renderQuestions(questions);
-        updateTime = Date.now();
-        await updateQuestion(selectedQ);
+        q = getSelectedQuestion(questions);
+        q.text = isOn ? '-1' : timestamp;
     } else {
-        if (isOn) {
-            q.status = 'none';
-        } else {
-            q.status = status;
-        }
-        renderQuestions(questions);
-        updateTime = Date.now();
-        await updateQuestionStatus(q);
+        q.status = isOn ? 'none' : status;
     }
+    renderQuestions(questions);
+    updateTime = Date.now();
+    await updateQuestion(q);
+    updateTime = Date.now();
 }
 
 if (typeof google === 'undefined') {
@@ -296,6 +290,7 @@ let updateTime = 0;
         renderQuestions(questions);
         updateTime = Date.now();
         await addQuestion(newQ);
+        updateTime = Date.now();
     });
 
     document.getElementById('update-question-btn').addEventListener('click', async (e) => {
@@ -315,12 +310,16 @@ let updateTime = 0;
         }
 
         const index = questions.findIndex((q) => q.timestamp === newQ.timestamp);
-        if (index !== -1 || console.assert(false)) {
-            Object.assign(questions[index], newQ);
-            renderQuestions(questions);
+        if (index === -1)  {
+            console.assert(false);
+            showErrorAlert('Something went wrong :(');
+            return;
         }
+        Object.assign(questions[index], newQ);
+        renderQuestions(questions);
         updateTime = Date.now();
         await updateQuestion(newQ);
+        updateTime = Date.now();
     });
 
     document.getElementById('delete-question-btn').addEventListener('click', async (e) => {
@@ -328,12 +327,16 @@ let updateTime = 0;
         const timestamp = container.querySelector('.q-timestamp').value;
 
         const index = questions.findIndex((q) => q.timestamp === timestamp);
-        if (index !== -1 || console.assert(false)) {
-            questions.splice(index, 1);
-            renderQuestions(questions);
+        if (index === -1) {
+            console.assert(false);
+            showErrorAlert('Something went wrong :(');
+            return;
         }
+        questions.splice(index, 1);
+        renderQuestions(questions);
         updateTime = Date.now();
         await deleteQuestion(timestamp);
+        updateTime = Date.now();
     });
 
     showLoadingAlert('Loading questions...', 3000);

@@ -130,25 +130,29 @@ function deleteQuestionMock(timestamp) {
     return { success: true };
 }
 
+function getRandomWaitTime() {
+    return parseInt((2 + Math.random()) * 1000);
+}
+
 const googleMock = {};
 googleMock.script = {};
 googleMock.script.run = {};
 googleMock.script.run.withFailureHandler = (_) => ({
     withSuccessHandler: (f) => ({
         getAllQuestions: () => {
-            setTimeout(() => f(getAllQuestionsMock()), 500);
+            setTimeout(() => f(getAllQuestionsMock()), getRandomWaitTime());
         },
         addQuestion: (q) => {
-            setTimeout(() => f(addQuestionMock(q)), 500);
+            setTimeout(() => f(addQuestionMock(q)), getRandomWaitTime());
         },
         updateQuestion: (q) => {
-            setTimeout(() => f(updateQuestionMock(q)), 500);
+            setTimeout(() => f(updateQuestionMock(q)), getRandomWaitTime());
         },
         updateQuestionStatus: (q) => {
-            setTimeout(() => f(updateQuestionStatusMock(q)), 500);
+            setTimeout(() => f(updateQuestionStatusMock(q)), getRandomWaitTime());
         },
         deleteQuestion: (id) => {
-            setTimeout(() => f(deleteQuestionMock(id)), 500);
+            setTimeout(() => f(deleteQuestionMock(id)), getRandomWaitTime());
         },
     }),
 });

@@ -310,7 +310,7 @@ let updateTime = 0;
         }
 
         const index = questions.findIndex((q) => q.timestamp === newQ.timestamp);
-        if (index === -1)  {
+        if (index === -1) {
             console.assert(false);
             showErrorAlert('Something went wrong :(');
             return;

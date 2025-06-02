@@ -4,7 +4,7 @@ const testQuestions = [
         language: '',
         name: 'selected',
         nameTranslation: '',
-        text: '1747454696375',
+        text: '3',
         translation: '',
         status: 'data',
         version: '0',

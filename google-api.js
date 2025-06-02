@@ -9,7 +9,6 @@ async function getAllQuestions(sheetId) {
         return list;
     } catch (error) {
         showErrorAlert('Error loading questions: ' + error);
-        console.error(error);
         return [];
     }
 }
@@ -23,6 +22,7 @@ async function addQuestion(q) {
                 .withSuccessHandler((data) => resolve(data))
                 .addQuestion(q);
         });
+        updateTime = Date.now();
         if (res.success === false) {
             showErrorAlert(res.error);
         } else {
@@ -30,7 +30,6 @@ async function addQuestion(q) {
         }
     } catch (error) {
         showErrorAlert(error);
-        console.error(error);
     }
 }
 
@@ -43,14 +42,18 @@ async function updateQuestion(newQ) {
                 .withSuccessHandler((data) => resolve(data))
                 .updateQuestion(newQ);
         });
+        updateTime = Date.now();
         if (res.success === false) {
             showErrorAlert(res.error);
         } else {
-            hideAlerts();
+            if (newQ.status !== 'data') {
+                showSuccessAlert('Question updated');
+            } else {
+                hideAlerts();
+            }
         }
     } catch (error) {
         showErrorAlert(error);
-        console.error(error);
     }
 }
 
@@ -63,6 +66,7 @@ async function updateQuestionStatus(newQ) {
                 .withSuccessHandler((data) => resolve(data))
                 .updateQuestionStatus(newQ);
         });
+        updateTime = Date.now();
         if (res.success === false) {
             showErrorAlert(res.error);
         } else {
@@ -70,7 +74,6 @@ async function updateQuestionStatus(newQ) {
         }
     } catch (error) {
         showErrorAlert(error);
-        console.error(error);
     }
 }
 
@@ -83,6 +86,7 @@ async function deleteQuestion(timestamp) {
                 .withSuccessHandler((data) => resolve(data))
                 .deleteQuestion(timestamp);
         });
+        updateTime = Date.now();
         if (res.success === false) {
             showErrorAlert(res.error);
         } else {
@@ -90,6 +94,5 @@ async function deleteQuestion(timestamp) {
         }
     } catch (error) {
         showErrorAlert(error);
-        console.error(error);
     }
 }

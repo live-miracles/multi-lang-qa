@@ -52,15 +52,14 @@ function getQuestionHtml(q, selectedId, stats) {
             ${
                 q.timestamp === selectedId
                     ? `
-              <img src="${starUrl}" class="absolute w-[10%] left-[60%] top-[50%] -translate-x-1/2 -translate-y-1/2 transform opacity-20 pointer-events-none"></img>
-              <img src="${starUrl}" class="absolute w-[5%] left-[10%] top-[15%] -translate-x-1/2 -translate-y-1/2 transform opacity-10 pointer-events-none"></img>
-              <img src="${starUrl}" class="absolute w-[5%] left-[30%] top-[80%] -translate-x-1/2 -translate-y-1/2 transform opacity-15 pointer-events-none"></img>
-              <img src="${starUrl}" class="absolute w-[8%] left-[90%] top-[40%] -translate-x-1/2 -translate-y-1/2 transform opacity-25 pointer-events-none"></img>
-              <img src="${starUrl}" class="absolute w-[7%] left-[40%] top-[20%] -translate-x-1/2 -translate-y-1/2 transform opacity-15 pointer-events-none"></img>`
+              <img src="${starUrl}" class="absolute w-[10%] left-[60%] top-[50%] -translate-x-1/2 -translate-y-1/2 transform opacity-25 pointer-events-none" />
+              <img src="${starUrl}" class="absolute w-[5%] left-[10%] top-[25%] -translate-x-1/2 -translate-y-1/2 transform opacity-15 pointer-events-none" />
+              <img src="${starUrl}" class="absolute w-[5%] left-[30%] top-[80%] -translate-x-1/2 -translate-y-1/2 transform opacity-20 pointer-events-none" />
+              <img src="${starUrl}" class="absolute w-[8%] left-[85%] top-[40%] -translate-x-1/2 -translate-y-1/2 transform opacity-30 pointer-events-none" />
+              <img src="${starUrl}" class="absolute w-[7%] left-[40%] top-[30%] -translate-x-1/2 -translate-y-1/2 transform opacity-20 pointer-events-none" />`
                     : ''
             }
             <div class="q-translation z-10">
-              <div class="badge">${q.language} ${stat}</div>
               <span class="font-semibold">${q.nameTranslation ? q.nameTranslation + ': ' : ''}</span>
               ${q.translation ? q.translation : q.text}
             </div>
@@ -77,21 +76,22 @@ function getQuestionHtml(q, selectedId, stats) {
                 <div class="swap-off badge badge-warning badge-soft">Select</div>
               </label>
 
-              <label class="swap mr-2">
+              <label class="swap mr-2 z-10">
                 <input type="checkbox" ${q.status === 'answered' ? 'checked' : ''} onchange="updateStatus(event)" />
                 <div class="swap-on badge badge-primary">Done</div>
                 <div class="swap-off badge badge-primary badge-soft">Done</div>
               </label>
 
-              <label class="swap mr-2">
+              <label class="swap mr-2 z-10">
                 <input type="checkbox" ${q.status === 'hidden' ? 'checked' : ''} onchange="updateStatus(event)" />
                 <div class="swap-on badge badge-primary">Hide</div>
                 <div class="swap-off badge badge-primary badge-soft">Hide</div>
               </label>
-            <div class="flex-grow"></div>
+              <div class="badge z-10">${q.language} ${stat}</div>
+              <div class="flex-grow"></div>
 
-            <button class="focus btn btn-soft btn-sm btn-primary" onclick="showEditQuestionForm(event)">Edit</button>
-            <button class="focus btn btn-soft btn-sm btn-error ml-1" onclick="showDeleteQuestionForm(event)">Delete</button>
+            <button class="focus btn btn-soft btn-sm btn-primary z-10" onclick="showEditQuestionForm(event)">✎</button>
+            <button class="focus btn btn-soft btn-sm btn-error ml-1 z-10" onclick="showDeleteQuestionForm(event)">✕</button>
           </div>
         </div>`;
 }
@@ -170,6 +170,7 @@ function showSuccessAlert(msg = 'Success!', time = 3000) {
 }
 
 function showErrorAlert(msg = 'Error', time = 5000) {
+    console.error(msg);
     const loadingElem = document.getElementById('loading-alert');
     const successElem = document.getElementById('success-alert');
     const errorElem = document.getElementById('error-alert');
@@ -224,24 +225,30 @@ async function updateStatus(e) {
         Hide: 'hidden',
     }[e.target.nextElementSibling.innerText];
 
-    let q = questions.find((q) => q.timestamp === timestamp);
-    if (!q) {
-        console.assert(false, timestamp);
-        showErrorAlert('Error: Question not found ' + timestamp);
-        return;
-    }
-
     const isOn = !e.target.checked;
     if (status === 'selected') {
-        q = getSelectedQuestion(questions);
+        const q = getSelectedQuestion(questions);
+        if (!q) {
+            showErrorAlert('Error: Selected question not found.');
+            return;
+        }
         q.text = isOn ? '-1' : timestamp;
+
+        updateTime = Date.now();
+        renderQuestions(questions);
+        await updateQuestion(q);
     } else {
+        const q = questions.find((q) => q.timestamp === timestamp);
+        if (!q) {
+            showErrorAlert('Error: Question not found ' + timestamp);
+            return;
+        }
         q.status = isOn ? 'none' : status;
+
+        updateTime = Date.now();
+        renderQuestions(questions);
+        await updateQuestionStatus(q);
     }
-    renderQuestions(questions);
-    updateTime = Date.now();
-    await updateQuestion(q);
-    updateTime = Date.now();
 }
 
 if (typeof google === 'undefined') {
@@ -287,10 +294,9 @@ let updateTime = 0;
             return;
         }
         questions.push(newQ);
+        updateTime = Date.now();
         renderQuestions(questions);
-        updateTime = Date.now();
         await addQuestion(newQ);
-        updateTime = Date.now();
     });
 
     document.getElementById('update-question-btn').addEventListener('click', async (e) => {
@@ -311,15 +317,13 @@ let updateTime = 0;
 
         const index = questions.findIndex((q) => q.timestamp === newQ.timestamp);
         if (index === -1) {
-            console.assert(false);
             showErrorAlert('Something went wrong :(');
             return;
         }
         Object.assign(questions[index], newQ);
+        updateTime = Date.now();
         renderQuestions(questions);
-        updateTime = Date.now();
         await updateQuestion(newQ);
-        updateTime = Date.now();
     });
 
     document.getElementById('delete-question-btn').addEventListener('click', async (e) => {
@@ -328,15 +332,13 @@ let updateTime = 0;
 
         const index = questions.findIndex((q) => q.timestamp === timestamp);
         if (index === -1) {
-            console.assert(false);
             showErrorAlert('Something went wrong :(');
             return;
         }
         questions.splice(index, 1);
+        updateTime = Date.now();
         renderQuestions(questions);
-        updateTime = Date.now();
         await deleteQuestion(timestamp);
-        updateTime = Date.now();
     });
 
     showLoadingAlert('Loading questions...', 3000);

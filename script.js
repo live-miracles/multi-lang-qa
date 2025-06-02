@@ -44,7 +44,7 @@ function getQuestionStats(questions) {
 }
 
 function getQuestionHtml(q, selectedId, stats) {
-    const stat = stats[q.language].answered + '/' + stats[q.language].total;
+    const stat = stats[q.language]?.answered + '/' + stats[q.language]?.total;
     const starUrl = 'https://live-miracles.github.io/multi-lang-qa/star-solid.svg';
     return `
         <div class="question relative bg-base-200 rounded-box mb-5 p-2 pb-2 shadow-md ${'q-' + q.status}"

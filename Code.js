@@ -21,6 +21,10 @@ function getAllQuestions() {
 function addQuestion(q) {
     const lock = LockService.getScriptLock();
     lock.waitLock(5000);
+    if (!lock.tryLock(5000)) {
+        return { success: false, error: 'Could not acquire lock.' };
+    }
+
     try {
         const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(TAB_NAME);
         if (q.text === '') {
@@ -44,6 +48,10 @@ function addQuestion(q) {
 function updateQuestion(newQ) {
     const lock = LockService.getScriptLock();
     lock.waitLock(5000);
+    if (!lock.tryLock(5000)) {
+        return { success: false, error: 'Could not acquire lock.' };
+    }
+
     try {
         const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(TAB_NAME);
         const questions = parseQuestions(sheet);
@@ -79,6 +87,10 @@ function updateQuestion(newQ) {
 function updateQuestionStatus(newQ) {
     const lock = LockService.getScriptLock();
     lock.waitLock(5000);
+    if (!lock.tryLock(5000)) {
+        return { success: false, error: 'Could not acquire lock.' };
+    }
+
     try {
         const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(TAB_NAME);
         const questions = parseQuestions(sheet);
@@ -101,6 +113,10 @@ function updateQuestionStatus(newQ) {
 function deleteQuestion(timestamp) {
     const lock = LockService.getScriptLock();
     lock.waitLock(5000);
+    if (!lock.tryLock(5000)) {
+        return { success: false, error: 'Could not acquire lock.' };
+    }
+
     try {
         const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(TAB_NAME);
         const questions = getAllQuestions();

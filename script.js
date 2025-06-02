@@ -48,47 +48,48 @@ function getQuestionHtml(q, selectedId, stats) {
     const starUrl = 'https://live-miracles.github.io/multi-lang-qa/star-solid.svg';
     return `
         <div class="question relative bg-base-200 rounded-box mb-5 p-2 pb-2 shadow-md ${'q-' + q.status}"
-          id="${q.timestamp}">
-            ${
-                q.timestamp === selectedId
-                    ? `
+            id="${q.timestamp}">
+          ${
+              q.timestamp === selectedId
+                  ? `
               <img src="${starUrl}" class="absolute w-[10%] left-[60%] top-[50%] -translate-x-1/2 -translate-y-1/2 transform opacity-25 pointer-events-none" />
               <img src="${starUrl}" class="absolute w-[5%] left-[10%] top-[25%] -translate-x-1/2 -translate-y-1/2 transform opacity-15 pointer-events-none" />
               <img src="${starUrl}" class="absolute w-[5%] left-[30%] top-[80%] -translate-x-1/2 -translate-y-1/2 transform opacity-20 pointer-events-none" />
               <img src="${starUrl}" class="absolute w-[8%] left-[85%] top-[40%] -translate-x-1/2 -translate-y-1/2 transform opacity-30 pointer-events-none" />
               <img src="${starUrl}" class="absolute w-[7%] left-[40%] top-[30%] -translate-x-1/2 -translate-y-1/2 transform opacity-20 pointer-events-none" />`
-                    : ''
-            }
-            <div class="q-translation z-10">
-              <span class="font-semibold">${q.nameTranslation ? q.nameTranslation + ': ' : ''}</span>
-              ${q.translation ? q.translation : q.text}
-            </div>
+                  : ''
+          }
+          <div class="q-translation z-10">
+            <span class="font-semibold">${q.nameTranslation ? q.nameTranslation + ': ' : ''}</span>
+            ${q.translation ? q.translation : q.text}
+          </div>
 
-            <div class="q-text text-primary mt-1 z-10">
-              <span class="font-semibold">${q.translation && q.name ? q.name + ': ' : ''}</span>
-              <span>${q.translation ? q.text : ''}</span>
-            </div>
+          <div class="q-text text-primary mt-1 z-10">
+            <span class="font-semibold">${q.translation && q.name ? q.name + ': ' : ''}</span>
+            <span>${q.translation ? q.text : ''}</span>
+          </div>
 
-            <div class="mt-2 flex items-center z-10">
-              <label class="swap mr-2">
-                <input type="checkbox" ${q.timestamp === selectedId ? 'checked' : ''} onchange="updateStatus(event)" />
-                <div class="swap-on badge badge-warning">Select</div>
-                <div class="swap-off badge badge-warning badge-soft">Select</div>
-              </label>
+          <div class="mt-2 flex items-center z-10">
+            <label class="swap mr-2">
+              <input type="checkbox" ${q.timestamp === selectedId ? 'checked' : ''} onchange="updateStatus(event)" />
+              <div class="swap-on badge badge-warning">Select</div>
+              <div class="swap-off badge badge-warning badge-soft">Select</div>
+            </label>
 
-              <label class="swap mr-2 z-10">
-                <input type="checkbox" ${q.status === 'answered' ? 'checked' : ''} onchange="updateStatus(event)" />
-                <div class="swap-on badge badge-primary">Done</div>
-                <div class="swap-off badge badge-primary badge-soft">Done</div>
-              </label>
+            <label class="swap mr-2 z-10">
+              <input type="checkbox" ${q.status === 'answered' ? 'checked' : ''} onchange="updateStatus(event)" />
+              <div class="swap-on badge badge-primary">Done</div>
+              <div class="swap-off badge badge-primary badge-soft">Done</div>
+            </label>
 
-              <label class="swap mr-2 z-10">
-                <input type="checkbox" ${q.status === 'hidden' ? 'checked' : ''} onchange="updateStatus(event)" />
-                <div class="swap-on badge badge-primary">Hide</div>
-                <div class="swap-off badge badge-primary badge-soft">Hide</div>
-              </label>
-              <div class="badge z-10">${q.language} ${stat}</div>
-              <div class="flex-grow"></div>
+            <label class="swap mr-2 z-10">
+              <input type="checkbox" ${q.status === 'hidden' ? 'checked' : ''} onchange="updateStatus(event)" />
+              <div class="swap-on badge badge-primary">Hide</div>
+              <div class="swap-off badge badge-primary badge-soft">Hide</div>
+            </label>
+
+            <div class="badge z-10">${q.language} ${stat}</div>
+            <div class="flex-grow"></div>
 
             <button class="focus btn btn-soft btn-sm btn-primary z-10" onclick="showEditQuestionForm(event)">✎</button>
             <button class="focus btn btn-soft btn-sm btn-error ml-1 z-10" onclick="showDeleteQuestionForm(event)">✕</button>

@@ -96,3 +96,17 @@ async function deleteQuestion(timestamp) {
         showErrorAlert(error);
     }
 }
+
+async function getTranslation(text, sourceLanguage, targetLanguage = 'en') {
+    try {
+        const res = await new Promise((resolve, reject) => {
+            window.google.script.run
+                .withFailureHandler((error) => reject(error))
+                .withSuccessHandler((data) => resolve(data))
+                .getTranslation(text, sourceLanguage, targetLanguage);
+        });
+        return res;
+    } catch (error) {
+        showErrorAlert(error);
+    }
+}

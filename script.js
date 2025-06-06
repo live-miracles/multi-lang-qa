@@ -1,4 +1,13 @@
 const LANGUAGES = ['English', 'Russian', 'German', 'French', 'Italian', 'Arabic'];
+const LANGUAGE_MAP = {
+    English: 'en',
+    Russian: 'ru',
+    German: 'de',
+    French: 'fr',
+    Italian: 'it',
+    Arabic: 'ar',
+};
+
 //const STATUS_RANK = {
 //    none: 0,
 //    hidden: 1,
@@ -189,7 +198,7 @@ function showEditQuestionForm(e) {
         showErrorAlert('Error: Question not found ' + timestamp);
         return;
     }
-    const modal = document.getElementById('edit-question-modal');
+    const modal = document.getElementById('edit-q-modal');
     modal.querySelector('.q-timestamp').value = timestamp;
     modal.querySelector('.q-version').value = q.version;
     modal.querySelector('.q-language').value = q.language;
@@ -202,7 +211,7 @@ function showEditQuestionForm(e) {
 
 function showDeleteQuestionForm(e) {
     const timestamp = e.target.closest('.question').id;
-    const modal = document.getElementById('delete-question-modal');
+    const modal = document.getElementById('delete-q-modal');
     modal.querySelector('.q-timestamp').value = timestamp;
     modal.showModal();
 }
@@ -267,7 +276,21 @@ let updateTime = 0;
         }),
     );
 
-    document.getElementById('add-question-btn').addEventListener('click', async (e) => {
+    document.getElementById('translate-q-btn').addEventListener('click', async (e) => {
+        const container = e.target.parentElement;
+        const language = container.querySelector('.q-language').value;
+        const lang = LANGUAGE_MAP[language];
+        const text = container.querySelector('.q-text').value;
+        if (!text) {
+            showErrorAlert("Can't translate empty text :)");
+            return;
+        }
+        container.querySelector('.q-translation').value = 'Translating...';
+        const translation = await getTranslation(text, lang);
+        container.querySelector('.q-translation').value = translation;
+    });
+
+    document.getElementById('add-q-btn').addEventListener('click', async (e) => {
         const container = e.target.parentElement;
         const newQ = {
             language: container.querySelector('.q-language').value,
@@ -286,7 +309,7 @@ let updateTime = 0;
         fetchAndRenderQuestions();
     });
 
-    document.getElementById('update-question-btn').addEventListener('click', async (e) => {
+    document.getElementById('update-q-btn').addEventListener('click', async (e) => {
         const container = e.target.closest('.modal-box');
         const newQ = {
             timestamp: container.querySelector('.q-timestamp').value,
@@ -313,7 +336,7 @@ let updateTime = 0;
         await updateQuestion(newQ);
     });
 
-    document.getElementById('delete-question-btn').addEventListener('click', async (e) => {
+    document.getElementById('delete-q-btn').addEventListener('click', async (e) => {
         const container = e.target.closest('.modal-box');
         const timestamp = container.querySelector('.q-timestamp').value;
 

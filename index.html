@@ -59,6 +59,14 @@
     </div>
 
     <div class="border-primary rounded-box bg-base-100 fixed right-0 bottom-0 z-100 m-1 w-fit border p-1">
+      <div class="badge font-semibold">
+        <label class="swap">
+          <input id="saving-badge" type="checkbox" class="" disabled />
+          <div class="swap-off"></div>
+          <div class="swap-on"><span class="loading loading-infinity loading-xs"></span> Saving</div>
+        </label>
+      </div>
+
       <label class="swap">
         <input id="show-focus" type="checkbox" class="show-toggle url-param" checked />
         <div class="swap-off badge badge-primary font-semibold">Focus</div>
@@ -150,7 +158,11 @@
     </div>
     <div class="divider focus"></div>
 
-    <div id="questions" class="mx-auto w-full max-w-[700px] flex-1 px-2"></div>
+    <div id="questions" class="mx-auto w-full max-w-[700px] flex-1 px-2">
+      <div class="skeleton mb-5 h-32 w-full"></div>
+      <div class="skeleton mb-5 h-32 w-full"></div>
+      <div class="skeleton mb-5 h-32 w-full"></div>
+    </div>
 
     <footer class="footer footer-center focus bg-base-300 text-base-content mt-5 pt-4 pb-13">
       <aside>

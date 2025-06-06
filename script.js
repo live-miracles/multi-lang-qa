@@ -47,7 +47,7 @@ function getQuestionHtml(q, selectedId, stats) {
     const stat = stats[q.language]?.answered + '/' + stats[q.language]?.total;
     const starUrl = 'https://live-miracles.github.io/multi-lang-qa/star-solid.svg';
     return `
-        <div class="question relative bg-base-200 rounded-box mb-5 p-2 pb-2 shadow-md ${'q-' + q.status}"
+        <div class="question relative bg-base-200 rounded-box mb-5 p-2 shadow-md ${'q-' + q.status}"
             id="${q.timestamp}">
           ${
               q.timestamp === selectedId
@@ -72,8 +72,8 @@ function getQuestionHtml(q, selectedId, stats) {
           <div class="mt-2 flex items-center z-10">
             <label class="swap mr-2">
               <input type="checkbox" ${q.timestamp === selectedId ? 'checked' : ''} onchange="updateStatus(event)" />
-              <div class="swap-on badge badge-warning">Select</div>
-              <div class="swap-off badge badge-warning badge-soft">Select</div>
+              <div class="swap-on badge badge-warning">★</div>
+              <div class="swap-off badge badge-warning badge-soft">★</div>
             </label>
 
             <label class="swap mr-2 z-10">
@@ -144,25 +144,16 @@ async function fetchAndRenderQuestions() {
     }
 }
 
-function showLoadingAlert(msg = 'Loading...', time = 5000) {
-    const loadingElem = document.getElementById('loading-alert');
-    const successElem = document.getElementById('success-alert');
-    const errorElem = document.getElementById('error-alert');
-    loadingElem.querySelector('.msg').innerHTML = msg;
-    loadingElem.classList.remove('hidden');
-    successElem.classList.add('hidden');
-    errorElem.classList.add('hidden');
-    setTimeout(() => {
-        loadingElem.classList.add('hidden');
-    }, time);
+function showSavingBadge(show) {
+    const elem = document.getElementById('saving-badge');
+    elem.checked = show;
 }
 
 function showSuccessAlert(msg = 'Success!', time = 3000) {
-    const loadingElem = document.getElementById('loading-alert');
     const successElem = document.getElementById('success-alert');
     const errorElem = document.getElementById('error-alert');
     successElem.querySelector('.msg').innerHTML = msg;
-    loadingElem.classList.add('hidden');
+    showSavingBadge(false);
     successElem.classList.remove('hidden');
     errorElem.classList.add('hidden');
     setTimeout(() => {
@@ -172,11 +163,10 @@ function showSuccessAlert(msg = 'Success!', time = 3000) {
 
 function showErrorAlert(msg = 'Error', time = 5000) {
     console.error(msg);
-    const loadingElem = document.getElementById('loading-alert');
     const successElem = document.getElementById('success-alert');
     const errorElem = document.getElementById('error-alert');
     errorElem.querySelector('.msg').innerHTML = msg;
-    loadingElem.classList.add('hidden');
+    showSavingBadge(false);
     successElem.classList.add('hidden');
     errorElem.classList.remove('hidden');
     setTimeout(() => {
@@ -185,10 +175,9 @@ function showErrorAlert(msg = 'Error', time = 5000) {
 }
 
 function hideAlerts() {
-    const loadingElem = document.getElementById('loading-alert');
+    showSavingBadge(false);
     const successElem = document.getElementById('success-alert');
     const errorElem = document.getElementById('error-alert');
-    loadingElem.classList.add('hidden');
     successElem.classList.add('hidden');
     errorElem.classList.add('hidden');
 }
@@ -221,7 +210,7 @@ function showDeleteQuestionForm(e) {
 async function updateStatus(e) {
     const timestamp = e.target.closest('.question').id;
     const status = {
-        Select: 'selected',
+        '★': 'selected',
         Done: 'answered',
         Hide: 'hidden',
     }[e.target.nextElementSibling.innerText];
@@ -281,9 +270,6 @@ let updateTime = 0;
     document.getElementById('add-question-btn').addEventListener('click', async (e) => {
         const container = e.target.parentElement;
         const newQ = {
-            timestamp: String(Date.now()),
-            status: 'none',
-            version: '0',
             language: container.querySelector('.q-language').value,
             name: container.querySelector('.q-name').value,
             nameTranslation: container.querySelector('.q-name-translation').value,
@@ -294,14 +280,14 @@ let updateTime = 0;
             showErrorAlert('Please specify question text');
             return;
         }
-        questions.push(newQ);
-        updateTime = Date.now();
-        renderQuestions(questions);
+        e.target.setAttribute('disabled', 'disabled');
         await addQuestion(newQ);
+        e.target.removeAttribute('disabled');
+        fetchAndRenderQuestions();
     });
 
     document.getElementById('update-question-btn').addEventListener('click', async (e) => {
-        const container = e.target.parentElement.parentElement.parentElement;
+        const container = e.target.closest('.modal-box');
         const newQ = {
             timestamp: container.querySelector('.q-timestamp').value,
             version: container.querySelector('.q-version').value,
@@ -328,7 +314,7 @@ let updateTime = 0;
     });
 
     document.getElementById('delete-question-btn').addEventListener('click', async (e) => {
-        const container = e.target.parentElement.parentElement.parentElement;
+        const container = e.target.closest('.modal-box');
         const timestamp = container.querySelector('.q-timestamp').value;
 
         const index = questions.findIndex((q) => q.timestamp === timestamp);
@@ -342,7 +328,6 @@ let updateTime = 0;
         await deleteQuestion(timestamp);
     });
 
-    showLoadingAlert('Loading questions...', 3000);
     await fetchAndRenderQuestions();
     setInterval(async () => await fetchAndRenderQuestions(), 5000);
 })();

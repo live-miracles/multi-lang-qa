@@ -15,14 +15,14 @@ async function getAllQuestions(sheetId) {
 
 async function addQuestion(q) {
     try {
-        showLoadingAlert('Adding question...');
+        showSavingBadge(true);
         const res = await new Promise((resolve, reject) => {
             window.google.script.run
                 .withFailureHandler((error) => reject(error))
                 .withSuccessHandler((data) => resolve(data))
                 .addQuestion(q);
         });
-        updateTime = Date.now();
+        showSavingBadge(false);
         if (res.success === false) {
             showErrorAlert(res.error);
         } else {
@@ -35,7 +35,7 @@ async function addQuestion(q) {
 
 async function updateQuestion(newQ) {
     try {
-        showLoadingAlert('Updating...');
+        showSavingBadge(true);
         const res = await new Promise((resolve, reject) => {
             window.google.script.run
                 .withFailureHandler((error) => reject(error))
@@ -59,7 +59,7 @@ async function updateQuestion(newQ) {
 
 async function updateQuestionStatus(newQ) {
     try {
-        showLoadingAlert('Updating...');
+        showSavingBadge(true);
         const res = await new Promise((resolve, reject) => {
             window.google.script.run
                 .withFailureHandler((error) => reject(error))
@@ -79,7 +79,7 @@ async function updateQuestionStatus(newQ) {
 
 async function deleteQuestion(timestamp) {
     try {
-        showLoadingAlert('Deleting question...');
+        showSavingBadge(true);
         const res = await new Promise((resolve, reject) => {
             window.google.script.run
                 .withFailureHandler((error) => reject(error))
@@ -90,7 +90,7 @@ async function deleteQuestion(timestamp) {
         if (res.success === false) {
             showErrorAlert(res.error);
         } else {
-            showSuccessAlert('Question removed');
+            hideAlerts();
         }
     } catch (error) {
         showErrorAlert(error);

@@ -272,12 +272,13 @@ let updateTime = 0;
     document.querySelectorAll('.q-name').forEach((elem) =>
         elem.addEventListener('change', (e) => {
             const input = e.target;
-            input.nextElementSibling.value = transliterate(input.value);
+            const translInput = input.closest('.q-form').querySelector('.q-name-translation');
+            translInput.value = transliterate(input.value);
         }),
     );
 
     document.getElementById('translate-q-btn').addEventListener('click', async (e) => {
-        const container = e.target.parentElement;
+        const container = e.target.closest('.q-form');
         const language = container.querySelector('.q-language').value;
         const lang = LANGUAGE_MAP[language];
         const text = container.querySelector('.q-text').value;
@@ -291,7 +292,7 @@ let updateTime = 0;
     });
 
     document.getElementById('add-q-btn').addEventListener('click', async (e) => {
-        const container = e.target.parentElement;
+        const container = e.target.closest('.q-form');
         const newQ = {
             language: container.querySelector('.q-language').value,
             name: container.querySelector('.q-name').value,

@@ -23,7 +23,7 @@
     <script crossorigin src="https://live-miracles.github.io/multi-lang-qa/script.js" defer></script>
     -->
   </head>
-  <body class="bg-base-100 text-base-content flex min-h-screen flex-col">
+  <body class="bg-base-100 text-base-content flex min-h-screen min-w-[620px] flex-col">
     <div class="navbar focus bg-base-100">
       <div class="flex-1">
         <a class="btn btn-ghost text-xl" href="https://live-miracles.github.io/">Multi Lang QA</a>
@@ -96,7 +96,7 @@
       </select>
     </div>
 
-    <dialog id="edit-q-modal" class="modal">
+    <dialog id="edit-q-modal" class="q-form modal">
       <div class="modal-box">
         <input type="text" class="q-timestamp hidden" />
         <input type="text" class="q-version hidden" />
@@ -144,22 +144,46 @@
       </ul>
     </div>
 
-    <div class="focus mx-auto w-full max-w-[700px] px-2">
-      <textarea class="q-text textarea textarea-primary text-primary mt-3 w-full" placeholder="*Question Text"></textarea>
-      <textarea class="q-translation textarea mt-2 w-full" placeholder="Question Translation (leave empty for English)"></textarea>
-      <div class="mt-2"></div>
-      <select class="q-language language-select select select-primary text-primary select-sm w-fit">
-        <option disabled value="">*Language</option>
-      </select>
-      <input type="text" placeholder="*Person's Name" class="q-name input input-primary text-primary input-sm max-w-40" />
-      <input type="text" placeholder="Name Translation" class="q-name-translation input input-sm max-w-40" />
+    <div class="focus q-form mx-auto mt-2 w-full max-w-[1200px] space-y-3 px-4">
+      <!-- First Row -->
+      <div class="grid grid-cols-1 grid-cols-3 items-center gap-4">
+        <!-- Left: Dropdown + Input -->
+        <div class="flex flex-col flex-row gap-2">
+          <select class="q-language language-select select select-primary text-primary select-sm w-fit">
+            <option disabled value="">*Language</option>
+          </select>
+          <input type="text" placeholder="*Person's Name" class="q-name input input-primary text-primary input-sm max-w-40 min-w-32" />
+        </div>
 
-      <button id="translate-q-btn" class="btn btn-primary btn-soft btn-sm ml-2">Translate</button>
-      <button id="add-q-btn" class="btn btn-primary btn-sm ml-1">Add Question</button>
+        <!-- Center: Button -->
+        <div class="flex justify-center">
+          <button id="translate-q-btn" class="btn btn-primary btn-soft btn-sm">Translate</button>
+        </div>
+
+        <!-- Right: Dropdown + Input -->
+        <div class="flex flex-col flex-row justify-end gap-2">
+          <select class="q-translation-language select select-sm w-fit">
+            <option disabled value="">*Language</option>
+            <option selected value="English">English</option>
+          </select>
+          <input type="text" placeholder="Name Translation" class="q-name-translation input input-sm max-w-40 min-w-32" />
+        </div>
+      </div>
+
+      <!-- Second Row: Two Textareas -->
+      <div class="grid grid-cols-1 grid-cols-2 gap-4">
+        <textarea class="q-text textarea textarea-primary text-primary h-40 w-full resize-none" placeholder="*Question Text"></textarea>
+        <textarea class="q-translation textarea h-40 w-full resize-none" placeholder="Question Translation (leave empty for English)"></textarea>
+      </div>
+
+      <div class="flex justify-center">
+        <button id="add-q-btn" class="btn btn-primary btn-sm ml-1">Add Question</button>
+      </div>
     </div>
+
     <div class="divider focus"></div>
 
-    <div id="questions" class="mx-auto w-full max-w-[700px] flex-1 px-2">
+    <div id="questions" class="mx-auto mt-2 w-full max-w-[700px] flex-1 px-2">
       <div class="skeleton mb-5 h-32 w-full"></div>
       <div class="skeleton mb-5 h-32 w-full"></div>
       <div class="skeleton mb-5 h-32 w-full"></div>

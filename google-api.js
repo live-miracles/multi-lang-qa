@@ -28,8 +28,10 @@ async function addQuestion(q) {
         } else {
             showSuccessAlert('Question added successfully');
         }
+        return res;
     } catch (error) {
         showErrorAlert(error);
+        return { success: false };
     }
 }
 

@@ -273,7 +273,7 @@ let updateTime = 0;
         elem.addEventListener('change', (e) => {
             const input = e.target;
             const translInput = input.closest('.q-form').querySelector('.q-name-translation');
-            translInput.value = transliterate(input.value);
+            translInput.value = transliterate(input.value.trim());
         }),
     );
 
@@ -281,9 +281,13 @@ let updateTime = 0;
         const container = e.target.closest('.q-form');
         const language = container.querySelector('.q-language').value;
         const lang = LANGUAGE_MAP[language];
-        const text = container.querySelector('.q-text').value;
+        const text = container.querySelector('.q-text').value.trim();
         if (!text) {
             showErrorAlert("Can't translate empty text :)");
+            return;
+        }
+        if (lang === 'en') {
+            showErrorAlert('Please select a different language :)');
             return;
         }
         container.querySelector('.q-translation').value = 'Translating...';
@@ -294,18 +298,24 @@ let updateTime = 0;
     document.getElementById('add-q-btn').addEventListener('click', async (e) => {
         const container = e.target.closest('.q-form');
         const newQ = {
-            language: container.querySelector('.q-language').value,
-            name: container.querySelector('.q-name').value,
-            nameTranslation: container.querySelector('.q-name-translation').value,
-            text: container.querySelector('.q-text').value,
-            translation: container.querySelector('.q-translation').value,
+            language: container.querySelector('.q-language').value.trim(),
+            name: container.querySelector('.q-name').value.trim(),
+            nameTranslation: container.querySelector('.q-name-translation').value.trim(),
+            text: container.querySelector('.q-text').value.trim(),
+            translation: container.querySelector('.q-translation').value.trim(),
         };
         if (!newQ.text) {
             showErrorAlert('Please specify question text');
             return;
         }
         e.target.setAttribute('disabled', 'disabled');
-        await addQuestion(newQ);
+        const res = await addQuestion(newQ);
+        if (res.success) {
+            container.querySelector('.q-name').value = '';
+            container.querySelector('.q-text').value = '';
+            container.querySelector('.q-name-translation').value = '';
+            container.querySelector('.q-translation').value = '';
+        }
         e.target.removeAttribute('disabled');
         fetchAndRenderQuestions();
     });
@@ -313,13 +323,13 @@ let updateTime = 0;
     document.getElementById('update-q-btn').addEventListener('click', async (e) => {
         const container = e.target.closest('.modal-box');
         const newQ = {
-            timestamp: container.querySelector('.q-timestamp').value,
-            version: container.querySelector('.q-version').value,
-            language: container.querySelector('.q-language').value,
-            name: container.querySelector('.q-name').value,
-            nameTranslation: container.querySelector('.q-name-translation').value,
-            text: container.querySelector('.q-text').value,
-            translation: container.querySelector('.q-translation').value,
+            timestamp: container.querySelector('.q-timestamp').value.trim(),
+            version: container.querySelector('.q-version').value.trim(),
+            language: container.querySelector('.q-language').value.trim(),
+            name: container.querySelector('.q-name').value.trim(),
+            nameTranslation: container.querySelector('.q-name-translation').value.trim(),
+            text: container.querySelector('.q-text').value.trim(),
+            translation: container.querySelector('.q-translation').value.trim(),
         };
         if (!newQ.text) {
             showErrorAlert('Please specify question text');
@@ -339,7 +349,7 @@ let updateTime = 0;
 
     document.getElementById('delete-q-btn').addEventListener('click', async (e) => {
         const container = e.target.closest('.modal-box');
-        const timestamp = container.querySelector('.q-timestamp').value;
+        const timestamp = container.querySelector('.q-timestamp').value.trim();
 
         const index = questions.findIndex((q) => q.timestamp === timestamp);
         if (index === -1) {

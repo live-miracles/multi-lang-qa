@@ -100,7 +100,7 @@ function getQuestionHtml(q, selectedId, stats) {
             <div class="badge z-10">${q.language} ${stat}</div>
             <div class="flex-grow"></div>
 
-            <button class="focus btn btn-soft btn-sm btn-primary z-10" onclick="showEditQuestionForm(event)">✎</button>
+            <button class="edit-q-btn focus btn btn-soft btn-sm btn-primary z-10" onclick="showEditQuestionForm(event)">✎</button>
             <button class="focus btn btn-soft btn-sm btn-error ml-1 z-10" onclick="showDeleteQuestionForm(event)">✕</button>
           </div>
         </div>`;
@@ -236,6 +236,7 @@ async function updateStatus(e) {
         updateTime = Date.now();
         renderQuestions(questions);
         await updateQuestion(q);
+        updateTime = Date.now();
     } else {
         const q = questions.find((q) => q.timestamp === timestamp);
         if (!q) {
@@ -341,9 +342,15 @@ let updateTime = 0;
             showErrorAlert('Something went wrong :(');
             return;
         }
-        Object.assign(questions[index], newQ);
         updateTime = Date.now();
+        Object.assign(questions[index], newQ);
         renderQuestions(questions);
+        const qEditBtn = document.getElementById(newQ.timestamp).querySelector('.edit-q-btn');
+        if (!qEditBtn) {
+            showErrorAlert('Something went wrong :(');
+            return;
+        }
+        qEditBtn.setAttribute('disabled', 'disabled');
         await updateQuestion(newQ);
     });
 

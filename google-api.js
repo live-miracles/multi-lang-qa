@@ -54,8 +54,10 @@ async function updateQuestion(newQ) {
                 hideAlerts();
             }
         }
+        return res;
     } catch (error) {
         showErrorAlert(error);
+        return { success: false };
     }
 }
 

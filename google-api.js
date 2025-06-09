@@ -26,7 +26,7 @@ async function addQuestion(q) {
         if (res.success === false) {
             showErrorAlert(res.error);
         } else {
-            showSuccessAlert('Question added successfully');
+            showSuccessAlert('Question added successfully, it will reflect in a few seconds');
         }
         return res;
     } catch (error) {

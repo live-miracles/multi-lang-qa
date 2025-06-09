@@ -34,7 +34,14 @@ function getSelectedQuestion(questions) {
 }
 
 function getQuestionStats(questions) {
-    const stats = {};
+    const stats = {
+        All: {
+            total: 0,
+            none: 0,
+            answered: 0,
+            hidden: 0,
+        },
+    };
     questions
         .filter((q) => q.language)
         .forEach((q) => {
@@ -47,7 +54,9 @@ function getQuestionStats(questions) {
                 };
             }
             stats[q.language].total++;
-            stats[q.language][q.status] += 1;
+            stats[q.language][q.status]++;
+            stats.All.total++;
+            stats.All[q.status]++;
         });
     return stats;
 }
@@ -97,7 +106,7 @@ function getQuestionHtml(q, selectedId, stats) {
               <div class="swap-off badge badge-primary badge-soft">Hide</div>
             </label>
 
-            <div class="badge z-10">${q.language} ${stat}</div>
+            <div class="badge z-10">${q.language} (${stat})</div>
             <div class="flex-grow"></div>
 
             <button class="edit-q-btn focus btn btn-soft btn-sm btn-primary z-10" onclick="showEditQuestionForm(event)">✎</button>
@@ -112,13 +121,10 @@ async function renderQuestions(questions) {
     for (let i = 0; i < filterLang.options.length; i++) {
         const option = filterLang.options[i];
         const val = option.value;
-        if (val === '') {
-            continue;
-        }
         if (!stats[val]) {
             option.classList.add('hidden');
         } else {
-            const text = `${val} ${stats[val].answered}/${stats[val].total}`;
+            const text = `${val} (${stats[val].answered}/${stats[val].total})`;
             if (option.text != text) {
                 // otherwise the dropdown refreshes even if no changes
                 option.text = text;
@@ -127,10 +133,17 @@ async function renderQuestions(questions) {
         }
     }
 
+    const noQ = document.getElementById('no-questions');
+    if (questions.filter((q) => q.status !== 'data').length === 0) {
+        noQ.classList.remove('hidden');
+    } else {
+        noQ.classList.add('hidden');
+    }
+
     const selectedId = getSelectedQuestion(questions).text;
     const html = questions
         .filter((q) => q.status !== 'data')
-        .filter((q) => filterLang.value === '' || filterLang.value === q.language)
+        .filter((q) => filterLang.value === 'All' || filterLang.value === q.language)
         //      .sort((a, b) => {
         //          if (STATUS_RANK[a.status] !== STATUS_RANK[b.status]) {
         //              return STATUS_RANK[a.status] - STATUS_RANK[b.status];

@@ -153,6 +153,10 @@ function deleteAllQuestions() {
     }
 }
 
+function getTranslation(text, sourceLanguage, targetLanguage = 'en') {
+    return LanguageApp.translate(text, sourceLanguage, targetLanguage);
+}
+
 function doGet() {
     return HtmlService.createHtmlOutputFromFile('Index');
 }

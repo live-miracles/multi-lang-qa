@@ -130,6 +130,11 @@ function deleteQuestionMock(timestamp) {
     return { success: true };
 }
 
+function deleteAllQuestionsMock() {
+    testQuestions.splice(1, testQuestions.length);
+    return { success: true };
+}
+
 function getTranslationMock(text) {
     return transliterate(text);
 }
@@ -157,6 +162,9 @@ googleMock.script.run.withFailureHandler = (_) => ({
         },
         deleteQuestion: (id) => {
             setTimeout(() => f(deleteQuestionMock(id)), getRandomWaitTime());
+        },
+        deleteAllQuestions: () => {
+            setTimeout(() => f(deleteAllQuestionsMock()), getRandomWaitTime());
         },
         getTranslation: (text) => {
             setTimeout(() => f(getTranslationMock(text)), getRandomWaitTime());

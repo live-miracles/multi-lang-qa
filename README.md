@@ -1,10 +1,12 @@
 # Multi Language QA
+
 <img width="979" alt="Screenshot 2025-06-10 at 20 59 07" src="https://github.com/user-attachments/assets/7903406f-7e0c-43fd-9bae-f3f47e565a96" />
 
 This is an App Script app that uses a Google Sheet as a database. People can submit questions with translations, and the host can star, hide or mark any of the questions as completed.
 
 ## Demo
-A demo of the website is available at (live-miracles.github.io/multi-lang-qa/)[https://live-miracles.github.io/multi-lang-qa/], but all the changes will be gone after the refresh. 
+
+A demo of the website is available at (live-miracles.github.io/multi-lang-qa/)[https://live-miracles.github.io/multi-lang-qa/], but all the changes will be gone after the refresh.
 
 ## Steps to create Apps Script webpage
 

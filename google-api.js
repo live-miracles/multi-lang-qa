@@ -101,6 +101,26 @@ async function deleteQuestion(timestamp) {
     }
 }
 
+async function deleteAllQuestions() {
+    try {
+        showSavingBadge(true);
+        const res = await new Promise((resolve, reject) => {
+            window.google.script.run
+                .withFailureHandler((error) => reject(error))
+                .withSuccessHandler((data) => resolve(data))
+                .deleteAllQuestions();
+        });
+        updateTime = Date.now();
+        if (res.success === false) {
+            showErrorAlert(res.error);
+        } else {
+            hideAlerts();
+        }
+    } catch (error) {
+        showErrorAlert(error);
+    }
+}
+
 async function getTranslation(text, sourceLanguage, targetLanguage = 'en') {
     try {
         const res = await new Promise((resolve, reject) => {

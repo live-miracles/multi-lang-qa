@@ -140,6 +140,13 @@ async function renderQuestions(questions) {
         noQ.classList.add('hidden');
     }
 
+    const deleteAllQ = document.getElementById('delete-all');
+    if (questions.filter((q) => q.status !== 'data').length > 1) {
+        deleteAllQ.style.display = '';
+    } else {
+        deleteAllQ.style.display = 'none';
+    }
+
     const selectedId = getSelectedQuestion(questions).text;
     const html = questions
         .filter((q) => q.status !== 'data')
@@ -226,6 +233,12 @@ function showDeleteQuestionForm(e) {
     const timestamp = e.target.closest('.question').id;
     const modal = document.getElementById('delete-q-modal');
     modal.querySelector('.q-timestamp').value = timestamp;
+    modal.showModal();
+}
+
+function showDeleteAllQuestionsForm() {
+    const modal = document.getElementById('delete-all-q-modal');
+    modal.querySelector('.confirm-text').value = '';
     modal.showModal();
 }
 
@@ -322,6 +335,12 @@ let updateTime = 0;
             showErrorAlert('Please specify question text');
             return;
         }
+
+        if (!newQ.translation && newQ.language !== 'English') {
+            showErrorAlert('Please add translation for non-English questions');
+            return;
+        }
+
         e.target.setAttribute('disabled', 'disabled');
         const res = await addQuestion(newQ);
         if (res.success) {
@@ -380,6 +399,20 @@ let updateTime = 0;
         updateTime = Date.now();
         renderQuestions(questions);
         await deleteQuestion(timestamp);
+    });
+
+    document.getElementById('delete-all-q-btn').addEventListener('click', async (e) => {
+        const container = e.target.closest('.modal-box');
+        const confirmText = container.querySelector('.confirm-text').value.trim();
+        if (confirmText !== 'Delete all questions') {
+            showErrorAlert('Please type "Delete all questions" to confirm');
+            return;
+        }
+
+        questions.splice(1, questions.length);
+        updateTime = Date.now();
+        renderQuestions(questions);
+        await deleteAllQuestions();
     });
 
     await fetchAndRenderQuestions();

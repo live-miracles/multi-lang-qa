@@ -133,6 +133,26 @@ function deleteQuestion(timestamp) {
     }
 }
 
+function deleteAllQuestions() {
+    const lock = LockService.getScriptLock();
+    lock.waitLock(5000);
+    if (!lock.tryLock(5000)) {
+        return { success: false, error: 'Could not acquire lock.' };
+    }
+
+    try {
+        const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(TAB_NAME);
+        const lastRow = sheet.getLastRow();
+
+        if (lastRow > 2) {
+            sheet.deleteRows(3, lastRow - 2);
+        }
+        return { success: true };
+    } finally {
+        lock.releaseLock();
+    }
+}
+
 function doGet() {
     return HtmlService.createHtmlOutputFromFile('Index');
 }

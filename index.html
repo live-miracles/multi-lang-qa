@@ -97,17 +97,39 @@
     </div>
 
     <dialog id="edit-q-modal" class="q-form modal">
-      <div class="modal-box">
+      <div class="modal-box max-w-[700px]">
         <input type="text" class="q-timestamp hidden" />
         <input type="text" class="q-version hidden" />
-        <textarea class="q-text textarea textarea-primary text-primary mt-3 w-full" placeholder="*Question Text"></textarea>
-        <textarea class="q-translation textarea mt-2 w-full" placeholder="Question Translation"></textarea>
-        <div class="mt-2"></div>
-        <select class="q-language language-select select select-primary text-primary select-sm w-fit">
-          <option disabled value="">*Language</option>
-        </select>
-        <input type="text" placeholder="Person's Name" class="q-name input input-primary text-primary input-sm max-w-40" />
-        <input type="text" placeholder="Name Translation" class="q-name-translation input input-sm max-w-40" />
+        <div class="focus q-form mx-auto mt-2 w-full max-w-[700px] space-y-3 px-4">
+          <!-- First Row -->
+          <div class="grid grid-cols-1 grid-cols-3 items-center gap-4">
+            <!-- Left: Dropdown + Input -->
+            <div class="flex flex-col flex-row gap-2">
+              <select class="q-language language-select select select-primary text-primary select-sm w-fit">
+                <option disabled value="">*Language</option>
+              </select>
+              <input type="text" placeholder="Person's Name" class="q-name input input-primary text-primary input-sm max-w-40 min-w-32" />
+            </div>
+
+            <!-- Center: Button -->
+            <div class="flex justify-center"></div>
+
+            <!-- Right: Dropdown + Input -->
+            <div class="flex flex-col flex-row justify-end gap-2">
+              <select class="q-translation-language select select-sm w-fit">
+                <option disabled value="">*Language</option>
+                <option selected value="English">English</option>
+              </select>
+              <input type="text" placeholder="Name Translation" class="q-name-translation input input-sm max-w-40 min-w-32" />
+            </div>
+          </div>
+
+          <!-- Second Row: Two Textareas -->
+          <div class="grid grid-cols-1 grid-cols-2 gap-4">
+            <textarea class="q-text textarea textarea-primary text-primary h-40 w-full resize-none" placeholder="*Question Text"></textarea>
+            <textarea class="q-translation textarea h-40 w-full resize-none" placeholder="Question Translation (leave empty for English)"></textarea>
+          </div>
+        </div>
 
         <div class="modal-action">
           <form method="dialog">
@@ -131,6 +153,21 @@
       </div>
     </dialog>
 
+    <dialog id="delete-all-q-modal" class="modal">
+      <div class="modal-box">
+        <p class="py-4">Are you sure you want to delete all the questions? You won't be able to restore them.</p>
+        <p class="py-4">Please type <strong>Delete all questions</strong> to confirm:</p>
+        <input type="text" placeholder="" class="confirm-text input input-sm w-64" />
+
+        <form method="dialog">
+          <button class="btn btn-sm btn-circle btn-ghost absolute top-2 right-2">✕</button>
+        </form>
+        <form method="dialog">
+          <button id="delete-all-q-btn" class="btn btn-error btn-soft mt-5 w-full">I understand the consequences, delete all questions</button>
+        </form>
+      </div>
+    </dialog>
+
     <div class="prose focus mx-auto max-w-[700px] px-2">
       <ul>
         <li>
@@ -144,7 +181,7 @@
       </ul>
     </div>
 
-    <div class="focus q-form mx-auto mt-2 w-full max-w-[1200px] space-y-3 px-4">
+    <div class="focus q-form mx-auto mt-2 w-full max-w-[700px] space-y-3 px-4">
       <!-- First Row -->
       <div class="grid grid-cols-1 grid-cols-3 items-center gap-4">
         <!-- Left: Dropdown + Input -->
@@ -152,7 +189,7 @@
           <select class="q-language language-select select select-primary text-primary select-sm w-fit">
             <option disabled value="">*Language</option>
           </select>
-          <input type="text" placeholder="*Person's Name" class="q-name input input-primary text-primary input-sm max-w-40 min-w-32" />
+          <input type="text" placeholder="Person's Name" class="q-name input input-primary text-primary input-sm max-w-40 min-w-32" />
         </div>
 
         <!-- Center: Button -->
@@ -193,6 +230,10 @@
       <div class="skeleton mb-5 h-32 w-full"></div>
       <div class="skeleton mb-5 h-32 w-full"></div>
     </div>
+
+    <button id="delete-all" class="focus btn btn-sm btn-error mx-auto w-fit" style="display: none" onclick="showDeleteAllQuestionsForm()">
+      Delete All Questions
+    </button>
 
     <footer class="footer footer-center focus bg-base-300 text-base-content mt-5 pt-4 pb-13">
       <aside>

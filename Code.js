@@ -21,15 +21,15 @@ function parseQuestions(sheet) {
 
 function getAllQuestions() {
     try {
-        const cashe = CacheService.getDocumentCache();
-        const questions = cashe.get('questions');
+        const cache = CacheService.getScriptCache();
+        const questions = cache.get('questions');
 
         if (questions) {
             return JSON.parse(questions);
         } else {
             const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(TAB_NAME);
             const questions = parseQuestions(sheet);
-            cashe.put('questions', JSON.stringify(questions), 5);
+            cache.put('questions', JSON.stringify(questions), 5);
             return questions;
         }
     } catch (err) {
@@ -89,6 +89,7 @@ function updateQuestion(newQ) {
                 };
             }
             row = i + 2;
+            newQ.version = String(parseInt(q.version) + 1);
             break;
         }
         if (row === null) {
@@ -96,7 +97,6 @@ function updateQuestion(newQ) {
         }
 
         const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(TAB_NAME);
-        newQ.version = String(parseInt(q.version) + 1);
         const newRow = HEADERS.map((h) => newQ[h]);
 
         const lock = LockService.getScriptLock();
@@ -115,15 +115,15 @@ function updateQuestion(newQ) {
 
 function updateQuestionStatus(newQ) {
     try {
-        const questions = parseQuestions(sheet);
+        const questions = getAllQuestions();
 
-        const row = null;
+        let row = null;
         let newRow = null;
         for (const [i, q] of questions.entries()) {
             if (q.timestamp === newQ.timestamp) {
                 q.status = newQ.status;
                 row = i + 2;
-                newRow = headers.map((h) => q[h]);
+                newRow = HEADERS.map((h) => q[h]);
                 break;
             }
         }

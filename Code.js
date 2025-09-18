@@ -1,11 +1,17 @@
 const props = PropertiesService.getScriptProperties();
-
-const TAB_NAME = 'QuestionsDB';
 const SHEET_ID = props.getProperty('SPREADSHEET_ID');
+const TAB_NAME = 'QuestionsDB';
 
-function getHeaders(sheet) {
-    return sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
-}
+const HEADERS = [
+    'timestamp',
+    'status',
+    'version',
+    'language',
+    'name',
+    'nameTranslation',
+    'text',
+    'translation',
+];
 
 function parseQuestions(sheet) {
     const data = sheet.getDataRange().getValues();
@@ -14,49 +20,64 @@ function parseQuestions(sheet) {
 }
 
 function getAllQuestions() {
-    const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(TAB_NAME);
-    return parseQuestions(sheet);
+    try {
+        const cashe = CacheService.getDocumentCache();
+        const questions = cashe.get('questions');
+
+        if (questions) {
+            return JSON.parse(questions);
+        } else {
+            const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(TAB_NAME);
+            const questions = parseQuestions(sheet);
+            cashe.put('questions', JSON.stringify(questions), 5);
+            return questions;
+        }
+    } catch (err) {
+        console.error('Error in getAllQuestions:', err.stack || err);
+        throw err;
+    }
 }
 
 function addQuestion(q) {
-    const lock = LockService.getScriptLock();
-    lock.waitLock(5000);
-    if (!lock.tryLock(5000)) {
-        return { success: false, error: 'Could not acquire lock.' };
+    if (q.text === '') {
+        return {
+            success: false,
+            error: "Invalid data: the question text can't be empty.",
+        };
     }
+    q.timestamp = String(Date.now());
+    q.status = 'none';
+    q.version = '0';
 
     try {
         const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(TAB_NAME);
-        if (q.text === '') {
-            return {
-                success: false,
-                error: "Invalid data: the question text can't be empty.",
-            };
-        }
-        q.timestamp = String(Date.now());
-        q.status = 'none';
-        q.version = '0';
+        const newRow = HEADERS.map((h) => q[h]);
 
-        const newRow = getHeaders(sheet).map((h) => q[h]);
-        sheet.appendRow(newRow);
-        return { success: true };
-    } finally {
-        lock.releaseLock();
+        const lock = LockService.getScriptLock();
+        lock.waitLock(5000);
+        try {
+            sheet.appendRow(newRow);
+            return { success: true };
+        } finally {
+            lock.releaseLock();
+        }
+    } catch (err) {
+        console.error('Error in addQuestion:', err.stack || err);
+        throw err;
     }
 }
 
 function updateQuestion(newQ) {
-    const lock = LockService.getScriptLock();
-    lock.waitLock(5000);
-    if (!lock.tryLock(5000)) {
-        return { success: false, error: 'Could not acquire lock.' };
+    if (newQ.text === '') {
+        return {
+            success: false,
+            error: "Invalid data: the question text can't be empty.",
+        };
     }
 
     try {
-        const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(TAB_NAME);
-        const questions = parseQuestions(sheet);
-        const headers = getHeaders(sheet);
-
+        const questions = getAllQuestions();
+        let row = null;
         for (const [i, q] of questions.entries()) {
             if (q.timestamp !== newQ.timestamp) {
                 continue;
@@ -67,89 +88,115 @@ function updateQuestion(newQ) {
                     error: 'Conflict: another user has updated this question.',
                 };
             }
-            if (newQ.text === '') {
-                return {
-                    success: false,
-                    error: "Invalid data: the question text can't be empty.",
-                };
-            }
-            newQ.version = String(parseInt(q.version) + 1);
-            const newRow = headers.map((h) => newQ[h]);
-            sheet.getRange(i + 2, 1, 1, headers.length).setValues([newRow]);
-            return { success: true };
+            row = i + 2;
+            break;
         }
-        return { success: false, error: 'Question not found.' };
-    } finally {
-        lock.releaseLock();
+        if (row === null) {
+            return { success: false, error: 'Question not found.' };
+        }
+
+        const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(TAB_NAME);
+        newQ.version = String(parseInt(q.version) + 1);
+        const newRow = HEADERS.map((h) => newQ[h]);
+
+        const lock = LockService.getScriptLock();
+        lock.waitLock(5000);
+        try {
+            sheet.getRange(row, 1, 1, newRow.length).setValues([newRow]);
+            return { success: true };
+        } finally {
+            lock.releaseLock();
+        }
+    } catch (err) {
+        console.error('Error in updateQuestion:', err.stack || err);
+        throw err;
     }
 }
 
 function updateQuestionStatus(newQ) {
-    const lock = LockService.getScriptLock();
-    lock.waitLock(5000);
-    if (!lock.tryLock(5000)) {
-        return { success: false, error: 'Could not acquire lock.' };
-    }
-
     try {
-        const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(TAB_NAME);
         const questions = parseQuestions(sheet);
-        const headers = getHeaders(sheet);
 
+        const row = null;
+        let newRow = null;
         for (const [i, q] of questions.entries()) {
             if (q.timestamp === newQ.timestamp) {
                 q.status = newQ.status;
-                const newRow = headers.map((h) => q[h]);
-                sheet.getRange(i + 2, 1, 1, headers.length).setValues([newRow]);
-                return { success: true };
+                row = i + 2;
+                newRow = headers.map((h) => q[h]);
+                break;
             }
         }
-        return { success: false, error: 'Question not found.' };
-    } finally {
-        lock.releaseLock();
+        if (row === null) {
+            return { success: false, error: 'Question not found.' };
+        }
+
+        const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(TAB_NAME);
+
+        const lock = LockService.getScriptLock();
+        lock.waitLock(5000);
+        try {
+            sheet.getRange(row, 1, 1, newRow.length).setValues([newRow]);
+            return { success: true };
+        } finally {
+            lock.releaseLock();
+        }
+    } catch (err) {
+        console.error('Error in updateQuestionStatus:', err.stack || err);
+        throw err;
     }
 }
 
 function deleteQuestion(timestamp) {
-    const lock = LockService.getScriptLock();
-    lock.waitLock(5000);
-    if (!lock.tryLock(5000)) {
-        return { success: false, error: 'Could not acquire lock.' };
-    }
-
     try {
-        const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(TAB_NAME);
         const questions = getAllQuestions();
-
+        let row = null;
         for (const [i, q] of questions.entries()) {
             if (q.timestamp === timestamp) {
-                sheet.deleteRow(i + 2);
-                return { success: true };
+                row = i + 2;
+                break;
             }
         }
-        return { success: false, error: 'Question not found.' };
-    } finally {
-        lock.releaseLock();
+
+        if (row === null) {
+            return { success: false, error: 'Question not found.' };
+        }
+
+        const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(TAB_NAME);
+
+        const lock = LockService.getScriptLock();
+        lock.waitLock(5000);
+        try {
+            sheet.deleteRow(row);
+            return { success: true };
+        } finally {
+            lock.releaseLock();
+        }
+    } catch (err) {
+        console.error('Error in deleteQuestion:', err.stack || err);
+        throw err;
     }
 }
 
 function deleteAllQuestions() {
-    const lock = LockService.getScriptLock();
-    lock.waitLock(5000);
-    if (!lock.tryLock(5000)) {
-        return { success: false, error: 'Could not acquire lock.' };
-    }
-
     try {
         const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(TAB_NAME);
         const lastRow = sheet.getLastRow();
-
-        if (lastRow > 2) {
-            sheet.deleteRows(3, lastRow - 2);
+        if (lastRow <= 2) {
+            return { success: false, error: 'No questions to delete.' };
         }
-        return { success: true };
-    } finally {
-        lock.releaseLock();
+
+        const lock = LockService.getScriptLock();
+        lock.waitLock(5000);
+        try {
+            sheet.deleteRows(3, lastRow - 2);
+            return { success: true };
+        } finally {
+            lock.releaseLock();
+        }
+    } catch (err) {
+        console.error('Error in deleteAllQuestions:', err.stack || err);
+        throw err;
     }
 }
 

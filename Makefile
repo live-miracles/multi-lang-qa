@@ -18,3 +18,4 @@ create-version:
 	cp script.js v/$(v)/
 	cp google-api.js v/$(v)/
 	cp test-utils.js v/$(v)/
+	cp tools.js v/$(v)/

@@ -17,7 +17,7 @@ function renderLanguages() {
 }
 
 function getSelectedId(questions) {
-    if ((questions.length = 0)) {
+    if (questions.length === 0) {
         console.error('No questions available');
         return -1;
     }
@@ -29,7 +29,7 @@ function getSelectedId(questions) {
 }
 
 function setSelectedId(questions, timestamp) {
-    if ((questions.length = 0)) {
+    if (questions.length === 0) {
         console.error('No questions available');
     }
     if (questions[0].status !== 'data' || questions[0].name !== 'selected') {
@@ -271,7 +271,7 @@ async function updateSelected(e) {
 
     updateTime = Date.now();
     renderQuestions(questions);
-    await updateSelected(newSelectedId);
+    await updateSelectedQuestion(newSelectedId);
     updateTime = Date.now();
 }
 

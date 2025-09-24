@@ -27,7 +27,7 @@ function getAllQuestions() {
         const questions = cache.get('questions');
 
         if (questions) {
-            return JSON.parse(questions);
+            return { success: true, questions: JSON.parse(questions) };
         } else {
             const error = cache.get('error');
             if (error) {

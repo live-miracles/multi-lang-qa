@@ -82,7 +82,11 @@ function updateQuestion(newQ) {
     }
 
     try {
-        const questions = getAllQuestions();
+        const res = getAllQuestions();
+        if (res.success === false) {
+            return res;
+        }
+        const questions = res.questions;
         let row = null;
         for (const [i, q] of questions.entries()) {
             if (q.timestamp !== newQ.timestamp) {
@@ -114,7 +118,11 @@ function updateQuestion(newQ) {
 
 function updateQuestionStatus(newQ) {
     try {
-        const questions = getAllQuestions();
+        const res = getAllQuestions();
+        if (res.success === false) {
+            return res;
+        }
+        const questions = res.questions;
 
         let row = null;
         for (const [i, q] of questions.entries()) {
@@ -150,7 +158,11 @@ function updateSelectedQuestion(timestamp) {
 
 function deleteQuestion(timestamp) {
     try {
-        const questions = getAllQuestions();
+        const res = getAllQuestions();
+        if (res.success === false) {
+            return res;
+        }
+        const questions = res.questions;
         let row = null;
         for (const [i, q] of questions.entries()) {
             if (q.timestamp === timestamp) {

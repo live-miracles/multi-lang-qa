@@ -1,18 +1,22 @@
-async function getAllQuestions(sheetId) {
-    const localStorageKey = 'questions-' + sheetId;
+async function getAllQuestions() {
+    const localStorageKey = 'questions';
     try {
-        const list = await new Promise((resolve, reject) => {
+        const res = await new Promise((resolve, reject) => {
             window.google.script.run
                 .withFailureHandler((error) => reject(error))
                 .withSuccessHandler((data) => resolve(data))
-                .getAllQuestions(sheetId);
+                .getAllQuestions();
         });
-        localStorage.setItem(localStorageKey, JSON.stringify(list));
-        return list;
+        if (res.success === false) {
+            showErrorAlert(res.error);
+            return null;
+        }
+        localStorage.setItem(localStorageKey, JSON.stringify(res.questions));
+        return res.questions;
     } catch (error) {
         showErrorAlert('Error loading questions: ' + error);
         const saved = localStorage.getItem(localStorageKey);
-        return saved ? JSON.parse(saved) : [];
+        return saved ? JSON.parse(saved) : null;
     }
 }
 
@@ -72,6 +76,26 @@ async function updateQuestionStatus(newQ) {
                 .withFailureHandler((error) => reject(error))
                 .withSuccessHandler((data) => resolve(data))
                 .updateQuestionStatus(newQ);
+        });
+        updateTime = Date.now();
+        if (res.success === false) {
+            showErrorAlert(res.error);
+        } else {
+            hideAlerts();
+        }
+    } catch (error) {
+        showErrorAlert(error);
+    }
+}
+
+async function updateSelectedQuestion(timestamp) {
+    try {
+        showSavingBadge(true);
+        const res = await new Promise((resolve, reject) => {
+            window.google.script.run
+                .withFailureHandler((error) => reject(error))
+                .withSuccessHandler((data) => resolve(data))
+                .updateSelectedQuestion(timestamp);
         });
         updateTime = Date.now();
         if (res.success === false) {

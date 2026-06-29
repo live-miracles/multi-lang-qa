@@ -22,8 +22,8 @@ function parseQuestions(sheet) {
 }
 
 function getAllQuestions() {
+    const cache = CacheService.getScriptCache();
     try {
-        const cache = CacheService.getScriptCache();
         const questions = cache.get('questions');
 
         if (questions) {

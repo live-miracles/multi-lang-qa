@@ -5,16 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Multi Lang QA</title>
 
-    <link rel="icon" type="image/png" href="https://live-miracles.github.io/multi-lang-qa/logo.png" />
-    <link rel="stylesheet" href="https://live-miracles.github.io/multi-lang-qa/v/2.0.0/output.css" />
-    <script src="https://cdn.jsdelivr.net/npm/transliteration/dist/browser/bundle.umd.min.js"></script>
-    <script crossorigin src="https://live-miracles.github.io/multi-lang-qa/v/2.0.0/tools.js" defer></script>
-    <script crossorigin src="https://live-miracles.github.io/multi-lang-qa/v/2.0.0/test-utils.js" defer></script>
-    <script crossorigin src="https://live-miracles.github.io/multi-lang-qa/v/2.0.0/google-api.js" defer></script>
-    <script crossorigin src="https://live-miracles.github.io/multi-lang-qa/v/2.0.0/script.js" defer></script>
+    <link rel="icon" type="image/png" href="./logo.png" />
+    <link rel="stylesheet" href="./output.css" />
+    <script src="./bundle.umd.min.js"></script>
+    <script crossorigin src="./tools.js" defer></script>
+    <script crossorigin src="./test-utils.js" defer></script>
+    <script crossorigin src="./google-api.js" defer></script>
+    <script crossorigin src="./script.js" defer></script>
 
+    <!-- Production: replace the local block above with this, updating the version to the latest git tag.
+    <link rel="icon" type="image/png" href="https://live-miracles.github.io/multi-lang-qa/logo.png" />
+    <link rel="stylesheet" href="https://live-miracles.github.io/multi-lang-qa/v/2.0.1/output.css" />
+    <script src="https://live-miracles.github.io/multi-lang-qa/v/2.0.1/bundle.umd.min.js"></script>
+    <script crossorigin src="https://live-miracles.github.io/multi-lang-qa/v/2.0.1/tools.js" defer></script>
+    <script crossorigin src="https://live-miracles.github.io/multi-lang-qa/v/2.0.1/test-utils.js" defer></script>
+    <script crossorigin src="https://live-miracles.github.io/multi-lang-qa/v/2.0.1/google-api.js" defer></script>
+    <script crossorigin src="https://live-miracles.github.io/multi-lang-qa/v/2.0.1/script.js" defer></script>
+    -->
   </head>
-  <body class="bg-base-100 text-base-content flex min-h-screen min-w-[620px] flex-col">
+  <body class="bg-base-100 text-base-content flex min-h-screen min-w-155 flex-col">
     <div class="navbar focus bg-base-100">
       <div class="flex-1">
         <a class="btn btn-ghost text-xl" href="https://live-miracles.github.io/">Multi Lang QA</a>
@@ -31,14 +40,14 @@
       <span class="msg">Loading...</span>
     </div>
 
-    <div id="success-alert" role="alert" class="alert alert-success fixed top-3 left-1/2 z-20 hidden w-fit max-w-[700px] -translate-x-1/2 transform">
+    <div id="success-alert" role="alert" class="alert alert-success fixed top-3 left-1/2 z-20 hidden w-fit max-w-175 -translate-x-1/2 transform">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
       </svg>
       <span class="msg"></span>
     </div>
 
-    <div id="error-alert" role="alert" class="alert alert-error fixed top-3 left-1/2 z-20 hidden w-fit max-w-[700px] -translate-x-1/2 transform">
+    <div id="error-alert" role="alert" class="alert alert-error fixed top-3 left-1/2 z-20 hidden w-fit max-w-175 -translate-x-1/2 transform">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
         <path
           stroke-linecap="round"
@@ -88,9 +97,9 @@
     </div>
 
     <dialog id="edit-q-modal" class="q-form modal">
-      <div class="modal-box max-w-[800px]">
+      <div class="modal-box max-w-200">
         <input type="text" class="q-timestamp hidden" />
-        <div class="focus q-form mx-auto mt-2 w-full max-w-[800px] space-y-3 px-4">
+        <div class="focus q-form mx-auto mt-2 w-full max-w-200 space-y-3 px-4">
           <!-- First Row -->
           <div class="grid grid-cols-3 items-center gap-4">
             <!-- Left: Dropdown + Input -->
@@ -158,7 +167,7 @@
       </div>
     </dialog>
 
-    <div class="prose focus mx-auto max-w-[700px] px-2">
+    <div class="prose focus mx-auto max-w-175 px-2">
       <ul>
         <li>
           In Chrome, you can enter <b>full-screen mode</b> by pressing <kbd class="kbd">F11</kbd> on Windows or
@@ -171,7 +180,7 @@
       </ul>
     </div>
 
-    <div class="focus q-form mx-auto mt-2 w-full max-w-[900px] space-y-3 px-4">
+    <div class="focus q-form mx-auto mt-2 w-full max-w-225 space-y-3 px-4">
       <!-- First Row -->
       <div class="grid grid-cols-3 items-center gap-4">
         <!-- Left: Dropdown + Input -->
@@ -210,12 +219,12 @@
 
     <div class="divider focus"></div>
 
-    <div id="no-questions" class="prose mx-auto mt-2 hidden w-full max-w-[700px] flex-1 px-2">
+    <div id="no-questions" class="prose mx-auto mt-2 hidden w-full max-w-175 flex-1 px-2">
       <blockquote class="relative z-10 mx-auto w-fit">No Questions For The Day</blockquote>
       <img class="mx-auto -mt-10 h-64 w-64" src="https://live-miracles.github.io/multi-lang-qa/funny-cat.svg" />
     </div>
 
-    <div id="questions" class="mx-auto mt-2 w-full max-w-[700px] flex-1 px-2">
+    <div id="questions" class="mx-auto mt-2 w-full max-w-175 flex-1 px-2">
       <div class="skeleton mb-5 h-32 w-full"></div>
       <div class="skeleton mb-5 h-32 w-full"></div>
       <div class="skeleton mb-5 h-32 w-full"></div>

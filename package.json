@@ -1,0 +1,24 @@
+{
+    "name": "multi-lang-qa",
+    "version": "2.0.1",
+    "description": "Multi-language Q&A tool for live events, deployed as a Google Apps Script web app.",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "dev": "node build-tools/dev.mjs",
+        "css": "tailwindcss -i ./frontend/input.css -o ./frontend/output.css",
+        "format": "prettier --write .",
+        "format:check": "prettier --check ."
+    },
+    "devDependencies": {
+        "@tailwindcss/cli": "^4.2.1",
+        "@tailwindcss/typography": "^0.5.19",
+        "browser-sync": "^3.0.4",
+        "concurrently": "^9.2.1",
+        "daisyui": "^5.5.19",
+        "execa": "^9.6.0",
+        "prettier": "^3.8.1",
+        "prettier-plugin-tailwindcss": "^0.7.2",
+        "tailwindcss": "^4.2.1"
+    }
+}

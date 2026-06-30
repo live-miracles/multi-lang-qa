@@ -33,7 +33,7 @@ async function addQuestion(q) {
         if (res.success === false) {
             showErrorAlert(res.error);
         } else {
-            showSuccessAlert('Question added successfully, it will reflect in a few seconds');
+            hideAlerts();
         }
         return res;
     } catch (error) {
@@ -55,11 +55,7 @@ async function updateQuestion(newQ) {
         if (res.success === false) {
             showErrorAlert(res.error);
         } else {
-            if (newQ.status !== 'data') {
-                showSuccessAlert('Question updated');
-            } else {
-                hideAlerts();
-            }
+            hideAlerts();
         }
         return res;
     } catch (error) {

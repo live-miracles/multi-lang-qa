@@ -3,6 +3,7 @@ function showElements() {
         const name = elem.id.slice('show-'.length);
         const show = elem.checked;
         document.querySelectorAll('.' + name).forEach((e) => {
+            if (e.matches('textarea, input, select')) return;
             if (show) {
                 e.classList.remove('hidden');
             } else {

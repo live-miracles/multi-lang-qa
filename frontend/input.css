@@ -1,7 +1,7 @@
 @import 'tailwindcss';
 @plugin "@tailwindcss/typography";
 @plugin "daisyui" {
-    themes: light;
+    themes: light, dim;
 }
 
 .q-answered > .q-translation {
@@ -10,4 +10,11 @@
 
 .q-hidden {
     @apply opacity-50;
+}
+
+.cat-line {
+    fill: currentColor;
+}
+.cat-interior {
+    fill: var(--color-base-100);
 }

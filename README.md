@@ -58,4 +58,3 @@ If you want to collaborate with others in real time you will need to create a Go
 5. Go to **Project Settings** and add a script property named `SPREADSHEET_ID` with the ID of your Google Spreadsheet (found in its URL).
 6. Click **Deploy** → New deployment → Web app → Execute as: Me; Who has access: Anyone with a Google account.
 7. A link to your new web app will appear — share it with your audience!
-

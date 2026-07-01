@@ -8,8 +8,8 @@
     @apply line-through;
 }
 
-.q-hidden {
-    @apply opacity-50;
+.q-answered {
+    @apply border-primary;
 }
 
 .cat-line {

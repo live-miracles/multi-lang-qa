@@ -14,24 +14,22 @@
     <link rel="icon" type="image/svg+xml" href="./logo.svg" />
     <link rel="stylesheet" href="./output.css" />
     <script src="./bundle.umd.min.js"></script>
-    <script crossorigin src="./tools.js" defer></script>
     <script crossorigin src="./test-utils.js" defer></script>
     <script crossorigin src="./google-api.js" defer></script>
     <script crossorigin src="./script.js" defer></script>
 
     <!-- Production: replace the local block above with this, updating the version to the latest git tag.
     <link rel="icon" type="image/svg+xml" href="https://live-miracles.github.io/multi-lang-qa/logo.svg" />
-    <link rel="stylesheet" href="https://live-miracles.github.io/multi-lang-qa/v/2.0.1/output.css" />
-    <script src="https://live-miracles.github.io/multi-lang-qa/v/2.0.1/bundle.umd.min.js"></script>
-    <script crossorigin src="https://live-miracles.github.io/multi-lang-qa/v/2.0.1/tools.js" defer></script>
-    <script crossorigin src="https://live-miracles.github.io/multi-lang-qa/v/2.0.1/test-utils.js" defer></script>
-    <script crossorigin src="https://live-miracles.github.io/multi-lang-qa/v/2.0.1/google-api.js" defer></script>
-    <script crossorigin src="https://live-miracles.github.io/multi-lang-qa/v/2.0.1/script.js" defer></script>
+    <link rel="stylesheet" href="https://live-miracles.github.io/multi-lang-qa/v/3.1.0/output.css" />
+    <script src="https://live-miracles.github.io/multi-lang-qa/v/3.1.0/bundle.umd.min.js"></script>
+    <script crossorigin src="https://live-miracles.github.io/multi-lang-qa/v/3.1.0/test-utils.js" defer></script>
+    <script crossorigin src="https://live-miracles.github.io/multi-lang-qa/v/3.1.0/google-api.js" defer></script>
+    <script crossorigin src="https://live-miracles.github.io/multi-lang-qa/v/3.1.0/script.js" defer></script>
     -->
   </head>
   <body class="bg-base-100 text-base-content flex min-h-screen min-w-155 flex-col">
     <header
-      class="bg-base-300/95 border-base-content/25 relative sticky top-0 z-10 flex flex-wrap items-center gap-1.5 border-b px-2 py-1.5 shadow-md shadow-black/20 backdrop-blur-sm">
+      class="bg-base-300 border-base-content/25 sticky top-0 z-30 flex flex-wrap items-center gap-1.5 border-b px-2 py-1.5 shadow-md shadow-black/20">
       <span class="px-2 text-base font-bold">Multi Lang QA</span>
       <a
         class="btn btn-ghost btn-xs btn-circle"
@@ -45,24 +43,97 @@
             d="M48.854 0C21.839 0 0 22 0 49.217c0 21.756 13.993 40.172 33.405 46.69 2.427.49 3.316-1.059 3.316-2.362 0-1.141-.08-5.052-.08-9.127-13.59 2.934-16.42-5.867-16.42-5.867-2.184-5.704-5.42-7.17-5.42-7.17-4.448-3.015.324-3.015.324-3.015 4.934.326 7.523 5.052 7.523 5.052 4.367 7.496 11.404 5.378 14.235 4.074.404-3.178 1.699-5.378 3.074-6.6-10.839-1.141-22.243-5.378-22.243-24.283 0-5.378 1.94-9.778 5.014-13.2-.485-1.222-2.184-6.275.486-13.038 0 0 4.125-1.304 13.426 5.052a46.97 46.97 0 0 1 12.214-1.63c4.125 0 8.33.571 12.213 1.63 9.302-6.356 13.427-5.052 13.427-5.052 2.67 6.763.97 11.816.485 13.038 3.155 3.422 5.015 7.822 5.015 13.2 0 18.905-11.404 23.06-22.324 24.283 1.78 1.548 3.316 4.481 3.316 9.126 0 6.6-.08 11.897-.08 13.526 0 1.304.89 2.853 3.316 2.364 19.412-6.52 33.405-24.935 33.405-46.691C97.707 22 75.788 0 48.854 0z" />
         </svg>
       </a>
+      <button
+        id="add-q-btn"
+        class="btn btn-primary btn-xs min-h-0 h-6 w-6 px-0"
+        onclick="showAddQuestionForm()"
+        title="Add question"
+        aria-label="Add question">
+        <svg
+          aria-hidden="true"
+          class="h-3.5 w-3.5"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.25"
+          stroke-linecap="round"
+          stroke-linejoin="round">
+          <path d="M12 5v14" />
+          <path d="M5 12h14" />
+        </svg>
+      </button>
 
       <section class="absolute left-1/2 flex -translate-x-1/2 items-center gap-1.5">
         <label class="swap cursor-pointer" title="Show original question text">
-          <input id="show-q-text" type="checkbox" class="show-toggle url-param" checked />
-          <span class="swap-on badge badge-primary h-6 px-2">Original</span>
-          <span class="swap-off badge badge-outline h-6 px-2">Original</span>
+          <input id="show-q-text" type="checkbox" class="show-toggle" checked />
+          <span class="swap-on btn btn-primary btn-xs min-h-0 h-6 w-6 px-0">
+            <svg
+              aria-hidden="true"
+              class="h-3.5 w-3.5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="m5 8 6 6" />
+              <path d="m4 14 6-6 2-3" />
+              <path d="M2 5h12" />
+              <path d="M7 2h1" />
+              <path d="m22 22-5-10-5 10" />
+              <path d="M14 18h6" />
+            </svg>
+          </span>
+          <span class="swap-off btn btn-primary btn-xs btn-outline min-h-0 h-6 w-6 px-0">
+            <svg
+              aria-hidden="true"
+              class="h-3.5 w-3.5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="m5 8 6 6" />
+              <path d="m4 14 6-6 2-3" />
+              <path d="M2 5h12" />
+              <path d="M7 2h1" />
+              <path d="m22 22-5-10-5 10" />
+              <path d="M14 18h6" />
+            </svg>
+          </span>
         </label>
 
-        <label class="swap cursor-pointer" title="Show answered questions">
-          <input id="show-q-answered" type="checkbox" class="show-toggle url-param" checked />
-          <span class="swap-on badge badge-primary h-6 px-2">Done</span>
-          <span class="swap-off badge badge-outline h-6 px-2">Done</span>
-        </label>
-
-        <label class="swap cursor-pointer" title="Show hidden questions">
-          <input id="show-q-hidden" type="checkbox" class="show-toggle url-param" checked />
-          <span class="swap-on badge badge-primary h-6 px-2">Hidden</span>
-          <span class="swap-off badge badge-outline h-6 px-2">Hidden</span>
+        <label class="swap cursor-pointer" title="Show completed questions">
+          <input id="show-q-answered" type="checkbox" class="show-toggle" checked />
+          <span class="swap-on btn btn-primary btn-xs min-h-0 h-6 w-6 px-0">
+            <svg
+              aria-hidden="true"
+              class="h-3.5 w-3.5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.25"
+              stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+              <path d="M22 4 12 14.01l-3-3" />
+            </svg>
+          </span>
+          <span class="swap-off btn btn-primary btn-xs btn-outline min-h-0 h-6 w-6 px-0">
+            <svg
+              aria-hidden="true"
+              class="h-3.5 w-3.5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.25"
+              stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+              <path d="M22 4 12 14.01l-3-3" />
+            </svg>
+          </span>
         </label>
 
         <select id="filter-q-language" class="language-select select select-xs h-6 min-h-0 w-fit">
@@ -143,19 +214,19 @@
       </div>
     </header>
 
-    <div id="loading-alert" role="alert" class="alert alert-info fixed top-3 left-1/2 z-20 hidden w-fit -translate-x-1/2 transform">
+    <div id="loading-alert" role="alert" class="alert alert-info fixed top-3 left-1/2 z-40 hidden w-fit -translate-x-1/2 transform">
       <span class="loading loading-infinity loading-md"></span>
       <span class="msg">Loading...</span>
     </div>
 
-    <div id="success-alert" role="alert" class="alert alert-success fixed top-3 left-1/2 z-20 hidden w-fit max-w-175 -translate-x-1/2 transform">
+    <div id="success-alert" role="alert" class="alert alert-success fixed top-3 left-1/2 z-40 hidden w-fit max-w-175 -translate-x-1/2 transform">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
       </svg>
       <span class="msg"></span>
     </div>
 
-    <div id="error-alert" role="alert" class="alert alert-error fixed top-3 left-1/2 z-20 hidden w-fit max-w-175 -translate-x-1/2 transform">
+    <div id="error-alert" role="alert" class="alert alert-error fixed top-3 left-1/2 z-40 hidden w-fit max-w-175 -translate-x-1/2 transform">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
         <path
           stroke-linecap="round"
@@ -170,31 +241,24 @@
       <div class="modal-box max-w-200">
         <input type="text" class="q-timestamp hidden" />
         <div class="q-form mx-auto mt-2 w-full max-w-200 space-y-3 px-4">
-          <!-- First Row -->
           <div class="grid grid-cols-3 items-center gap-4">
-            <!-- Left: Dropdown + Input -->
             <div class="flex flex-row gap-2">
-              <select class="q-language language-select select select-primary text-primary select-sm w-fit">
-                <option disabled value="">*Language</option>
-              </select>
+              <select class="q-language language-select select select-primary text-primary select-sm w-fit"></select>
               <input type="text" placeholder="Person's Name" class="q-name input input-primary text-primary input-sm max-w-40 min-w-32" />
             </div>
 
-            <!-- Center: Button -->
             <div class="flex justify-center">
               <button type="button" id="translate-q-btn" class="btn btn-primary btn-soft btn-sm">Translate</button>
             </div>
 
-            <!-- Right: Input -->
             <div class="flex flex-row justify-end gap-2">
               <input type="text" placeholder="Name Translation" class="q-name-translation input input-sm max-w-40 min-w-32" />
             </div>
           </div>
 
-          <!-- Second Row: Two Textareas -->
           <div class="grid grid-cols-2 gap-4">
             <textarea class="q-text textarea textarea-primary text-primary h-40 w-full resize-none" placeholder="*Question Text"></textarea>
-            <textarea class="q-translation textarea h-40 w-full resize-none" placeholder="Question Translation (leave empty for English)"></textarea>
+            <textarea class="q-translation textarea h-40 w-full resize-none" placeholder="Question Translation"></textarea>
           </div>
         </div>
 
@@ -221,11 +285,7 @@
     </dialog>
 
     <dialog id="delete-all-q-modal" class="modal">
-      <div class="modal-box">
-        <p class="py-4">Are you sure you want to delete all the questions? You won't be able to restore them.</p>
-        <p class="py-4">Please type <strong>Delete all questions</strong> to confirm:</p>
-        <input type="text" placeholder="" class="confirm-text input input-sm w-64" />
-
+      <div class="modal-box max-w-lg border border-error/30">
         <form method="dialog">
           <button class="btn btn-sm btn-circle btn-ghost absolute top-2 right-2">
             <svg
@@ -241,9 +301,46 @@
             </svg>
           </button>
         </form>
-        <form method="dialog">
-          <button id="delete-all-q-btn" class="btn btn-error btn-soft mt-5 w-full">I understand the consequences, delete all questions</button>
-        </form>
+
+        <div class="flex items-start gap-4">
+          <div class="bg-error/15 text-error flex h-11 w-11 shrink-0 items-center justify-center rounded-md">
+            <svg
+              aria-hidden="true"
+              class="h-6 w-6"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.25"
+              stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z" />
+              <path d="M12 9v4" />
+              <path d="M12 17h.01" />
+            </svg>
+          </div>
+          <div class="min-w-0">
+            <h3 class="text-lg font-semibold">Delete all questions?</h3>
+            <p class="text-base-content/70 mt-1 text-sm">
+              This removes every submitted question for the current session. This action cannot be undone.
+            </p>
+          </div>
+        </div>
+
+        <div class="border-base-content/10 bg-base-200 mt-5 rounded-md border p-4">
+          <label class="form-control w-full">
+            <span class="label-text text-base-content/70 mb-2 text-sm">
+              Type <span class="text-error font-semibold">Delete all questions</span> to confirm
+            </span>
+            <input type="text" class="confirm-text input input-bordered input-sm w-full" autocomplete="off" />
+          </label>
+        </div>
+
+        <div class="modal-action">
+          <form method="dialog" class="flex w-full justify-end gap-2">
+            <button class="btn btn-sm">Cancel</button>
+            <button id="delete-all-q-btn" class="btn btn-error btn-sm">Delete all questions</button>
+          </form>
+        </div>
       </div>
     </dialog>
 
@@ -259,7 +356,6 @@
     </div>
 
     <div class="flex gap-3 mx-auto mt-8 mb-4">
-      <button id="add-q-btn" class="btn btn-sm btn-primary" onclick="showAddQuestionForm()">Add Question</button>
       <button id="delete-all" class="btn btn-sm btn-error" style="display: none" onclick="showDeleteAllQuestionsForm()">Delete All Questions</button>
     </div>
   </body>

@@ -2,7 +2,7 @@
 
 <img width="979" alt="Screenshot 2025-06-10 at 20 59 07" src="https://github.com/user-attachments/assets/7903406f-7e0c-43fd-9bae-f3f47e565a96" />
 
-A Google Apps Script web app that uses a Google Sheet as a database. People can submit questions with translations, and the host can star, hide, or mark any of the questions as completed.
+A Google Apps Script web app that uses a Google Sheet as a database. People can submit questions with translations, and the host can star or mark any of the questions as completed.
 
 ## Demo
 
@@ -16,7 +16,6 @@ A demo is available at [live-miracles.github.io/multi-lang-qa](https://live-mira
 │   ├── index.html   # Main HTML page
 │   ├── script.js    # UI logic
 │   ├── google-api.js  # Calls to the Apps Script backend
-│   ├── tools.js     # UI utilities
 │   ├── test-utils.js  # Test/demo data
 │   └── input.css    # Tailwind CSS source
 └── build-tools/

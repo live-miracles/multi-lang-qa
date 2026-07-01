@@ -7,7 +7,7 @@ const LANGUAGE_MAP = {
     Italian: 'it',
     Arabic: 'ar',
 };
-const STATS = ['total', 'none', 'answered', 'hidden'];
+const STATS = ['total', 'answered'];
 
 function renderLanguages() {
     const html = LANGUAGES.map(
@@ -49,10 +49,12 @@ function getQuestionStats(questions) {
             if (!stats[q.language]) {
                 stats[q.language] = Object.fromEntries(STATS.map((k) => [k, 0]));
             }
-            stats[q.language]['total']++;
-            stats[q.language][q.status]++;
-            stats['All']['total']++;
-            stats['All'][q.status]++;
+            stats[q.language].total++;
+            stats.All.total++;
+            if (q.status === 'answered') {
+                stats[q.language].answered++;
+                stats.All.answered++;
+            }
         });
     return stats;
 }
@@ -62,7 +64,7 @@ const STAR_SVG =
     `<path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329l-24.6 145.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329l104.2-103.1c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"/>` +
     `</svg>`;
 
-function getQuestionHtml(q, selectedId, stats) {
+function getQuestionHtml(q, selectedId) {
     return `
         <div class="question relative bg-base-200 rounded-box mb-3 border border-base-content/15 shadow-md flex items-stretch overflow-hidden ${'q-' + q.status}"
             id="${q.timestamp}">
@@ -78,27 +80,15 @@ function getQuestionHtml(q, selectedId, stats) {
           }
 
           <div class="flex flex-col items-center justify-center gap-2 px-2.5 py-2 border-r border-base-content/10 z-10">
-            <div class="flex items-center gap-2">
-              <label class="swap cursor-pointer" title="Mark as done">
-                <input type="checkbox" data-status="answered" ${q.status === 'answered' ? 'checked' : ''} onchange="updateStatus(event)" />
-                <svg class="swap-on h-4 w-4 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4 12 14.01l-3-3"/>
-                </svg>
-                <svg class="swap-off h-4 w-4 text-base-content/25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>
-                </svg>
-              </label>
-              <label class="swap cursor-pointer" title="Hide question">
-                <input type="checkbox" data-status="hidden" ${q.status === 'hidden' ? 'checked' : ''} onchange="updateStatus(event)" />
-                <svg class="swap-on h-4 w-4 text-base-content/50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/>
-                  <path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" y1="2" x2="22" y2="22"/>
-                </svg>
-                <svg class="swap-off h-4 w-4 text-base-content/30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>
-                </svg>
-              </label>
-            </div>
+            <label class="swap cursor-pointer" title="Mark as done">
+              <input type="checkbox" data-status="answered" ${q.status === 'answered' ? 'checked' : ''} onchange="updateStatus(event)" />
+              <svg class="swap-on h-4 w-4 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4 12 14.01l-3-3"/>
+              </svg>
+              <svg class="swap-off h-4 w-4 text-base-content/25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>
+              </svg>
+            </label>
             <label class="swap cursor-pointer" title="Select question">
               <input type="checkbox" ${q.timestamp === selectedId ? 'checked' : ''} onchange="updateSelected(event)" />
               <svg class="swap-on h-4 w-4 text-warning" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
@@ -140,7 +130,6 @@ async function renderQuestions(questions) {
         } else {
             const text = `${val} (${stats[val].answered}/${stats[val].total})`;
             if (option.text != text) {
-                // otherwise the dropdown refreshes even if no changes
                 option.text = text;
             }
             option.classList.remove('hidden');
@@ -165,7 +154,7 @@ async function renderQuestions(questions) {
     const html = questions
         .filter((q) => q.timestamp !== '' && q.status !== 'data')
         .filter((q) => filterLang.value === 'All' || filterLang.value === q.language)
-        .map((q) => getQuestionHtml(q, selectedId, stats))
+        .map((q) => getQuestionHtml(q, selectedId))
         .join('');
     document.getElementById('questions').innerHTML =
         `<div style="min-height:100%" class="flex flex-col justify-center w-full">${html}</div>`;
@@ -220,16 +209,46 @@ function hideAlerts() {
     errorElem.classList.add('hidden');
 }
 
+function showElements() {
+    document.querySelectorAll('.show-toggle').forEach((elem) => {
+        const name = elem.id.slice('show-'.length);
+        const show = elem.checked;
+        document.querySelectorAll('.' + name).forEach((el) => {
+            if (el.matches('textarea, input, select')) return;
+            if (show) {
+                el.classList.remove('hidden');
+            } else {
+                el.classList.add('hidden');
+            }
+        });
+    });
+}
+
+function updateTranslationControls(container) {
+    const isEnglish = container.querySelector('.q-language').value === 'English';
+    const translationInput = container.querySelector('.q-translation');
+    const translateBtn = container.querySelector('#translate-q-btn');
+    translationInput.disabled = isEnglish;
+    if (isEnglish) {
+        translationInput.value = '';
+    }
+    if (translateBtn) {
+        translateBtn.disabled = isEnglish;
+    }
+}
+
 function showAddQuestionForm() {
     const modal = document.getElementById('edit-q-modal');
     modal.querySelector('.q-timestamp').value = '';
-    modal.querySelector('.q-language').value = '';
+    modal.querySelector('.q-language').value = localStorage.getItem('last-language') || 'English';
     modal.querySelector('.q-name').value = '';
     modal.querySelector('.q-name-translation').value = '';
     modal.querySelector('.q-text').value = '';
     modal.querySelector('.q-translation').value = '';
+    updateTranslationControls(modal);
     document.getElementById('update-q-btn').textContent = 'Add Question';
     modal.showModal();
+    modal.querySelector('.q-text').focus();
 }
 
 function showEditQuestionForm(e) {
@@ -246,8 +265,10 @@ function showEditQuestionForm(e) {
     modal.querySelector('.q-name-translation').value = q.nameTranslation;
     modal.querySelector('.q-text').value = q.text;
     modal.querySelector('.q-translation').value = q.translation;
+    updateTranslationControls(modal);
     document.getElementById('update-q-btn').textContent = 'Update';
     modal.showModal();
+    modal.querySelector('.q-text').focus();
 }
 
 function showDeleteQuestionForm(e) {
@@ -404,6 +425,12 @@ let updateTime = 0;
         }),
     );
 
+    document.querySelectorAll('.q-language').forEach((elem) =>
+        elem.addEventListener('change', (e) => {
+            updateTranslationControls(e.target.closest('dialog'));
+        }),
+    );
+
     document.getElementById('translate-q-btn').addEventListener('click', async (e) => {
         const btn = e.target;
         const container = btn.closest('.q-form');
@@ -459,6 +486,7 @@ let updateTime = 0;
             return;
         }
 
+        localStorage.setItem('last-language', newQ.language);
         modal.close();
 
         if (timestamp) {
@@ -483,11 +511,11 @@ let updateTime = 0;
             qEditBtn.removeAttribute('disabled');
         } else {
             const addBtn = document.getElementById('add-q-btn');
-            const originalText = addBtn.textContent;
+            const originalHTML = addBtn.innerHTML;
             addBtn.disabled = true;
             addBtn.innerHTML = '<span class="loading loading-infinity loading-xs"></span>';
             const res = await addQuestion(newQ);
-            addBtn.textContent = originalText;
+            addBtn.innerHTML = originalHTML;
             addBtn.disabled = false;
             if (res.success) {
                 container.querySelector('.q-name').value = '';

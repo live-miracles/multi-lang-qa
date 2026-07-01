@@ -330,6 +330,16 @@ async function injectCatSvg() {
         const svgDoc = parser.parseFromString(svgText, 'image/svg+xml');
         const svg = svgDoc.documentElement;
         img.classList.forEach((c) => svg.classList.add(c));
+        if (!svg.getAttribute('viewBox')) {
+            const width = svg.getAttribute('width');
+            const height = svg.getAttribute('height');
+            if (width && height) {
+                svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+            }
+        }
+        svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+        svg.removeAttribute('width');
+        svg.removeAttribute('height');
         svg.querySelectorAll('[fill]').forEach((el) => {
             const fill = el.getAttribute('fill').toLowerCase();
             if (fill === 'white') {
@@ -364,6 +374,10 @@ let updateTime = 0;
 
     let zoom = parseFloat(localStorage.getItem('zoom') || '1');
     const zoomStatus = document.getElementById('zoom-status');
+    function setZoom(nextZoom) {
+        zoom = Math.max(0.5, Math.min(2, Math.round(nextZoom * 10) / 10));
+        applyZoom();
+    }
     function applyZoom() {
         document.body.style.minHeight = `${100 / zoom}vh`;
         if ('zoom' in document.body.style) {
@@ -378,18 +392,28 @@ let updateTime = 0;
         localStorage.setItem('zoom', zoom);
     }
     document.getElementById('zoom-in').addEventListener('click', () => {
-        zoom = Math.min(2, Math.round((zoom + 0.1) * 10) / 10);
-        applyZoom();
+        setZoom(zoom + 0.1);
     });
     document.getElementById('zoom-out').addEventListener('click', () => {
-        zoom = Math.max(0.5, Math.round((zoom - 0.1) * 10) / 10);
-        applyZoom();
+        setZoom(zoom - 0.1);
     });
     zoomStatus.addEventListener('click', () => {
-        zoom = 1;
-        applyZoom();
+        setZoom(1);
     });
     applyZoom();
+
+    document.addEventListener('keydown', (e) => {
+        if (!(e.ctrlKey || e.metaKey)) return;
+        const key = e.key.toLowerCase();
+        const isZoomIn = key === '+' || key === '=' || e.key === 'Add';
+        const isZoomOut = key === '-' || e.key === '_' || e.key === 'Subtract';
+        const isReset = key === '0';
+        if (!isZoomIn && !isZoomOut && !isReset) return;
+        e.preventDefault();
+        if (isZoomIn) setZoom(zoom + 0.1);
+        if (isZoomOut) setZoom(zoom - 0.1);
+        if (isReset) setZoom(1);
+    });
 
     const fsEl = document.documentElement;
     document.getElementById('toggle-fullscreen').addEventListener('click', () => {

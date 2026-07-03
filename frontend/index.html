@@ -20,11 +20,11 @@
 
     <!-- Production: replace the local block above with this, updating the version to the latest git tag.
     <link rel="icon" type="image/svg+xml" href="https://live-miracles.github.io/multi-lang-qa/logo.svg" />
-    <link rel="stylesheet" href="https://live-miracles.github.io/multi-lang-qa/v/3.1.1/output.css" />
-    <script src="https://live-miracles.github.io/multi-lang-qa/v/3.1.1/bundle.umd.min.js"></script>
-    <script crossorigin src="https://live-miracles.github.io/multi-lang-qa/v/3.1.1/test-utils.js" defer></script>
-    <script crossorigin src="https://live-miracles.github.io/multi-lang-qa/v/3.1.1/google-api.js" defer></script>
-    <script crossorigin src="https://live-miracles.github.io/multi-lang-qa/v/3.1.1/script.js" defer></script>
+    <link rel="stylesheet" href="https://live-miracles.github.io/multi-lang-qa/v/3.1.2/output.css" />
+    <script src="https://live-miracles.github.io/multi-lang-qa/v/3.1.2/bundle.umd.min.js"></script>
+    <script crossorigin src="https://live-miracles.github.io/multi-lang-qa/v/3.1.2/test-utils.js" defer></script>
+    <script crossorigin src="https://live-miracles.github.io/multi-lang-qa/v/3.1.2/google-api.js" defer></script>
+    <script crossorigin src="https://live-miracles.github.io/multi-lang-qa/v/3.1.2/script.js" defer></script>
     -->
   </head>
   <body class="bg-base-100 text-base-content flex min-h-screen min-w-155 flex-col">
@@ -252,6 +252,7 @@
             </div>
 
             <div class="flex flex-row justify-end gap-2">
+              <select class="translation-language language-select select select-sm w-fit" disabled></select>
               <input type="text" placeholder="Name Translation" class="q-name-translation input input-sm max-w-40 min-w-32" />
             </div>
           </div>
@@ -346,7 +347,11 @@
 
     <div id="no-questions" class="prose mx-auto mt-8 hidden w-full max-w-200 px-2 overflow-y-auto">
       <blockquote class="relative z-10 mx-auto w-fit">No Questions For The Day</blockquote>
-      <img class="mx-auto -mt-10 h-64 w-64 cat-img" src="./funny-cat.svg" />
+      <img
+        class="cat-img mx-auto -mt-10 h-64 w-64 object-contain"
+        src="https://live-miracles.github.io/multi-lang-qa/funny-cat.svg"
+        alt=""
+        aria-hidden="true" />
     </div>
 
     <div id="questions" class="mx-auto mt-8 w-full max-w-200 px-2 flex flex-col overflow-y-auto">
@@ -358,5 +363,7 @@
     <div class="flex gap-3 mx-auto mt-8 mb-4">
       <button id="delete-all" class="btn btn-sm btn-error" style="display: none" onclick="showDeleteAllQuestionsForm()">Delete All Questions</button>
     </div>
+
+    <div aria-hidden="true" class="h-[90vh] shrink-0"></div>
   </body>
 </html>

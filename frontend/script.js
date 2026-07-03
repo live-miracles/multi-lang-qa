@@ -1,12 +1,123 @@
-const LANGUAGES = ['English', 'Russian', 'German', 'French', 'Italian', 'Arabic'];
-const LANGUAGE_MAP = {
-    English: 'en',
-    Russian: 'ru',
-    German: 'de',
-    French: 'fr',
-    Italian: 'it',
-    Arabic: 'ar',
-};
+const LANGUAGE_OPTIONS = [
+    { name: 'Afrikaans', code: 'af' },
+    { name: 'Albanian', code: 'sq' },
+    { name: 'Arabic', code: 'ar' },
+    { name: 'Arabic (Saudi Arabia)', code: 'ar-SA' },
+    { name: 'Azerbaijani', code: 'az' },
+    { name: 'Belarusian', code: 'be' },
+    { name: 'Bengali', code: 'bn' },
+    { name: 'Bengali (India)', code: 'bn-IN' },
+    { name: 'Bosnian', code: 'bs' },
+    { name: 'Bosnian (Cyrillic)', code: 'bs-Cyrl' },
+    { name: 'Bulgarian', code: 'bg' },
+    { name: 'Burmese', code: 'my' },
+    { name: 'Catalan', code: 'ca' },
+    { name: 'Chinese', code: 'zh' },
+    { name: 'Chinese (China)', code: 'zh-CN' },
+    { name: 'Chinese (Hong Kong)', code: 'zh-HK' },
+    { name: 'Chinese (Simplified)', code: 'zh-Hans' },
+    { name: 'Chinese (Taiwan)', code: 'zh-TW' },
+    { name: 'Chinese (Traditional)', code: 'zh-Hant' },
+    { name: 'Croatian', code: 'hr' },
+    { name: 'Czech', code: 'cs' },
+    { name: 'Danish', code: 'da' },
+    { name: 'Dutch', code: 'nl' },
+    { name: 'Dutch (Belgium)', code: 'nl-BE' },
+    { name: 'English', code: 'en' },
+    { name: 'English (Australia)', code: 'en-AU' },
+    { name: 'English (Canada)', code: 'en-CA' },
+    { name: 'English (New Zealand)', code: 'en-NZ' },
+    { name: 'English (Philippines)', code: 'en-PH' },
+    { name: 'English (South Africa)', code: 'en-ZA' },
+    { name: 'English (United Kingdom)', code: 'en-GB' },
+    { name: 'English (United States)', code: 'en-US' },
+    { name: 'Estonian', code: 'et' },
+    { name: 'Filipino', code: 'fil' },
+    { name: 'Finnish', code: 'fi' },
+    { name: 'French', code: 'fr' },
+    { name: 'French (Canada)', code: 'fr-CA' },
+    { name: 'French (Switzerland)', code: 'fr-CH' },
+    { name: 'Frisian', code: 'fy' },
+    { name: 'Galician', code: 'gl' },
+    { name: 'Georgian', code: 'ka' },
+    { name: 'German', code: 'de' },
+    { name: 'Greek', code: 'el' },
+    { name: 'Guarani', code: 'gn' },
+    { name: 'Gujarati', code: 'gu' },
+    { name: 'Hebrew', code: 'he' },
+    { name: 'Hebrew (iw)', code: 'iw' },
+    { name: 'Hindi', code: 'hi' },
+    { name: 'Hungarian', code: 'hu' },
+    { name: 'Icelandic', code: 'is' },
+    { name: 'Indonesian', code: 'id' },
+    { name: 'Italian', code: 'it' },
+    { name: 'Japanese', code: 'ja' },
+    { name: 'Kannada', code: 'kn' },
+    { name: 'Khmer', code: 'km' },
+    { name: 'Korean', code: 'ko' },
+    { name: 'Kyrgyz', code: 'ky' },
+    { name: 'Lao', code: 'lo' },
+    { name: 'Latvian', code: 'lv' },
+    { name: 'Lingala', code: 'ln' },
+    { name: 'Lithuanian', code: 'lt' },
+    { name: 'Macedonian', code: 'mk' },
+    { name: 'Malay', code: 'ms' },
+    { name: 'Malayalam', code: 'ml' },
+    { name: 'Marathi', code: 'mr' },
+    { name: 'Nepali', code: 'ne' },
+    { name: 'Norwegian', code: 'no' },
+    { name: 'Norwegian Bokmal', code: 'nb' },
+    { name: 'Odia', code: 'or' },
+    { name: 'Persian', code: 'fa' },
+    { name: 'Polish', code: 'pl' },
+    { name: 'Portuguese', code: 'pt' },
+    { name: 'Portuguese (Brazil)', code: 'pt-BR' },
+    { name: 'Portuguese (Portugal)', code: 'pt-PT' },
+    { name: 'Punjabi', code: 'pa' },
+    { name: 'Punjabi (Pakistan)', code: 'pa-PK' },
+    { name: 'Romanian', code: 'ro' },
+    { name: 'Russian', code: 'ru' },
+    { name: 'Slovak', code: 'sk' },
+    { name: 'Slovenian', code: 'sl' },
+    { name: 'Spanish', code: 'es' },
+    { name: 'Spanish (Argentina)', code: 'es-AR' },
+    { name: 'Spanish (Chile)', code: 'es-CL' },
+    { name: 'Spanish (Colombia)', code: 'es-CO' },
+    { name: 'Spanish (Costa Rica)', code: 'es-CR' },
+    { name: 'Spanish (Ecuador)', code: 'es-EC' },
+    { name: 'Spanish (El Salvador)', code: 'es-SV' },
+    { name: 'Spanish (Guatemala)', code: 'es-GT' },
+    { name: 'Spanish (Haiti)', code: 'es-HT' },
+    { name: 'Spanish (Honduras)', code: 'es-HN' },
+    { name: 'Spanish (Latin America)', code: 'es-419' },
+    { name: 'Spanish (Mexico)', code: 'es-MX' },
+    { name: 'Spanish (Nicaragua)', code: 'es-NI' },
+    { name: 'Spanish (Panama)', code: 'es-PA' },
+    { name: 'Spanish (Paraguay)', code: 'es-PY' },
+    { name: 'Spanish (Peru)', code: 'es-PE' },
+    { name: 'Spanish (Puerto Rico)', code: 'es-PR' },
+    { name: 'Spanish (Spain)', code: 'es-ES' },
+    { name: 'Spanish (United States)', code: 'es-US' },
+    { name: 'Spanish (Uruguay)', code: 'es-UY' },
+    { name: 'Spanish (Venezuela)', code: 'es-VE' },
+    { name: 'Swahili', code: 'sw' },
+    { name: 'Swedish', code: 'sv' },
+    { name: 'Tagalog', code: 'tl' },
+    { name: 'Tamil', code: 'ta' },
+    { name: 'Telugu', code: 'te' },
+    { name: 'Thai', code: 'th' },
+    { name: 'Turkish', code: 'tr' },
+    { name: 'Ukrainian', code: 'uk' },
+    { name: 'Urdu', code: 'ur' },
+    { name: 'Uzbek', code: 'uz' },
+    { name: 'Vietnamese', code: 'vi' },
+    { name: 'Welsh', code: 'cy' },
+    { name: 'Zulu', code: 'zu' },
+];
+const LANGUAGES = LANGUAGE_OPTIONS.map(({ name }) => name);
+const LANGUAGE_MAP = Object.fromEntries(LANGUAGE_OPTIONS.map(({ name, code }) => [name, code]));
+const TRANSLATION_LANGUAGE = 'English';
+const TRANSLATION_LANGUAGE_CODE = LANGUAGE_MAP[TRANSLATION_LANGUAGE];
 const STATS = ['total', 'answered'];
 
 function renderLanguages() {
@@ -15,6 +126,9 @@ function renderLanguages() {
             <option value="${lang}">${lang}</option>`,
     ).join('');
     document.querySelectorAll('.language-select').forEach((el) => (el.innerHTML += html));
+    document.querySelectorAll('.translation-language').forEach((el) => {
+        el.value = TRANSLATION_LANGUAGE;
+    });
 }
 
 function getSelectedId(questions) {
@@ -156,8 +270,7 @@ async function renderQuestions(questions) {
         .filter((q) => filterLang.value === 'All' || filterLang.value === q.language)
         .map((q) => getQuestionHtml(q, selectedId))
         .join('');
-    document.getElementById('questions').innerHTML =
-        `<div style="min-height:100%" class="flex flex-col justify-center w-full">${html}</div>`;
+    document.getElementById('questions').innerHTML = `<div class="w-full">${html}</div>`;
     showElements();
 }
 
@@ -225,22 +338,25 @@ function showElements() {
 }
 
 function updateTranslationControls(container) {
-    const isEnglish = container.querySelector('.q-language').value === 'English';
+    const isTranslationLanguage =
+        container.querySelector('.q-language').value === TRANSLATION_LANGUAGE;
     const translationInput = container.querySelector('.q-translation');
     const translateBtn = container.querySelector('#translate-q-btn');
-    translationInput.disabled = isEnglish;
-    if (isEnglish) {
+    translationInput.disabled = isTranslationLanguage;
+    if (isTranslationLanguage) {
         translationInput.value = '';
     }
     if (translateBtn) {
-        translateBtn.disabled = isEnglish;
+        translateBtn.disabled = isTranslationLanguage;
     }
 }
 
 function showAddQuestionForm() {
     const modal = document.getElementById('edit-q-modal');
     modal.querySelector('.q-timestamp').value = '';
-    modal.querySelector('.q-language').value = localStorage.getItem('last-language') || 'English';
+    modal.querySelector('.q-language').value =
+        localStorage.getItem('last-language') || TRANSLATION_LANGUAGE;
+    modal.querySelector('.translation-language').value = TRANSLATION_LANGUAGE;
     modal.querySelector('.q-name').value = '';
     modal.querySelector('.q-name-translation').value = '';
     modal.querySelector('.q-text').value = '';
@@ -261,6 +377,7 @@ function showEditQuestionForm(e) {
     const modal = document.getElementById('edit-q-modal');
     modal.querySelector('.q-timestamp').value = timestamp;
     modal.querySelector('.q-language').value = q.language;
+    modal.querySelector('.translation-language').value = TRANSLATION_LANGUAGE;
     modal.querySelector('.q-name').value = q.name;
     modal.querySelector('.q-name-translation').value = q.nameTranslation;
     modal.querySelector('.q-text').value = q.text;
@@ -320,49 +437,12 @@ if (typeof google === 'undefined') {
     window.google = googleMock;
 }
 
-async function injectCatSvg() {
-    const img = document.querySelector('#no-questions img.cat-img');
-    if (!img) return;
-    try {
-        const resp = await fetch(img.src);
-        const svgText = await resp.text();
-        const parser = new DOMParser();
-        const svgDoc = parser.parseFromString(svgText, 'image/svg+xml');
-        const svg = svgDoc.documentElement;
-        img.classList.forEach((c) => svg.classList.add(c));
-        if (!svg.getAttribute('viewBox')) {
-            const width = svg.getAttribute('width');
-            const height = svg.getAttribute('height');
-            if (width && height) {
-                svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
-            }
-        }
-        svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
-        svg.removeAttribute('width');
-        svg.removeAttribute('height');
-        svg.querySelectorAll('[fill]').forEach((el) => {
-            const fill = el.getAttribute('fill').toLowerCase();
-            if (fill === 'white') {
-                el.removeAttribute('fill');
-                el.classList.add('cat-interior');
-            } else if (fill !== 'none') {
-                el.removeAttribute('fill');
-                el.classList.add('cat-line');
-            }
-        });
-        img.replaceWith(svg);
-    } catch {
-        // leave img intact if fetch fails
-    }
-}
-
 let questions = [];
 let updateTime = 0;
 
 (async () => {
     renderLanguages();
     showElements();
-    injectCatSvg();
 
     const themeCheckbox = document.getElementById('theme-checkbox');
     themeCheckbox.checked = (localStorage.getItem('theme') || 'dim') === 'dim';
@@ -465,13 +545,13 @@ let updateTime = 0;
             showErrorAlert("Can't translate empty text :)");
             return;
         }
-        if (lang === 'en') {
-            showErrorAlert('Please select a different language :)');
+        if (lang === TRANSLATION_LANGUAGE_CODE) {
+            showErrorAlert(`Please select a different language than ${TRANSLATION_LANGUAGE} :)`);
             return;
         }
         btn.disabled = true;
         btn.innerHTML = '<span class="loading loading-infinity loading-xs"></span>';
-        const translation = await getTranslation(text, lang);
+        const translation = await getTranslation(text, lang, TRANSLATION_LANGUAGE_CODE);
         btn.textContent = 'Translate';
         btn.disabled = false;
         container.querySelector('.q-translation').value = translation ?? '';
@@ -505,8 +585,8 @@ let updateTime = 0;
             showErrorAlert('Please specify question text');
             return;
         }
-        if (!newQ.translation && newQ.language !== 'English') {
-            showErrorAlert('Please add translation for non-English questions');
+        if (!newQ.translation && newQ.language !== TRANSLATION_LANGUAGE) {
+            showErrorAlert(`Please add a ${TRANSLATION_LANGUAGE} translation for this question`);
             return;
         }
 

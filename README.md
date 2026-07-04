@@ -37,18 +37,6 @@ To only compile CSS:
 npm run css
 ```
 
-## Translation language
-
-Question translations are treated as [frontend/script.js](/home/nandisha/Documents/multi-lang-qa/frontend/script.js:10)'s `TRANSLATION_LANGUAGE`, which defaults to `English`.
-
-If you want the shared translation language to be something else:
-
-1. Update `TRANSLATION_LANGUAGE` in `frontend/script.js`.
-2. Make sure that language also exists in `LANGUAGES`.
-3. Make sure `LANGUAGE_MAP` contains the correct language code for it.
-
-For example, to make all question translations use French, set `TRANSLATION_LANGUAGE` to `French`.
-
 ## Releases
 
 Pushing a git tag publishes a versioned snapshot of the frontend to GitHub Pages (e.g. `v/2.0.2/`), which stays accessible at that URL permanently. This lets the Apps Script deployment load a pinned version of the assets without being affected by future updates.

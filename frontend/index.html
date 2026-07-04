@@ -19,12 +19,11 @@
     <script crossorigin src="./script.js" defer></script>
 
     <!-- Production: replace the local block above with this, updating the version to the latest git tag.
-    <link rel="icon" type="image/svg+xml" href="https://live-miracles.github.io/multi-lang-qa/logo.svg" />
-    <link rel="stylesheet" href="https://live-miracles.github.io/multi-lang-qa/v/3.1.2/output.css" />
-    <script src="https://live-miracles.github.io/multi-lang-qa/v/3.1.2/bundle.umd.min.js"></script>
-    <script crossorigin src="https://live-miracles.github.io/multi-lang-qa/v/3.1.2/test-utils.js" defer></script>
-    <script crossorigin src="https://live-miracles.github.io/multi-lang-qa/v/3.1.2/google-api.js" defer></script>
-    <script crossorigin src="https://live-miracles.github.io/multi-lang-qa/v/3.1.2/script.js" defer></script>
+    <link rel="stylesheet" href="https://live-miracles.github.io/multi-lang-qa/v/3.2.0/output.css" />
+    <script src="https://live-miracles.github.io/multi-lang-qa/v/3.2.0/bundle.umd.min.js"></script>
+    <script crossorigin src="https://live-miracles.github.io/multi-lang-qa/v/3.2.0/test-utils.js" defer></script>
+    <script crossorigin src="https://live-miracles.github.io/multi-lang-qa/v/3.2.0/google-api.js" defer></script>
+    <script crossorigin src="https://live-miracles.github.io/multi-lang-qa/v/3.2.0/script.js" defer></script>
     -->
   </head>
   <body class="bg-base-100 text-base-content flex min-h-screen min-w-155 flex-col">
@@ -252,7 +251,7 @@
             </div>
 
             <div class="flex flex-row justify-end gap-2">
-              <select class="translation-language language-select select select-sm w-fit" disabled></select>
+              <select class="translation-language language-select select select-sm w-fit"></select>
               <input type="text" placeholder="Name Translation" class="q-name-translation input input-sm max-w-40 min-w-32" />
             </div>
           </div>
@@ -339,7 +338,7 @@
         <div class="modal-action">
           <form method="dialog" class="flex w-full justify-end gap-2">
             <button class="btn btn-sm">Cancel</button>
-            <button id="delete-all-q-btn" class="btn btn-error btn-sm">Delete all questions</button>
+            <button type="button" id="delete-all-q-btn" class="btn btn-error btn-sm">Delete all questions</button>
           </form>
         </div>
       </div>

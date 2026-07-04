@@ -116,8 +116,7 @@ const LANGUAGE_OPTIONS = [
 ];
 const LANGUAGES = LANGUAGE_OPTIONS.map(({ name }) => name);
 const LANGUAGE_MAP = Object.fromEntries(LANGUAGE_OPTIONS.map(({ name, code }) => [name, code]));
-const TRANSLATION_LANGUAGE = 'English';
-const TRANSLATION_LANGUAGE_CODE = LANGUAGE_MAP[TRANSLATION_LANGUAGE];
+const DEFAULT_LANGUAGE = 'English';
 const STATS = ['total', 'answered'];
 
 function renderLanguages() {
@@ -127,7 +126,7 @@ function renderLanguages() {
     ).join('');
     document.querySelectorAll('.language-select').forEach((el) => (el.innerHTML += html));
     document.querySelectorAll('.translation-language').forEach((el) => {
-        el.value = TRANSLATION_LANGUAGE;
+        el.value = DEFAULT_LANGUAGE;
     });
 }
 
@@ -338,29 +337,48 @@ function showElements() {
 }
 
 function updateTranslationControls(container) {
-    const isTranslationLanguage =
-        container.querySelector('.q-language').value === TRANSLATION_LANGUAGE;
+    const sourceLanguage = container.querySelector('.q-language').value;
+    const targetLanguage = container.querySelector('.translation-language').value;
+    const isSameLanguage = sourceLanguage === targetLanguage;
     const translationInput = container.querySelector('.q-translation');
     const translateBtn = container.querySelector('#translate-q-btn');
-    translationInput.disabled = isTranslationLanguage;
-    if (isTranslationLanguage) {
+    translationInput.disabled = isSameLanguage;
+    if (isSameLanguage) {
         translationInput.value = '';
+        setTextareaError(translationInput, false);
     }
     if (translateBtn) {
-        translateBtn.disabled = isTranslationLanguage;
+        translateBtn.disabled = isSameLanguage;
     }
+}
+
+function setTextareaError(textarea, hasError) {
+    textarea.classList.toggle('textarea-error', hasError);
+    if (textarea.classList.contains('q-text')) {
+        textarea.classList.toggle('textarea-primary', !hasError);
+        textarea.classList.toggle('text-primary', !hasError);
+    }
+    textarea.setAttribute('aria-invalid', hasError ? 'true' : 'false');
+}
+
+function setInputError(input, hasError) {
+    input.classList.toggle('input-error', hasError);
+    input.setAttribute('aria-invalid', hasError ? 'true' : 'false');
 }
 
 function showAddQuestionForm() {
     const modal = document.getElementById('edit-q-modal');
     modal.querySelector('.q-timestamp').value = '';
     modal.querySelector('.q-language').value =
-        localStorage.getItem('last-language') || TRANSLATION_LANGUAGE;
-    modal.querySelector('.translation-language').value = TRANSLATION_LANGUAGE;
+        localStorage.getItem('last-language') || DEFAULT_LANGUAGE;
+    modal.querySelector('.translation-language').value =
+        localStorage.getItem('last-translation-language') || DEFAULT_LANGUAGE;
     modal.querySelector('.q-name').value = '';
     modal.querySelector('.q-name-translation').value = '';
     modal.querySelector('.q-text').value = '';
+    setTextareaError(modal.querySelector('.q-text'), false);
     modal.querySelector('.q-translation').value = '';
+    setTextareaError(modal.querySelector('.q-translation'), false);
     updateTranslationControls(modal);
     document.getElementById('update-q-btn').textContent = 'Add Question';
     modal.showModal();
@@ -377,11 +395,14 @@ function showEditQuestionForm(e) {
     const modal = document.getElementById('edit-q-modal');
     modal.querySelector('.q-timestamp').value = timestamp;
     modal.querySelector('.q-language').value = q.language;
-    modal.querySelector('.translation-language').value = TRANSLATION_LANGUAGE;
+    modal.querySelector('.translation-language').value =
+        localStorage.getItem('last-translation-language') || DEFAULT_LANGUAGE;
     modal.querySelector('.q-name').value = q.name;
     modal.querySelector('.q-name-translation').value = q.nameTranslation;
     modal.querySelector('.q-text').value = q.text;
+    setTextareaError(modal.querySelector('.q-text'), false);
     modal.querySelector('.q-translation').value = q.translation;
+    setTextareaError(modal.querySelector('.q-translation'), false);
     updateTranslationControls(modal);
     document.getElementById('update-q-btn').textContent = 'Update';
     modal.showModal();
@@ -398,6 +419,7 @@ function showDeleteQuestionForm(e) {
 function showDeleteAllQuestionsForm() {
     const modal = document.getElementById('delete-all-q-modal');
     modal.querySelector('.confirm-text').value = '';
+    setInputError(modal.querySelector('.confirm-text'), false);
     modal.showModal();
 }
 
@@ -535,38 +557,59 @@ let updateTime = 0;
         }),
     );
 
+    document.querySelectorAll('.translation-language').forEach((elem) =>
+        elem.addEventListener('change', (e) => {
+            updateTranslationControls(e.target.closest('dialog'));
+        }),
+    );
+
     document.getElementById('translate-q-btn').addEventListener('click', async (e) => {
         const btn = e.target;
         const container = btn.closest('.q-form');
-        const language = container.querySelector('.q-language').value;
-        const lang = LANGUAGE_MAP[language];
+        const sourceLanguage = container.querySelector('.q-language').value;
+        const targetLanguage = container.querySelector('.translation-language').value;
+        const sourceLang = LANGUAGE_MAP[sourceLanguage];
+        const targetLang = LANGUAGE_MAP[targetLanguage];
         const text = container.querySelector('.q-text').value.trim();
         if (!text) {
             showErrorAlert("Can't translate empty text :)");
             return;
         }
-        if (lang === TRANSLATION_LANGUAGE_CODE) {
-            showErrorAlert(`Please select a different language than ${TRANSLATION_LANGUAGE} :)`);
+        if (sourceLanguage === targetLanguage) {
+            showErrorAlert('Please select two different languages :)');
             return;
         }
         btn.disabled = true;
         btn.innerHTML = '<span class="loading loading-infinity loading-xs"></span>';
-        const translation = await getTranslation(text, lang, TRANSLATION_LANGUAGE_CODE);
+        const translation = await getTranslation(text, sourceLang, targetLang);
         btn.textContent = 'Translate';
         btn.disabled = false;
-        container.querySelector('.q-translation').value = translation ?? '';
+        const translationInput = container.querySelector('.q-translation');
+        translationInput.value = translation ?? '';
+        setTextareaError(translationInput, !translationInput.value.trim());
     });
 
     document
         .getElementById('edit-q-modal')
         .querySelectorAll('textarea')
         .forEach((textarea) => {
+            textarea.addEventListener('input', (e) => {
+                if (e.target.matches('.q-text, .q-translation') && e.target.value.trim()) {
+                    setTextareaError(e.target, false);
+                }
+            });
             textarea.addEventListener('keydown', (e) => {
                 if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
                     document.getElementById('update-q-btn').click();
                 }
             });
         });
+
+    document.querySelector('#delete-all-q-modal .confirm-text').addEventListener('input', (e) => {
+        if (e.target.value.trim()) {
+            setInputError(e.target, false);
+        }
+    });
 
     document.getElementById('update-q-btn').addEventListener('click', async (e) => {
         const modal = document.getElementById('edit-q-modal');
@@ -575,6 +618,7 @@ let updateTime = 0;
         const newQ = {
             timestamp,
             language: container.querySelector('.q-language').value.trim(),
+            targetLanguage: container.querySelector('.translation-language').value.trim(),
             name: container.querySelector('.q-name').value.trim(),
             nameTranslation: container.querySelector('.q-name-translation').value.trim(),
             text: container.querySelector('.q-text').value.trim(),
@@ -582,15 +626,21 @@ let updateTime = 0;
         };
 
         if (!newQ.text) {
-            showErrorAlert('Please specify question text');
+            const questionTextInput = container.querySelector('.q-text');
+            setTextareaError(questionTextInput, true);
+            questionTextInput.focus();
             return;
         }
-        if (!newQ.translation && newQ.language !== TRANSLATION_LANGUAGE) {
-            showErrorAlert(`Please add a ${TRANSLATION_LANGUAGE} translation for this question`);
+        if (!newQ.translation && newQ.language !== newQ.targetLanguage) {
+            const translationInput = container.querySelector('.q-translation');
+            setTextareaError(translationInput, true);
+            translationInput.focus();
             return;
         }
 
         localStorage.setItem('last-language', newQ.language);
+        localStorage.setItem('last-translation-language', newQ.targetLanguage);
+        delete newQ.targetLanguage;
         modal.close();
 
         if (timestamp) {
@@ -625,7 +675,9 @@ let updateTime = 0;
                 container.querySelector('.q-name').value = '';
                 container.querySelector('.q-name-translation').value = '';
                 container.querySelector('.q-text').value = '';
+                setTextareaError(container.querySelector('.q-text'), false);
                 container.querySelector('.q-translation').value = '';
+                setTextareaError(container.querySelector('.q-translation'), false);
                 fetchAndRenderQuestions();
             }
         }
@@ -648,15 +700,18 @@ let updateTime = 0;
 
     document.getElementById('delete-all-q-btn').addEventListener('click', async (e) => {
         const container = e.target.closest('.modal-box');
-        const confirmText = container.querySelector('.confirm-text').value.trim();
+        const confirmInput = container.querySelector('.confirm-text');
+        const confirmText = confirmInput.value.trim();
         if (confirmText !== 'Delete all questions') {
-            showErrorAlert('Please type "Delete all questions" to confirm');
+            setInputError(confirmInput, true);
+            confirmInput.focus();
             return;
         }
 
         questions.splice(1, questions.length);
         updateTime = Date.now();
         renderQuestions(questions);
+        document.getElementById('delete-all-q-modal').close();
         await deleteAllQuestions();
     });
 

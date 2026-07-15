@@ -47,6 +47,10 @@ await fs.writeFile(
             timeZone: 'Asia/Kolkata',
             exceptionLogging: 'STACKDRIVER',
             runtimeVersion: 'V8',
+            webapp: {
+                executeAs: 'USER_DEPLOYING',
+                access: 'ANYONE',
+            },
         },
         null,
         4,

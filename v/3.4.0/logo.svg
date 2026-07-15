@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none" stroke="oklch(45% 0.24 277.023)" stroke-linecap="round" stroke-linejoin="round">
+  <defs>
+    <clipPath id="qg">
+      <circle cx="40" cy="40" r="33"/>
+    </clipPath>
+  </defs>
+  <!-- Globe outer circle — doubles as the Q's body -->
+  <circle cx="40" cy="40" r="33" stroke-width="5.5"/>
+  <!-- Equator -->
+  <line x1="7" y1="40" x2="73" y2="40" stroke-width="3" clip-path="url(#qg)"/>
+  <!-- Central meridian (vertical oval) -->
+  <ellipse cx="40" cy="40" rx="13" ry="33" stroke-width="3" clip-path="url(#qg)"/>
+  <!-- Upper parallel -->
+  <line x1="14" y1="23" x2="66" y2="23" stroke-width="2" clip-path="url(#qg)"/>
+  <!-- Lower parallel -->
+  <line x1="14" y1="57" x2="66" y2="57" stroke-width="2" clip-path="url(#qg)"/>
+  <!-- Q tail -->
+  <line x1="50" y1="55" x2="78" y2="70" stroke-width="7.5"/>
+</svg>

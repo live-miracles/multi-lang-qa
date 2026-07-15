@@ -60,3 +60,28 @@ jobs:
                   publish_branch: gh-pages
                   publish_dir: ./site
                   keep_files: true
+
+            - name: Build Apps Script project
+              if: startsWith(github.ref, 'refs/tags/v')
+              run: npm run apps-script:build -- "$GITHUB_REF_NAME"
+
+            - name: Configure clasp
+              if: startsWith(github.ref, 'refs/tags/v')
+              env:
+                  CLASPRC_JSON: ${{ secrets.CLASPRC_JSON }}
+                  APPS_SCRIPT_ID: ${{ secrets.APPS_SCRIPT_ID }}
+              run: |
+                  printf '%s' "$CLASPRC_JSON" > ~/.clasprc.json
+                  printf '{"scriptId":"%s","rootDir":"dist/apps-script"}\n' "$APPS_SCRIPT_ID" > .clasp.json
+
+            - name: Deploy Apps Script
+              if: startsWith(github.ref, 'refs/tags/v')
+              env:
+                  APPS_SCRIPT_DEPLOYMENT_ID: ${{ secrets.APPS_SCRIPT_DEPLOYMENT_ID }}
+              run: |
+                  npx clasp push --force
+                  VERSION_OUTPUT=$(npx clasp version "$GITHUB_REF_NAME")
+                  echo "$VERSION_OUTPUT"
+                  VERSION_NUMBER=$(echo "$VERSION_OUTPUT" | grep -Eo '[0-9]+' | tail -1)
+                  test -n "$VERSION_NUMBER"
+                  npx clasp deploy --deploymentId "$APPS_SCRIPT_DEPLOYMENT_ID" --versionNumber "$VERSION_NUMBER" --description "$GITHUB_REF_NAME"

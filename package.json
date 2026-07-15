@@ -7,10 +7,12 @@
     "scripts": {
         "dev": "node build-tools/dev.mjs",
         "css": "tailwindcss -i ./frontend/input.css -o ./frontend/output.css",
+        "apps-script:build": "node build-tools/build-apps-script.mjs",
         "format": "prettier --write .",
         "format:check": "prettier --check ."
     },
     "devDependencies": {
+        "@google/clasp": "^3.3.0",
         "@tailwindcss/cli": "^4.2.1",
         "@tailwindcss/typography": "^0.5.19",
         "browser-sync": "^3.0.4",

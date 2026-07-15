@@ -1,2 +1,6 @@
 node_modules/
+.npm-cache/
 frontend/output.css
+dist/
+.clasp.json
+.clasprc.json

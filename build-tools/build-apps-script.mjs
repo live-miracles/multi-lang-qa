@@ -15,6 +15,7 @@ const pagesBaseUrl = (
     process.env.PAGES_BASE_URL || 'https://live-miracles.github.io/multi-lang-qa'
 ).replace(/\/$/, '');
 const versionBaseUrl = `${pagesBaseUrl}/v/${version}`;
+const appTitle = `Multi Lang QA ${version}`;
 const outDir = path.join(root, 'dist', 'apps-script');
 
 const productionAssetBlock = `    <link rel="icon" type="image/svg+xml" href="${versionBaseUrl}/logo.svg" />
@@ -38,8 +39,12 @@ if (appsScriptIndex === indexHtml) {
     process.exit(1);
 }
 
-await fs.writeFile(path.join(outDir, 'Index.html'), appsScriptIndex);
-await fs.copyFile(path.join(root, 'Code.js'), path.join(outDir, 'Code.js'));
+const titledIndex = appsScriptIndex.replace(/<title>.*?<\/title>/, `<title>${appTitle}</title>`);
+const codeJs = await fs.readFile(path.join(root, 'Code.js'), 'utf8');
+const titledCodeJs = codeJs.replace(".setTitle('Multi Lang QA')", `.setTitle('${appTitle}')`);
+
+await fs.writeFile(path.join(outDir, 'Index.html'), titledIndex);
+await fs.writeFile(path.join(outDir, 'Code.js'), titledCodeJs);
 await fs.writeFile(
     path.join(outDir, 'appsscript.json'),
     `${JSON.stringify(

@@ -218,5 +218,5 @@ function getTranslation(text, sourceLanguage, targetLanguage = 'en') {
 }
 
 function doGet() {
-    return HtmlService.createHtmlOutputFromFile('Index');
+    return HtmlService.createHtmlOutputFromFile('Index').setTitle('Multi Lang QA');
 }

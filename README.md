@@ -46,7 +46,7 @@ npm version 2.0.2 --no-git-tag-version
 git add package.json package-lock.json
 git commit -m "Release v2.0.2"
 git tag v2.0.2
-git push origin master v2.0.2
+git push origin master --tags
 ```
 
 `npm version 2.0.2 --no-git-tag-version` updates the version fields in `package.json` and `package-lock.json`, but does not create a git commit or tag. The commit and tag are created explicitly in the next commands so the release history stays easy to review.

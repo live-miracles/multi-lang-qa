@@ -42,8 +42,16 @@ npm run css
 Pushing a git tag publishes a versioned snapshot of the frontend to GitHub Pages (e.g. `v/2.0.2/`), which stays accessible at that URL permanently. This lets the Apps Script deployment load a pinned version of the assets without being affected by future updates.
 
 ```bash
-git tag v2.0.2 && git push --tags
+npm version 2.0.2 --no-git-tag-version
+git add package.json package-lock.json
+git commit -m "Release v2.0.2"
+git tag v2.0.2
+git push origin master v2.0.2
 ```
+
+`npm version 2.0.2 --no-git-tag-version` updates the version fields in `package.json` and `package-lock.json`, but does not create a git commit or tag. The commit and tag are created explicitly in the next commands so the release history stays easy to review.
+
+The tag version must match `package.json`. GitHub Actions checks this before deploying, so tagging `v2.0.2` while `package.json` says `2.0.1` will fail the release.
 
 For tag releases, GitHub Actions also generates and deploys the Google Apps Script project with `clasp`. The generated Apps Script `Index.html` keeps the full app markup from `frontend/index.html`, but rewrites the CSS and JavaScript URLs to the tagged GitHub Pages assets.
 

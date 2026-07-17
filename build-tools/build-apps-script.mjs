@@ -43,6 +43,11 @@ const titledIndex = appsScriptIndex.replace(/<title>.*?<\/title>/, `<title>${app
 const codeJs = await fs.readFile(path.join(root, 'Code.js'), 'utf8');
 const titledCodeJs = codeJs.replace(".setTitle('Multi Lang QA')", `.setTitle('${appTitle}')`);
 
+if (titledCodeJs === codeJs) {
+    console.error("Could not find .setTitle('Multi Lang QA') to replace in Code.js.");
+    process.exit(1);
+}
+
 await fs.writeFile(path.join(outDir, 'Index.html'), titledIndex);
 await fs.writeFile(path.join(outDir, 'Code.js'), titledCodeJs);
 await fs.writeFile(

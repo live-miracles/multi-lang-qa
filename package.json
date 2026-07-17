@@ -1,6 +1,6 @@
 {
     "name": "multi-lang-qa",
-    "version": "2.0.1",
+    "version": "3.6.0",
     "description": "Multi-language Q&A tool for live events, deployed as a Google Apps Script web app.",
     "private": true,
     "type": "module",
@@ -8,6 +8,7 @@
         "dev": "node build-tools/dev.mjs",
         "css": "tailwindcss -i ./frontend/input.css -o ./frontend/output.css",
         "apps-script:build": "node build-tools/build-apps-script.mjs",
+        "version:check": "node build-tools/check-version.mjs",
         "format": "prettier --write .",
         "format:check": "prettier --check ."
     },

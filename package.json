@@ -1,6 +1,6 @@
 {
     "name": "multi-lang-qa",
-    "version": "3.6.0",
+    "version": "3.7.0",
     "description": "Multi-language Q&A tool for live events, deployed as a Google Apps Script web app.",
     "private": true,
     "type": "module",

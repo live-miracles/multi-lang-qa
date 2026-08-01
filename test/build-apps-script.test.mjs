@@ -23,7 +23,7 @@ function createFixture() {
     );
     fs.writeFileSync(
         path.join(fixtureDir, 'Code.js'),
-        "function doGet() {\n    return HtmlService.createHtmlOutputFromFile('Index').setTitle('Multi Lang QA');\n}\n",
+        "function doGet() {\n    return HtmlService.createHtmlOutputFromFile('Index')\n        .setTitle('Multi Lang QA')\n        .addMetaTag('viewport', 'width=device-width, initial-scale=1');\n}\n",
     );
 
     return fixtureDir;
@@ -52,5 +52,9 @@ test('Apps Script build injects hosted PNG favicon into HTML and HtmlService out
     assert.match(
         codeJs,
         /\.setTitle\('Multi Lang QA 1\.2\.3'\)\.setFaviconUrl\('https:\/\/example\.test\/multi-lang-qa\/v\/1\.2\.3\/logo\.png'\)/,
+    );
+    assert.match(
+        codeJs,
+        /\.addMetaTag\('viewport', 'width=device-width, initial-scale=1'\)/,
     );
 });

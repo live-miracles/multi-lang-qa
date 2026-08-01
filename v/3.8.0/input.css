@@ -1,0 +1,20 @@
+@import 'tailwindcss';
+@plugin "@tailwindcss/typography";
+@plugin "daisyui" {
+    themes: light, dim;
+}
+
+.q-answered > .q-translation {
+    @apply line-through;
+}
+
+.q-answered {
+    @apply border-primary;
+}
+
+.cat-line {
+    fill: currentColor;
+}
+.cat-interior {
+    fill: var(--color-base-100);
+}

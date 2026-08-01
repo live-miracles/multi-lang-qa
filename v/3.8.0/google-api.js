@@ -1,0 +1,159 @@
+async function getAllQuestions() {
+    const localStorageKey = 'questions';
+    try {
+        const res = await new Promise((resolve, reject) => {
+            window.google.script.run
+                .withFailureHandler((error) => reject(error))
+                .withSuccessHandler((data) => resolve(data))
+                .getAllQuestions();
+        });
+        if (res.success === false) {
+            showErrorAlert(res.error);
+            return null;
+        }
+        localStorage.setItem(localStorageKey, JSON.stringify(res.questions));
+        return res.questions;
+    } catch (error) {
+        showErrorAlert('Error loading questions: ' + error);
+        const saved = localStorage.getItem(localStorageKey);
+        return saved ? JSON.parse(saved) : null;
+    }
+}
+
+async function addQuestion(q) {
+    try {
+        showSavingBadge(true);
+        const res = await new Promise((resolve, reject) => {
+            window.google.script.run
+                .withFailureHandler((error) => reject(error))
+                .withSuccessHandler((data) => resolve(data))
+                .addQuestion(q);
+        });
+        showSavingBadge(false);
+        if (res.success === false) {
+            showErrorAlert(res.error);
+        } else {
+            hideAlerts();
+        }
+        return res;
+    } catch (error) {
+        showErrorAlert(error);
+        return { success: false };
+    }
+}
+
+async function updateQuestion(newQ) {
+    try {
+        showSavingBadge(true);
+        const res = await new Promise((resolve, reject) => {
+            window.google.script.run
+                .withFailureHandler((error) => reject(error))
+                .withSuccessHandler((data) => resolve(data))
+                .updateQuestion(newQ);
+        });
+        updateTime = Date.now();
+        if (res.success === false) {
+            showErrorAlert(res.error);
+        } else {
+            hideAlerts();
+        }
+        return res;
+    } catch (error) {
+        showErrorAlert(error);
+        return { success: false };
+    }
+}
+
+async function updateQuestionStatus(newQ) {
+    try {
+        showSavingBadge(true);
+        const res = await new Promise((resolve, reject) => {
+            window.google.script.run
+                .withFailureHandler((error) => reject(error))
+                .withSuccessHandler((data) => resolve(data))
+                .updateQuestionStatus(newQ);
+        });
+        updateTime = Date.now();
+        if (res.success === false) {
+            showErrorAlert(res.error);
+        } else {
+            hideAlerts();
+        }
+    } catch (error) {
+        showErrorAlert(error);
+    }
+}
+
+async function updateSelectedQuestion(timestamp) {
+    try {
+        showSavingBadge(true);
+        const res = await new Promise((resolve, reject) => {
+            window.google.script.run
+                .withFailureHandler((error) => reject(error))
+                .withSuccessHandler((data) => resolve(data))
+                .updateSelectedQuestion(timestamp);
+        });
+        updateTime = Date.now();
+        if (res.success === false) {
+            showErrorAlert(res.error);
+        } else {
+            hideAlerts();
+        }
+    } catch (error) {
+        showErrorAlert(error);
+    }
+}
+
+async function deleteQuestion(timestamp) {
+    try {
+        showSavingBadge(true);
+        const res = await new Promise((resolve, reject) => {
+            window.google.script.run
+                .withFailureHandler((error) => reject(error))
+                .withSuccessHandler((data) => resolve(data))
+                .deleteQuestion(timestamp);
+        });
+        updateTime = Date.now();
+        if (res.success === false) {
+            showErrorAlert(res.error);
+        } else {
+            hideAlerts();
+        }
+    } catch (error) {
+        showErrorAlert(error);
+    }
+}
+
+async function deleteAllQuestions() {
+    try {
+        showSavingBadge(true);
+        const res = await new Promise((resolve, reject) => {
+            window.google.script.run
+                .withFailureHandler((error) => reject(error))
+                .withSuccessHandler((data) => resolve(data))
+                .deleteAllQuestions();
+        });
+        updateTime = Date.now();
+        if (res.success === false) {
+            showErrorAlert(res.error);
+        } else {
+            hideAlerts();
+        }
+    } catch (error) {
+        showErrorAlert(error);
+    }
+}
+
+async function getTranslation(text, sourceLanguage, targetLanguage = 'en') {
+    try {
+        const res = await new Promise((resolve, reject) => {
+            window.google.script.run
+                .withFailureHandler((error) => reject(error))
+                .withSuccessHandler((data) => resolve(data))
+                .getTranslation(text, sourceLanguage, targetLanguage);
+        });
+        return res;
+    } catch (error) {
+        showErrorAlert(error);
+    }
+}

@@ -476,22 +476,29 @@ let updateTime = 0;
 
     let zoom = parseFloat(localStorage.getItem('zoom') || '1');
     const zoomStatus = document.getElementById('zoom-status');
+    const desktopZoomQuery = window.matchMedia('(min-width: 640px)');
     function setZoom(nextZoom) {
         zoom = Math.max(0.5, Math.min(2, Math.round(nextZoom * 10) / 10));
         applyZoom();
     }
     function applyZoom() {
-        document.body.style.minHeight = `${100 / zoom}vh`;
+        const effectiveZoom = desktopZoomQuery.matches ? zoom : 1;
+        document.body.style.minHeight = `${100 / effectiveZoom}vh`;
         if ('zoom' in document.body.style) {
-            document.body.style.zoom = zoom;
+            document.body.style.zoom = effectiveZoom;
         } else {
             // Firefox < 126 fallback
-            document.body.style.transform = `scale(${zoom})`;
+            document.body.style.transform = `scale(${effectiveZoom})`;
             document.body.style.transformOrigin = 'top center';
-            document.body.style.width = `${100 / zoom}%`;
+            document.body.style.width = `${100 / effectiveZoom}%`;
         }
         zoomStatus.textContent = Math.round(zoom * 100) + '%';
         localStorage.setItem('zoom', zoom);
+    }
+    if (desktopZoomQuery.addEventListener) {
+        desktopZoomQuery.addEventListener('change', applyZoom);
+    } else {
+        desktopZoomQuery.addListener(applyZoom);
     }
     document.getElementById('zoom-in').addEventListener('click', () => {
         setZoom(zoom + 0.1);

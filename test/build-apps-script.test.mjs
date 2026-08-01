@@ -53,8 +53,5 @@ test('Apps Script build injects hosted PNG favicon into HTML and HtmlService out
         codeJs,
         /\.setTitle\('Multi Lang QA 1\.2\.3'\)\.setFaviconUrl\('https:\/\/example\.test\/multi-lang-qa\/v\/1\.2\.3\/logo\.png'\)/,
     );
-    assert.match(
-        codeJs,
-        /\.addMetaTag\('viewport', 'width=device-width, initial-scale=1'\)/,
-    );
+    assert.match(codeJs, /\.addMetaTag\('viewport', 'width=device-width, initial-scale=1'\)/);
 });

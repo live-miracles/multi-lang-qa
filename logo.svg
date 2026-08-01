@@ -1,19 +1,22 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none" stroke="oklch(45% 0.24 277.023)" stroke-linecap="round" stroke-linejoin="round">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none" stroke="#dc2626" stroke-linecap="round" stroke-linejoin="round">
   <defs>
     <clipPath id="qg">
-      <circle cx="40" cy="40" r="33"/>
+      <circle cx="50" cy="50" r="33"/>
     </clipPath>
   </defs>
-  <!-- Globe outer circle — doubles as the Q's body -->
-  <circle cx="40" cy="40" r="33" stroke-width="5.5"/>
+  <circle cx="50" cy="50" r="47" fill="#fff" stroke="none"/>
+  <!-- Globe outer circle - doubles as the Q's body -->
+  <circle cx="50" cy="50" r="33" stroke-width="7"/>
   <!-- Equator -->
-  <line x1="7" y1="40" x2="73" y2="40" stroke-width="3" clip-path="url(#qg)"/>
+  <line x1="17" y1="50" x2="83" y2="50" stroke-width="4.5" clip-path="url(#qg)"/>
   <!-- Central meridian (vertical oval) -->
-  <ellipse cx="40" cy="40" rx="13" ry="33" stroke-width="3" clip-path="url(#qg)"/>
+  <ellipse cx="50" cy="50" rx="13" ry="33" stroke-width="4.5" clip-path="url(#qg)"/>
   <!-- Upper parallel -->
-  <line x1="14" y1="23" x2="66" y2="23" stroke-width="2" clip-path="url(#qg)"/>
+  <line x1="24" y1="33" x2="76" y2="33" stroke-width="3.25" clip-path="url(#qg)"/>
   <!-- Lower parallel -->
-  <line x1="14" y1="57" x2="66" y2="57" stroke-width="2" clip-path="url(#qg)"/>
+  <line x1="24" y1="67" x2="76" y2="67" stroke-width="3.25" clip-path="url(#qg)"/>
+  <!-- Gap around Q tail -->
+  <line x1="60" y1="65" x2="88" y2="80" stroke="#fff" stroke-width="13"/>
   <!-- Q tail -->
-  <line x1="50" y1="55" x2="78" y2="70" stroke-width="7.5"/>
+  <line x1="60" y1="65" x2="88" y2="80" stroke-width="7.5"/>
 </svg>

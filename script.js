@@ -179,7 +179,7 @@ const STAR_SVG =
 
 function getQuestionHtml(q, selectedId) {
     return `
-        <div class="question relative bg-base-200 rounded-box mb-3 border border-base-content/15 shadow-md flex items-stretch overflow-hidden ${'q-' + q.status}"
+        <div class="question relative bg-base-200 rounded-box mb-3 border border-base-content/15 shadow-md flex items-stretch overflow-hidden text-sm sm:text-base ${'q-' + q.status}"
             id="${q.timestamp}">
           ${
               q.timestamp === selectedId
@@ -192,7 +192,7 @@ function getQuestionHtml(q, selectedId) {
                   : ''
           }
 
-          <div class="flex flex-col items-center justify-center gap-2 px-2.5 py-2 border-r border-base-content/10 z-10">
+          <div class="flex flex-col items-center justify-center gap-2 px-2 py-2 border-r border-base-content/10 z-10 sm:px-2.5">
             <label class="swap cursor-pointer" title="Mark as done">
               <input type="checkbox" data-status="answered" ${q.status === 'answered' ? 'checked' : ''} onchange="updateStatus(event)" />
               <svg class="swap-on h-4 w-4 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round">
@@ -209,16 +209,16 @@ function getQuestionHtml(q, selectedId) {
             </label>
           </div>
 
-          <div class="flex-1 py-2 px-3 z-10 min-w-0 flex flex-col justify-center">
-            <div class="q-translation">
+          <div class="flex-1 py-2 px-2 z-10 min-w-0 flex flex-col justify-center sm:px-3">
+            <div class="q-translation break-words">
               <span class="badge badge-sm badge-outline mr-1 align-middle">${q.language.slice(0, 3)}</span><span class="font-semibold">${q.nameTranslation ? q.nameTranslation + ': ' : ''}</span>${q.translation ? q.translation : q.text}
             </div>
-            <div class="q-text text-primary mt-1">
+            <div class="q-text text-primary mt-1 break-words">
               <span class="font-semibold">${q.translation && q.name ? q.name + ': ' : ''}</span><span>${q.translation ? q.text : ''}</span>
             </div>
           </div>
 
-          <div class="focus flex flex-col items-center justify-center gap-2 px-3 border-l border-base-content/10 z-10">
+          <div class="focus flex flex-col items-center justify-center gap-2 px-2 border-l border-base-content/10 z-10 sm:px-3">
             <button class="edit-q-btn btn btn-ghost btn-xs h-6 w-6 p-0 text-primary" onclick="showEditQuestionForm(event)" title="Edit">
               <svg class="h-3.5 w-3.5 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
             </button>

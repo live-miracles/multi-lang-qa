@@ -70,6 +70,25 @@ test('question stats count only question rows and answered totals', () => {
     );
 });
 
+test('language order puts used languages first by question count', () => {
+    const runtime = loadScriptHelpers();
+
+    assert.deepEqual(
+        plain(
+            runtime
+                .get('getLanguageOrder')([
+                    { language: 'Hindi' },
+                    { language: 'German' },
+                    { language: 'Hindi' },
+                    { language: 'English' },
+                    { language: 'German' },
+                ])
+                .slice(0, 4),
+        ),
+        ['German', 'Hindi', 'English', 'Afrikaans'],
+    );
+});
+
 test('question HTML marks answered and selected questions', () => {
     const runtime = loadScriptHelpers();
     const html = runtime.get('getQuestionHtml')(

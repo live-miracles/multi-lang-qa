@@ -114,19 +114,47 @@ const LANGUAGE_OPTIONS = [
     { name: 'Welsh', code: 'cy' },
     { name: 'Zulu', code: 'zu' },
 ];
-const LANGUAGES = LANGUAGE_OPTIONS.map(({ name }) => name);
 const LANGUAGE_MAP = Object.fromEntries(LANGUAGE_OPTIONS.map(({ name, code }) => [name, code]));
 const DEFAULT_LANGUAGE = 'English';
 const STATS = ['total', 'answered'];
 
-function renderLanguages() {
-    const html = LANGUAGES.map(
-        (lang) => `
+function getLanguageOrder(questions = []) {
+    const counts = new Map();
+    questions
+        .filter((q) => q.language)
+        .forEach((q) => counts.set(q.language, (counts.get(q.language) || 0) + 1));
+
+    return LANGUAGE_OPTIONS.map((language, index) => ({
+        ...language,
+        index,
+        count: counts.get(language.name) || 0,
+    }))
+        .sort((a, b) => b.count - a.count || a.index - b.index)
+        .map(({ name }) => name);
+}
+
+function renderLanguages(questions = []) {
+    const languages = getLanguageOrder(questions);
+    const html = languages
+        .map(
+            (lang) => `
             <option value="${lang}">${lang}</option>`,
-    ).join('');
-    document.querySelectorAll('.language-select').forEach((el) => (el.innerHTML += html));
-    document.querySelectorAll('.translation-language').forEach((el) => {
-        el.value = DEFAULT_LANGUAGE;
+        )
+        .join('');
+    document.querySelectorAll('.language-select').forEach((el) => {
+        const selectedLanguage = el.value;
+        const filterOption =
+            el.id === 'filter-q-language' ? '<option value="All">All</option>' : '';
+        el.innerHTML = filterOption + html;
+
+        if (
+            selectedLanguage &&
+            (selectedLanguage === 'All' || languages.includes(selectedLanguage))
+        ) {
+            el.value = selectedLanguage;
+        } else if (el.classList.contains('translation-language')) {
+            el.value = DEFAULT_LANGUAGE;
+        }
     });
 }
 
@@ -233,6 +261,7 @@ async function renderQuestions(questions) {
     if (questions === null) {
         return;
     }
+    renderLanguages(questions);
     const stats = getQuestionStats(questions);
     const filterLang = document.getElementById('filter-q-language');
     for (let i = 0; i < filterLang.options.length; i++) {

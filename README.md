@@ -1,6 +1,7 @@
 # Multi Language QA
 
-<img width="979" alt="Screenshot 2025-06-10 at 20 59 07" src="https://github.com/user-attachments/assets/7903406f-7e0c-43fd-9bae-f3f47e565a96" />
+<img width="900" alt="Multi Lang QA Demo" src="https://github.com/user-attachments/assets/0d3efd90-c10d-4ae8-b584-40371833049d" />
+
 
 A Google Apps Script web app that uses a Google Sheet as a database. People can submit questions with translations, and the host can star or mark any of the questions as completed.
 

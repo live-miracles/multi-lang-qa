@@ -2,6 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
 import { fileURLToPath } from 'node:url';
+import * as esbuild from 'esbuild';
 
 const root = process.cwd();
 const versionArg = process.argv[2] || process.env.VERSION || process.env.GITHUB_REF_NAME || '';
@@ -11,44 +12,65 @@ const pagesBaseUrl = (
     process.env.PAGES_BASE_URL || 'https://live-miracles.github.io/multi-lang-qa'
 ).replace(/\/$/, '');
 
+// Loaded in this order, same as the <script> tags in frontend/index.html.
+const scriptFiles = ['bundle.umd.min.js', 'test-utils.js', 'google-api.js', 'script.js'];
+
+// Apps Script's HTML service is fragile with non-ASCII text and treats `//` inside a template
+// literal as a line comment, so keep inlined assets plain ASCII with no `//` sequences.
+function escapeInlineScript(source) {
+    return source
+        .replace(/[^\x00-\x7f]/g, (ch) => '\\u' + ch.charCodeAt(0).toString(16).padStart(4, '0'))
+        .replace(/\/\//g, '/\\/')
+        .replace(/<\/script/gi, '<\\/script')
+        .replace(/<!--/g, '<\\!--')
+        .replace(/-->/g, '--\\>');
+}
+
+function escapeInlineCss(source) {
+    return source.replace(/[^\x00-\x7f]/gu, (ch) => '\\' + ch.codePointAt(0).toString(16) + ' ');
+}
+
 export async function buildAppsScript({ rootDir = root, version, pagesBaseUrl }) {
-    if (!version) {
-        throw new Error('Usage: npm run apps-script:build -- <version>');
-    }
-
-    const normalizedVersion = version.replace(/^refs\/tags\//, '').replace(/^v/, '');
-    const normalizedPagesBaseUrl = pagesBaseUrl.replace(/\/$/, '');
-    const versionBaseUrl = `${normalizedPagesBaseUrl}/v/${normalizedVersion}`;
-    const logoUrl = `${versionBaseUrl}/logo.png`;
-    const appTitle = `Multi Lang QA ${normalizedVersion}`;
+    const normalizedVersion = (version || '').replace(/^refs\/tags\//, '').replace(/^v/, '');
+    const logoUrl = `${pagesBaseUrl.replace(/\/$/, '')}/logo.png`;
+    const appTitle = `Multi Lang QA${normalizedVersion ? ` ${normalizedVersion}` : ''}`;
     const outDir = path.join(rootDir, 'dist', 'apps-script');
-
-    const productionAssetBlock = `    <link rel="icon" type="image/png" href="${logoUrl}" />
-    <link rel="stylesheet" href="${versionBaseUrl}/output.css" />
-    <script src="${versionBaseUrl}/bundle.umd.min.js"></script>
-    <script crossorigin src="${versionBaseUrl}/test-utils.js" defer></script>
-    <script crossorigin src="${versionBaseUrl}/google-api.js" defer></script>
-    <script crossorigin src="${versionBaseUrl}/script.js" defer></script>`;
+    const frontendDir = path.join(rootDir, 'frontend');
 
     await fs.rm(outDir, { recursive: true, force: true });
     await fs.mkdir(outDir, { recursive: true });
 
-    const indexPath = path.join(rootDir, 'frontend', 'index.html');
-    const indexHtml = await fs.readFile(indexPath, 'utf8');
+    const indexHtml = await fs.readFile(path.join(frontendDir, 'index.html'), 'utf8');
     const assetBlockPattern =
         /    <link rel="icon" type="image\/png" href="\.\/logo\.png" \/>\r?\n    <link rel="stylesheet" href="\.\/output\.css" \/>\r?\n    <script src="\.\/bundle\.umd\.min\.js"><\/script>\r?\n    <script crossorigin src="\.\/test-utils\.js" defer><\/script>\r?\n    <script crossorigin src="\.\/google-api\.js" defer><\/script>\r?\n    <script crossorigin src="\.\/script\.js" defer><\/script>/;
-    const appsScriptIndex = indexHtml.replace(assetBlockPattern, productionAssetBlock);
 
-    if (appsScriptIndex === indexHtml) {
+    if (!assetBlockPattern.test(indexHtml)) {
         throw new Error(
             'Could not find the frontend asset block to replace in frontend/index.html.',
         );
     }
 
-    const titledIndex = appsScriptIndex.replace(
-        /<title>.*?<\/title>/,
-        `<title>${appTitle}</title>`,
-    );
+    const css = await fs.readFile(path.join(frontendDir, 'output.css'), 'utf8');
+    const scripts = [];
+    for (const filename of scriptFiles) {
+        const code = await fs.readFile(path.join(frontendDir, filename), 'utf8');
+        // Minifying drops comments and keeps top-level names, which the inline handlers rely on.
+        scripts.push(
+            filename.endsWith('.min.js')
+                ? code.replace(/\/\/# sourceMappingURL=.*$/gm, '')
+                : (await esbuild.transform(code, { loader: 'js', minify: true })).code,
+        );
+    }
+
+    const inlineAssets = `    <link rel="icon" type="image/png" href="${logoUrl}" />\n    <style>${escapeInlineCss(css)}</style>`;
+    const titledIndex = indexHtml
+        .replace(assetBlockPattern, () => inlineAssets)
+        .replace(/<title>.*?<\/title>/, `<title>${appTitle}</title>`)
+        .replace(
+            '</body>',
+            () => `<script>${escapeInlineScript(scripts.join(';\n'))}</script>\n  </body>`,
+        );
+
     const codeJs = await fs.readFile(path.join(rootDir, 'Code.js'), 'utf8');
     const titledCodeJs = codeJs.replace(
         ".setTitle('Multi Lang QA')",
@@ -85,7 +107,7 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.a
     try {
         const result = await buildAppsScript({ rootDir: root, version, pagesBaseUrl });
         console.log(
-            `Generated Apps Script project in ${path.relative(root, result.outDir)} for v${result.version}.`,
+            `Generated Apps Script project in ${path.relative(root, result.outDir)}${result.version ? ` for v${result.version}` : ''}.`,
         );
     } catch (err) {
         console.error(err.message);

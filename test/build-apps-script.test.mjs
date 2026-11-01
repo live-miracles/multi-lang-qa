@@ -21,6 +21,14 @@ function createFixture() {
         path.join(root, 'frontend', 'index.html'),
         path.join(fixtureDir, 'frontend', 'index.html'),
     );
+    fs.writeFileSync(path.join(fixtureDir, 'frontend', 'output.css'), 'body{content:"é"}');
+    for (const file of ['bundle.umd.min.js', 'test-utils.js', 'google-api.js', 'script.js']) {
+        const name = file.replace(/\W/g, '_');
+        fs.writeFileSync(
+            path.join(fixtureDir, 'frontend', file),
+            `// comment\nvar ${name} = "https://x.test/é";\n`,
+        );
+    }
     fs.writeFileSync(
         path.join(fixtureDir, 'Code.js'),
         "function doGet() {\n    return HtmlService.createHtmlOutputFromFile('Index')\n        .setTitle('Multi Lang QA')\n        .addMetaTag('viewport', 'width=device-width, initial-scale=1');\n}\n",
@@ -29,7 +37,7 @@ function createFixture() {
     return fixtureDir;
 }
 
-test('Apps Script build injects hosted PNG favicon into HTML and HtmlService output', async () => {
+test('Apps Script build inlines CSS and JS and points the favicon at the hosted PNG', async () => {
     const fixtureDir = createFixture();
 
     await buildAppsScript({
@@ -47,11 +55,16 @@ test('Apps Script build injects hosted PNG favicon into HTML and HtmlService out
     assert.match(indexHtml, /<title>Multi Lang QA 1\.2\.3<\/title>/);
     assert.match(
         indexHtml,
-        /<link rel="icon" type="image\/png" href="https:\/\/example\.test\/multi-lang-qa\/v\/1\.2\.3\/logo\.png" \/>/,
+        /<link rel="icon" type="image\/png" href="https:\/\/example\.test\/multi-lang-qa\/logo\.png" \/>/,
     );
     assert.match(
         codeJs,
-        /\.setTitle\('Multi Lang QA 1\.2\.3'\)\.setFaviconUrl\('https:\/\/example\.test\/multi-lang-qa\/v\/1\.2\.3\/logo\.png'\)/,
+        /\.setTitle\('Multi Lang QA 1\.2\.3'\)\.setFaviconUrl\('https:\/\/example\.test\/multi-lang-qa\/logo\.png'\)/,
     );
+    assert.ok(indexHtml.includes('<style>body{content:"\\e9 "}</style>'));
+    assert.doesNotMatch(indexHtml, /<script[^>]* src="\.\//);
+    assert.doesNotMatch(indexHtml, /output\.css/);
+    assert.ok(indexHtml.includes('var script_js="https:/\\/x.test/\\xE9"'));
+    assert.ok(indexHtml.includes('var google_api_js='));
     assert.match(codeJs, /\.addMetaTag\('viewport', 'width=device-width, initial-scale=1'\)/);
 });

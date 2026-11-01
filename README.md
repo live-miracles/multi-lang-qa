@@ -39,7 +39,9 @@ npm run css
 
 ## Releases
 
-Pushing a git tag publishes a versioned snapshot of the frontend to GitHub Pages (e.g. `v/2.0.2/`), which stays accessible at that URL permanently. This lets the Apps Script deployment load a pinned version of the assets without being affected by future updates.
+GitHub Pages always serves the current `master` (the demo, plus the images the Apps Script app links to). Old versions are not kept there.
+
+Pushing a git tag deploys to Google Apps Script. The generated Apps Script `Index.html` keeps the full app markup from `frontend/index.html` but inlines the CSS and all JavaScript, so a deployed version is self-contained. Only the images (`logo.png`, `funny-cat.svg`) are loaded from GitHub Pages.
 
 ```bash
 npm version 2.0.2
@@ -50,9 +52,7 @@ git push origin master --tags
 
 The tag version must match `package.json`. GitHub Actions checks this before deploying, so tagging `v2.0.2` while `package.json` says `2.0.1` will fail the release.
 
-For tag releases, GitHub Actions also generates and deploys the Google Apps Script project with `clasp`. The generated Apps Script `Index.html` keeps the full app markup from `frontend/index.html`, but rewrites the CSS and JavaScript URLs to the tagged GitHub Pages assets.
-
-To preview that generated Apps Script project locally:
+To preview the generated Apps Script project locally (run `npm run css` first):
 
 ```bash
 npm run apps-script:build -- v2.0.2
@@ -68,7 +68,7 @@ Create these GitHub repository secrets before expecting tag releases to update t
 - `APPS_SCRIPT_DEPLOYMENT_ID`: the deployment ID for the existing web app deployment that should keep the same public URL.
 - `CLASPRC_JSON`: the contents of the `.clasprc.json` file created by `npx clasp login`.
 
-Once these are set, a tag like `v2.0.2` will publish `https://live-miracles.github.io/multi-lang-qa/v/2.0.2/`, push `Code.js` and the generated `Index.html` to Apps Script, create a new Apps Script version, and update the existing web app deployment to that version.
+Once these are set, a tag like `v2.0.2` will push `Code.js` and the generated `Index.html` to Apps Script, create a new Apps Script version, and update the existing web app deployment to that version.
 
 ## Deploying to Google Apps Script
 

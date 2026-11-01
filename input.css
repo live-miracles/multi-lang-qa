@@ -1,0 +1,431 @@
+@import 'tailwindcss';
+@plugin "@tailwindcss/typography";
+
+/*
+ * Design tokens follow the "Claude" system from awesome-design-md:
+ * warm cream canvas, coral accent, warm near-black dark surfaces.
+ */
+:root,
+:root[data-theme='light'] {
+    color-scheme: light;
+    --c-canvas: #faf9f5;
+    --c-surface: #f5f0e8;
+    --c-surface-strong: #efe9de;
+    --c-ink: #141413;
+    --c-coral: #cc785c;
+    --c-coral-active: #a9583e;
+    --c-primary: #a9583e;
+    --c-error: #c64545;
+    --c-warning: #c28a0e;
+    --c-success: #3f9457;
+    --c-info: #3d6f8f;
+    --wave-opacity: 0.4;
+}
+
+:root[data-theme='dark'] {
+    color-scheme: dark;
+    --c-canvas: #181715;
+    --c-surface: #252320;
+    --c-surface-strong: #1f1e1b;
+    --c-ink: #faf9f5;
+    --c-coral: #cc785c;
+    --c-coral-active: #dd8c70;
+    --c-primary: #e0937a;
+    --c-error: #e0675f;
+    --c-warning: #e8a55a;
+    --c-success: #5db872;
+    --c-info: #6fb0d0;
+    --wave-opacity: 0.32;
+}
+
+@theme inline {
+    --color-canvas: var(--c-canvas);
+    --color-surface: var(--c-surface);
+    --color-surface-strong: var(--c-surface-strong);
+    --color-ink: var(--c-ink);
+    --color-primary: var(--c-primary);
+    --color-coral: var(--c-coral);
+    --color-error: var(--c-error);
+    --color-warning: var(--c-warning);
+    --color-success: var(--c-success);
+    --color-info: var(--c-info);
+    --font-sans:
+        Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Hiragino Sans',
+        'Noto Sans JP', sans-serif;
+    --font-serif:
+        'Tiempos Headline', 'Iowan Old Style', Georgia, 'Hiragino Mincho ProN', 'Noto Serif JP',
+        serif;
+}
+
+@layer base {
+    body {
+        font-family: var(--font-sans);
+        background-color: var(--c-canvas);
+        color: var(--c-ink);
+    }
+
+    /* Seigaiha (blue ocean waves) pattern, fading out towards the bottom of the viewport. */
+    body::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        pointer-events: none;
+        opacity: var(--wave-opacity);
+        background-image: var(--wave-pattern);
+        background-size: 56px 28px;
+        -webkit-mask-image: linear-gradient(
+            to bottom,
+            #000 0%,
+            rgb(0 0 0 / 0.35) 45%,
+            transparent 85%
+        );
+        mask-image: linear-gradient(to bottom, #000 0%, rgb(0 0 0 / 0.35) 45%, transparent 85%);
+    }
+}
+
+@layer components {
+    /* ---------- Buttons ---------- */
+    .btn {
+        --btn-accent: var(--c-ink);
+        --btn-bg: var(--c-surface-strong);
+        --btn-fg: var(--c-ink);
+        --btn-bd: color-mix(in oklab, var(--c-ink) 18%, transparent);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.375rem;
+        height: 2.5rem;
+        min-height: 2.5rem;
+        padding: 0 1rem;
+        border: 1px solid var(--btn-bd);
+        border-radius: 0.5rem;
+        background-color: var(--btn-bg);
+        color: var(--btn-fg);
+        font-size: 0.875rem;
+        font-weight: 500;
+        line-height: 1;
+        cursor: pointer;
+        user-select: none;
+        transition:
+            background-color 0.15s,
+            border-color 0.15s,
+            color 0.15s;
+    }
+    .btn:hover:not(:disabled) {
+        background-color: color-mix(in oklab, var(--btn-bg) 88%, var(--c-ink));
+    }
+    .btn:focus-visible {
+        outline: 2px solid var(--c-coral);
+        outline-offset: 2px;
+    }
+    .btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+    .btn-xs {
+        height: 1.5rem;
+        min-height: 1.5rem;
+        padding: 0 0.5rem;
+        font-size: 0.75rem;
+        border-radius: 0.375rem;
+    }
+    .btn-sm {
+        height: 2rem;
+        min-height: 2rem;
+        padding: 0 0.75rem;
+        font-size: 0.8125rem;
+    }
+    .btn-circle {
+        border-radius: 9999px;
+        padding: 0;
+        width: 2.5rem;
+    }
+    .btn-circle.btn-xs {
+        width: 1.5rem;
+    }
+    .btn-circle.btn-sm {
+        width: 2rem;
+    }
+    .btn-primary {
+        --btn-accent: var(--c-primary);
+        --btn-bg: var(--c-coral);
+        --btn-fg: #fff;
+        --btn-bd: var(--c-coral);
+    }
+    .btn-primary:hover:not(:disabled) {
+        background-color: var(--c-coral-active);
+        border-color: var(--c-coral-active);
+    }
+    .btn-error {
+        --btn-accent: var(--c-error);
+        --btn-bg: var(--c-error);
+        --btn-fg: #fff;
+        --btn-bd: var(--c-error);
+    }
+    .btn-outline {
+        --btn-bg: transparent;
+        --btn-fg: var(--btn-accent);
+        --btn-bd: var(--btn-accent);
+    }
+    .btn-outline:hover:not(:disabled) {
+        background-color: color-mix(in oklab, var(--btn-accent) 14%, transparent);
+        border-color: var(--btn-accent);
+    }
+    .btn-soft {
+        --btn-bg: color-mix(in oklab, var(--btn-accent) 14%, transparent);
+        --btn-fg: var(--btn-accent);
+        --btn-bd: transparent;
+    }
+    .btn-soft:hover:not(:disabled) {
+        background-color: color-mix(in oklab, var(--btn-accent) 24%, transparent);
+    }
+    .btn-ghost {
+        background-color: transparent;
+        border-color: transparent;
+        color: inherit;
+    }
+    .btn-ghost:hover:not(:disabled) {
+        background-color: color-mix(in oklab, var(--c-ink) 8%, transparent);
+    }
+
+    /* ---------- Form controls ---------- */
+    .input,
+    .select,
+    .textarea {
+        --field-bd: color-mix(in oklab, var(--c-ink) 22%, transparent);
+        width: 100%;
+        border: 1px solid var(--field-bd);
+        border-radius: 0.5rem;
+        background-color: var(--c-canvas);
+        color: var(--c-ink);
+        font-size: 0.875rem;
+        transition:
+            border-color 0.15s,
+            box-shadow 0.15s;
+    }
+    .input,
+    .select {
+        height: 2.5rem;
+        padding: 0 0.75rem;
+    }
+    .textarea {
+        padding: 0.625rem 0.75rem;
+        line-height: 1.5;
+    }
+    .input::placeholder,
+    .textarea::placeholder {
+        color: color-mix(in oklab, var(--c-ink) 45%, transparent);
+    }
+    .input:focus,
+    .select:focus,
+    .textarea:focus {
+        outline: none;
+        border-color: var(--c-coral);
+        box-shadow: 0 0 0 3px color-mix(in oklab, var(--c-coral) 25%, transparent);
+    }
+    .input-sm,
+    .select-sm {
+        height: 2rem;
+        font-size: 0.8125rem;
+    }
+    .language-select {
+        max-width: 7rem;
+        text-overflow: ellipsis;
+    }
+    .select-xs {
+        height: 1.5rem;
+        padding: 0 0.375rem;
+        font-size: 0.75rem;
+        border-radius: 0.375rem;
+    }
+    .input-primary,
+    .select-primary,
+    .textarea-primary {
+        --field-bd: var(--c-coral);
+    }
+    .input-error,
+    .select-error,
+    .textarea-error {
+        --field-bd: var(--c-error);
+    }
+    .input-error:focus,
+    .textarea-error:focus {
+        box-shadow: 0 0 0 3px color-mix(in oklab, var(--c-error) 25%, transparent);
+    }
+
+    /* ---------- Swap (checkbox-driven icon toggle) ---------- */
+    .swap {
+        position: relative;
+        display: inline-grid;
+        place-content: center;
+        user-select: none;
+    }
+    .swap > input {
+        appearance: none;
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        margin: 0;
+        opacity: 0;
+        cursor: inherit;
+    }
+    .swap > .swap-on,
+    .swap > .swap-off {
+        grid-area: 1 / 1;
+    }
+    .swap > input:not(:checked) ~ .swap-on,
+    .swap > input:checked ~ .swap-off {
+        display: none;
+    }
+
+    /* ---------- Modal (native <dialog>) ---------- */
+    .modal {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        max-width: none;
+        max-height: none;
+        border: 0;
+        background: transparent;
+        color: inherit;
+        overflow: hidden;
+    }
+    .modal[open] {
+        display: grid;
+        place-items: center;
+    }
+    .modal::backdrop {
+        background: color-mix(in oklab, var(--c-canvas) 30%, rgb(20 19 17 / 0.65));
+        backdrop-filter: blur(3px);
+    }
+    .modal-box {
+        position: relative;
+        width: 91.666667%;
+        max-width: 32rem;
+        max-height: calc(100dvh - 1rem);
+        overflow-y: auto;
+        padding: 1.5rem;
+        border: 1px solid color-mix(in oklab, var(--c-ink) 14%, transparent);
+        border-radius: 0.75rem;
+        background-color: var(--c-canvas);
+        color: var(--c-ink);
+        box-shadow: 0 24px 48px -12px rgb(20 19 17 / 0.35);
+    }
+    .modal-action {
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.5rem;
+        margin-top: 1.5rem;
+    }
+
+    /* ---------- Alerts ---------- */
+    .alert {
+        --alert-accent: var(--c-info);
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.75rem 1rem;
+        border: 1px solid color-mix(in oklab, var(--alert-accent) 45%, transparent);
+        border-left: 4px solid var(--alert-accent);
+        border-radius: 0.5rem;
+        background-color: color-mix(in oklab, var(--alert-accent) 12%, var(--c-canvas));
+        color: var(--c-ink);
+        font-size: 0.875rem;
+        box-shadow: 0 8px 24px -8px rgb(20 19 17 / 0.3);
+    }
+    .alert svg {
+        color: var(--alert-accent);
+    }
+    .alert-info {
+        --alert-accent: var(--c-info);
+    }
+    .alert-success {
+        --alert-accent: var(--c-success);
+    }
+    .alert-error {
+        --alert-accent: var(--c-error);
+    }
+
+    /* ---------- Badge ---------- */
+    .badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        height: 1.5rem;
+        padding: 0 0.625rem;
+        border: 1px solid transparent;
+        border-radius: 9999px;
+        background-color: var(--c-surface-strong);
+        font-size: 0.8125rem;
+        font-weight: 500;
+        line-height: 1;
+    }
+    .badge-sm {
+        height: 1.25rem;
+        padding: 0 0.5rem;
+        font-size: 0.6875rem;
+        letter-spacing: 0.04em;
+    }
+    .badge-outline {
+        background-color: transparent;
+        border-color: color-mix(in oklab, currentColor 40%, transparent);
+    }
+
+    /* ---------- Loading spinner ---------- */
+    .loading {
+        display: inline-block;
+        width: 1.25rem;
+        height: 1.25rem;
+        border: 2px solid color-mix(in oklab, currentColor 25%, transparent);
+        border-top-color: currentColor;
+        border-radius: 9999px;
+        animation: spin 0.8s linear infinite;
+        vertical-align: middle;
+    }
+    .loading-xs {
+        width: 0.875rem;
+        height: 0.875rem;
+    }
+    .loading-md {
+        width: 1.5rem;
+        height: 1.5rem;
+    }
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    /* ---------- Skeleton ---------- */
+    .skeleton {
+        border-radius: 0.75rem;
+        background: linear-gradient(
+            100deg,
+            var(--c-surface) 30%,
+            var(--c-surface-strong) 50%,
+            var(--c-surface) 70%
+        );
+        background-size: 200% 100%;
+        animation: shimmer 1.6s ease-in-out infinite;
+    }
+    @keyframes shimmer {
+        from {
+            background-position: 100% 0;
+        }
+        to {
+            background-position: -100% 0;
+        }
+    }
+}
+
+/* Seigaiha tile: scales are drawn top to bottom so lower rows overlap upper ones. */
+:root,
+:root[data-theme='light'] {
+    --wave-pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='28' viewBox='0 0 56 28'%3E%3Cg fill='%23faf9f5' stroke='%23cc785c' stroke-width='1.2'%3E%3Cg transform='translate(28 -14)'%3E%3Ccircle r='28'/%3E%3Ccircle r='21'/%3E%3Ccircle r='14'/%3E%3Ccircle r='7'/%3E%3C/g%3E%3Cg transform='translate(0 0)'%3E%3Ccircle r='28'/%3E%3Ccircle r='21'/%3E%3Ccircle r='14'/%3E%3Ccircle r='7'/%3E%3C/g%3E%3Cg transform='translate(56 0)'%3E%3Ccircle r='28'/%3E%3Ccircle r='21'/%3E%3Ccircle r='14'/%3E%3Ccircle r='7'/%3E%3C/g%3E%3Cg transform='translate(28 14)'%3E%3Ccircle r='28'/%3E%3Ccircle r='21'/%3E%3Ccircle r='14'/%3E%3Ccircle r='7'/%3E%3C/g%3E%3Cg transform='translate(0 28)'%3E%3Ccircle r='28'/%3E%3Ccircle r='21'/%3E%3Ccircle r='14'/%3E%3Ccircle r='7'/%3E%3C/g%3E%3Cg transform='translate(56 28)'%3E%3Ccircle r='28'/%3E%3Ccircle r='21'/%3E%3Ccircle r='14'/%3E%3Ccircle r='7'/%3E%3C/g%3E%3Cg transform='translate(28 42)'%3E%3Ccircle r='28'/%3E%3Ccircle r='21'/%3E%3Ccircle r='14'/%3E%3Ccircle r='7'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+:root[data-theme='dark'] {
+    --wave-pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='28' viewBox='0 0 56 28'%3E%3Cg fill='%23181715' stroke='%23e0937a' stroke-width='1.2'%3E%3Cg transform='translate(28 -14)'%3E%3Ccircle r='28'/%3E%3Ccircle r='21'/%3E%3Ccircle r='14'/%3E%3Ccircle r='7'/%3E%3C/g%3E%3Cg transform='translate(0 0)'%3E%3Ccircle r='28'/%3E%3Ccircle r='21'/%3E%3Ccircle r='14'/%3E%3Ccircle r='7'/%3E%3C/g%3E%3Cg transform='translate(56 0)'%3E%3Ccircle r='28'/%3E%3Ccircle r='21'/%3E%3Ccircle r='14'/%3E%3Ccircle r='7'/%3E%3C/g%3E%3Cg transform='translate(28 14)'%3E%3Ccircle r='28'/%3E%3Ccircle r='21'/%3E%3Ccircle r='14'/%3E%3Ccircle r='7'/%3E%3C/g%3E%3Cg transform='translate(0 28)'%3E%3Ccircle r='28'/%3E%3Ccircle r='21'/%3E%3Ccircle r='14'/%3E%3Ccircle r='7'/%3E%3C/g%3E%3Cg transform='translate(56 28)'%3E%3Ccircle r='28'/%3E%3Ccircle r='21'/%3E%3Ccircle r='14'/%3E%3Ccircle r='7'/%3E%3C/g%3E%3Cg transform='translate(28 42)'%3E%3Ccircle r='28'/%3E%3Ccircle r='21'/%3E%3Ccircle r='14'/%3E%3Ccircle r='7'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}

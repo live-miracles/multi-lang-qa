@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none" stroke="#faf9f5" stroke-linecap="round">
+  <!-- Coral tile -->
+  <rect x="2" y="2" width="96" height="96" rx="24" fill="#cc785c" stroke="none"/>
+  <!-- Seigaiha scale rings - the outer ring doubles as the Q's body -->
+  <circle cx="48" cy="48" r="29" stroke-width="5"/>
+  <circle cx="48" cy="48" r="20" stroke-width="3.5" opacity=".8"/>
+  <circle cx="48" cy="48" r="11" stroke-width="3.5" opacity=".6"/>
+  <circle cx="48" cy="48" r="3" fill="#faf9f5" stroke="none"/>
+  <!-- Q tail -->
+  <line x1="62" y1="62" x2="82" y2="82" stroke-width="9"/>
+</svg>

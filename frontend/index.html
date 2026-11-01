@@ -1,12 +1,12 @@
 <!doctype html>
-<html lang="en" data-theme="dim">
+<html lang="en" data-theme="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Multi Lang QA</title>
     <script>
       (function () {
-        var t = localStorage.getItem('theme') || 'dim';
+        var t = localStorage.getItem('theme') === 'light' ? 'light' : 'dark';
         document.documentElement.setAttribute('data-theme', t);
       })();
     </script>
@@ -18,10 +18,9 @@
     <script crossorigin src="./google-api.js" defer></script>
     <script crossorigin src="./script.js" defer></script>
   </head>
-  <body class="bg-base-100 text-base-content flex min-h-screen min-w-0 flex-col">
-    <header
-      class="bg-base-300 border-base-content/25 sticky top-0 z-30 flex flex-wrap items-center gap-1.5 border-b px-2 py-1.5 shadow-md shadow-black/20">
-      <span class="max-w-[calc(100vw-9rem)] truncate px-2 text-base font-bold sm:max-w-none">Multi Lang QA</span>
+  <body class="bg-canvas text-ink flex min-h-screen min-w-0 flex-col">
+    <header class="bg-canvas/85 border-ink/15 sticky top-0 z-30 flex flex-wrap items-center gap-1.5 border-b px-2 py-1.5 backdrop-blur-md">
+      <span class="font-serif max-w-[calc(100vw-9rem)] truncate px-2 text-lg tracking-tight sm:max-w-none">Multi Lang QA</span>
       <a
         class="btn btn-ghost btn-xs btn-circle"
         href="https://github.com/live-miracles/multi-lang-qa/"
@@ -166,16 +165,16 @@
           <div class="swap-on flex items-center gap-1"><span class="loading loading-infinity loading-xs"></span>Saving</div>
         </label>
 
-        <section class="border-base-content/25 hidden h-6 overflow-hidden rounded-md border sm:flex" aria-label="Zoom controls">
+        <section class="border-ink/25 hidden h-6 overflow-hidden rounded-md border sm:flex" aria-label="Zoom controls">
           <button
             id="zoom-out"
-            class="btn btn-primary btn-xs btn-soft border-base-content/20 h-6 min-h-0 rounded-none border-0 border-r px-2"
+            class="btn btn-primary btn-xs btn-soft border-ink/20 h-6 min-h-0 rounded-none border-0 border-r px-2"
             title="Zoom out">
             -
           </button>
           <button
             id="zoom-status"
-            class="btn btn-primary btn-xs btn-soft border-base-content/20 h-6 min-h-0 w-14 rounded-none border-0 border-r px-1 font-mono"
+            class="btn btn-primary btn-xs btn-soft border-ink/20 h-6 min-h-0 w-14 rounded-none border-0 border-r px-1 font-mono"
             title="Reset zoom">
             100%
           </button>
@@ -232,7 +231,7 @@
       <div class="modal-box max-h-[calc(100dvh-1rem)] w-[calc(100vw-1rem)] max-w-200 overflow-y-auto p-4 sm:p-6">
         <input type="text" class="q-timestamp hidden" />
         <div class="q-form mx-auto mt-2 w-full max-w-200 space-y-3 px-0 sm:px-4">
-          <div class="grid grid-cols-1 items-stretch gap-3 sm:grid-cols-3 sm:items-center sm:gap-4">
+          <div class="grid grid-cols-1 items-stretch gap-3 sm:grid-cols-[1fr_auto_1fr] sm:items-center sm:gap-4">
             <div class="grid grid-cols-1 gap-2 min-[420px]:grid-cols-[auto_1fr]">
               <select class="q-language language-select select select-primary text-primary select-sm w-full min-[420px]:w-fit"></select>
               <input type="text" placeholder="Person's Name" class="q-name input input-primary text-primary input-sm w-full min-w-0" />
@@ -312,15 +311,13 @@
           </div>
           <div class="min-w-0">
             <h3 class="text-lg font-semibold">Delete all questions?</h3>
-            <p class="text-base-content/70 mt-1 text-sm">
-              This removes every submitted question for the current session. This action cannot be undone.
-            </p>
+            <p class="text-ink/70 mt-1 text-sm">This removes every submitted question for the current session. This action cannot be undone.</p>
           </div>
         </div>
 
-        <div class="border-base-content/10 bg-base-200 mt-5 rounded-md border p-4">
+        <div class="border-ink/10 bg-surface mt-5 rounded-md border p-4">
           <label class="form-control w-full">
-            <span class="label-text text-base-content/70 mb-2 text-sm">
+            <span class="label-text text-ink/70 mb-2 text-sm">
               Type <span class="text-error font-semibold">Delete all questions</span> to confirm
             </span>
             <input type="text" class="confirm-text input input-bordered input-sm w-full" autocomplete="off" />

@@ -207,7 +207,7 @@ const STAR_SVG =
 
 function getQuestionHtml(q, selectedId) {
     return `
-        <div class="question relative bg-base-200 rounded-box mb-3 border border-base-content/15 shadow-md flex items-stretch overflow-hidden text-sm sm:text-base ${'q-' + q.status}"
+        <div class="question relative bg-surface rounded-xl mb-3 border border-ink/15 shadow-sm flex items-stretch overflow-hidden text-sm sm:text-base ${'q-' + q.status}"
             id="${q.timestamp}">
           ${
               q.timestamp === selectedId
@@ -220,20 +220,20 @@ function getQuestionHtml(q, selectedId) {
                   : ''
           }
 
-          <div class="flex flex-col items-center justify-center gap-2 px-2 py-2 border-r border-base-content/10 z-10 sm:px-2.5">
+          <div class="flex flex-col items-center justify-center gap-2 px-2 py-2 border-r border-ink/10 z-10 sm:px-2.5">
             <label class="swap cursor-pointer" title="Mark as done">
               <input type="checkbox" data-status="answered" ${q.status === 'answered' ? 'checked' : ''} onchange="updateStatus(event)" />
               <svg class="swap-on h-4 w-4 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4 12 14.01l-3-3"/>
               </svg>
-              <svg class="swap-off h-4 w-4 text-base-content/25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round">
+              <svg class="swap-off h-4 w-4 text-ink/25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>
               </svg>
             </label>
             <label class="swap cursor-pointer" title="Select question">
               <input type="checkbox" ${q.timestamp === selectedId ? 'checked' : ''} onchange="updateSelected(event)" />
               <svg class="swap-on h-4 w-4 text-warning" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-              <svg class="swap-off h-4 w-4 text-base-content/25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg class="swap-off h-4 w-4 text-ink/25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
             </label>
           </div>
 
@@ -246,7 +246,7 @@ function getQuestionHtml(q, selectedId) {
             </div>
           </div>
 
-          <div class="focus flex flex-col items-center justify-center gap-2 px-2 border-l border-base-content/10 z-10 sm:px-3">
+          <div class="focus flex flex-col items-center justify-center gap-2 px-2 border-l border-ink/10 z-10 sm:px-3">
             <button class="edit-q-btn btn btn-ghost btn-xs h-6 w-6 p-0 text-primary" onclick="showEditQuestionForm(event)" title="Edit">
               <svg class="h-3.5 w-3.5 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
             </button>
@@ -496,9 +496,9 @@ let updateTime = 0;
     showElements();
 
     const themeCheckbox = document.getElementById('theme-checkbox');
-    themeCheckbox.checked = (localStorage.getItem('theme') || 'dim') === 'dim';
+    themeCheckbox.checked = localStorage.getItem('theme') !== 'light';
     themeCheckbox.addEventListener('change', () => {
-        const theme = themeCheckbox.checked ? 'dim' : 'light';
+        const theme = themeCheckbox.checked ? 'dark' : 'light';
         document.documentElement.setAttribute('data-theme', theme);
         localStorage.setItem('theme', theme);
     });

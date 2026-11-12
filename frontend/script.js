@@ -372,6 +372,8 @@ function updateTranslationControls(container) {
     const translationInput = container.querySelector('.q-translation');
     const translateBtn = container.querySelector('#translate-q-btn');
     translationInput.disabled = isSameLanguage;
+    translationInput.classList.toggle('hidden', isSameLanguage);
+    translationInput.parentElement.classList.toggle('md:grid-cols-2', !isSameLanguage);
     if (isSameLanguage) {
         translationInput.value = '';
         setTextareaError(translationInput, false);

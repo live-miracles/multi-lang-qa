@@ -57,6 +57,12 @@
         serif;
 }
 
+/* The typography plugin hard-codes dark text; follow the theme's ink colour instead. */
+.prose {
+    --tw-prose-body: var(--c-ink);
+    --tw-prose-quotes: var(--c-ink);
+}
+
 @layer base {
     body {
         font-family: var(--font-sans);

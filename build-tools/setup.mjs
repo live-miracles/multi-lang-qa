@@ -33,7 +33,16 @@ function parseJson(text) {
 async function ensureLoggedIn() {
     try {
         const { stdout } = await clasp(['show-authorized-user']);
-        if (!/not logged in/i.test(stdout)) return;
+        if (!/not logged in/i.test(stdout)) {
+            const account = stdout.match(/logged in as (\S+?)\.?\s/i)?.[1];
+            console.log(
+                account
+                    ? `Already signed in as ${account}. The app will be owned by this account.\n` +
+                          'Wrong account? Run "npx clasp logout" and then "npm run setup" again.'
+                    : 'Already signed in to Google.',
+            );
+            return;
+        }
     } catch {
         // Not logged in yet; fall through to the browser login.
     }

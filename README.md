@@ -1,5 +1,11 @@
 # Multi Language QA
 
+[![Build and deploy](https://github.com/live-miracles/multi-lang-qa/actions/workflows/deploy.yml/badge.svg)](https://github.com/live-miracles/multi-lang-qa/actions/workflows/deploy.yml)
+[![Version](https://img.shields.io/github/v/tag/live-miracles/multi-lang-qa?label=version)](https://github.com/live-miracles/multi-lang-qa/tags)
+[![Last commit](https://img.shields.io/github/last-commit/live-miracles/multi-lang-qa)](https://github.com/live-miracles/multi-lang-qa/commits/master)
+[![License: MIT](https://img.shields.io/github/license/live-miracles/multi-lang-qa)](LICENSE)
+[![Node.js 22+](https://img.shields.io/badge/node-%E2%89%A522-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
+
 <img width="900" alt="Multi Lang QA Demo" src="https://github.com/user-attachments/assets/0d3efd90-c10d-4ae8-b584-40371833049d" />
 
 A Google Apps Script web app that uses a Google Sheet as a database. People can submit questions with translations, and the host can star or mark any of the questions as completed.

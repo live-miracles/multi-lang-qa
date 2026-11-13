@@ -4,3 +4,4 @@ frontend/output.css
 dist/
 .clasp.json
 .clasprc.json
+.env

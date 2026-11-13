@@ -6,6 +6,7 @@
     "type": "module",
     "scripts": {
         "dev": "node build-tools/dev.mjs",
+        "setup": "node build-tools/setup.mjs",
         "css": "tailwindcss -i ./frontend/input.css -o ./frontend/output.css",
         "apps-script:build": "node build-tools/build-apps-script.mjs",
         "version:check": "node build-tools/check-version.mjs",

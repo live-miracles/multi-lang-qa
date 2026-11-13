@@ -127,3 +127,33 @@ test('deleteAllQuestions refuses empty sheets and deletes question rows', () => 
     assert.deepEqual(plain(runtime.get('deleteAllQuestions')()), { success: true });
     assert.deepEqual(sheet.calls.deletedRows, [{ row: 3, count: 3 }]);
 });
+
+test('getSheet opens the existing spreadsheet without creating anything', () => {
+    const runtime = loadAppsScript();
+
+    runtime.get('getSheet')();
+
+    assert.deepEqual(runtime.calls.openedSheets, [{ id: 'sheet-id-1', name: 'QuestionsDB' }]);
+    assert.deepEqual(runtime.calls.createdSpreadsheets, []);
+});
+
+test('getSheet creates and remembers a spreadsheet on first run', () => {
+    const sheet = createSheetStub();
+    const runtime = loadAppsScript({ sheet, spreadsheetId: null });
+
+    runtime.get('getSheet')();
+    runtime.get('getSheet')();
+
+    assert.deepEqual(runtime.calls.createdSpreadsheets, ['Multi Lang QA']);
+    assert.deepEqual(runtime.calls.renamedTabs, ['QuestionsDB']);
+    assert.equal(runtime.properties.get('SPREADSHEET_ID'), 'created-sheet-id');
+    assert.deepEqual(plain(sheet.calls.ranges[0].values), [
+        ['timestamp', 'status', 'language', 'name', 'nameTranslation', 'text', 'translation'],
+        ['0', 'data', '', 'selected', '', '-1', ''],
+    ]);
+    assert.deepEqual(plain(runtime.calls.openedSheets), [
+        { id: 'created-sheet-id', name: 'QuestionsDB' },
+        { id: 'created-sheet-id', name: 'QuestionsDB' },
+    ]);
+    assert.equal(runtime.calls.lockReleases, 1);
+});

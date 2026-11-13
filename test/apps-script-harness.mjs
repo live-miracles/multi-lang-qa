@@ -50,13 +50,20 @@ export function createSheetStub({ rows = [], lastRow = rows.length } = {}) {
     };
 }
 
-export function loadAppsScript({ sheet = createSheetStub(), cacheValues = {} } = {}) {
+export function loadAppsScript({
+    sheet = createSheetStub(),
+    cacheValues = {},
+    spreadsheetId = 'sheet-id-1',
+} = {}) {
+    const properties = new Map(spreadsheetId ? [['SPREADSHEET_ID', spreadsheetId]] : []);
     const cacheStore = new Map(Object.entries(cacheValues));
     const calls = {
         cachePuts: [],
         lockWaits: [],
         lockReleases: 0,
         openedSheets: [],
+        createdSpreadsheets: [],
+        renamedTabs: [],
     };
 
     const context = {
@@ -73,7 +80,10 @@ export function loadAppsScript({ sheet = createSheetStub(), cacheValues = {} } =
             getScriptProperties() {
                 return {
                     getProperty(name) {
-                        return name === 'SPREADSHEET_ID' ? 'sheet-id-1' : null;
+                        return properties.get(name) ?? null;
+                    },
+                    setProperty(name, value) {
+                        properties.set(name, value);
                     },
                 };
             },
@@ -92,6 +102,24 @@ export function loadAppsScript({ sheet = createSheetStub(), cacheValues = {} } =
             },
         },
         SpreadsheetApp: {
+            create(title) {
+                calls.createdSpreadsheets.push(title);
+                return {
+                    getId() {
+                        return 'created-sheet-id';
+                    },
+                    getSheets() {
+                        return [
+                            {
+                                setName(name) {
+                                    calls.renamedTabs.push(name);
+                                    return sheet;
+                                },
+                            },
+                        ];
+                    },
+                };
+            },
             openById(id) {
                 return {
                     getSheetByName(name) {
@@ -140,6 +168,7 @@ export function loadAppsScript({ sheet = createSheetStub(), cacheValues = {} } =
     return {
         calls,
         cacheStore,
+        properties,
         sheet,
         get(name) {
             return vm.runInContext(name, context);

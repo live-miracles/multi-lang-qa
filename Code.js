@@ -1,5 +1,3 @@
-const props = PropertiesService.getScriptProperties();
-const SHEET_ID = props.getProperty('SPREADSHEET_ID');
 const TAB_NAME = 'QuestionsDB';
 
 const HEADERS = [
@@ -14,6 +12,31 @@ const HEADERS = [
 const STATUS_COL = 2;
 const TEXT_COL = 6;
 const SELECTED_ROW = 2;
+
+// Returns the questions sheet. If no SPREADSHEET_ID script property is set (a fresh deployment),
+// creates the spreadsheet with the expected tab, header row and "selected" row, and remembers it.
+function getSheet() {
+    const props = PropertiesService.getScriptProperties();
+    let id = props.getProperty('SPREADSHEET_ID');
+    if (!id) {
+        const lock = LockService.getScriptLock();
+        lock.waitLock(10000);
+        try {
+            id = props.getProperty('SPREADSHEET_ID'); // another request may have just created it
+            if (!id) {
+                const spreadsheet = SpreadsheetApp.create('Multi Lang QA');
+                const sheet = spreadsheet.getSheets()[0].setName(TAB_NAME);
+                const selectedRow = ['0', 'data', '', 'selected', '', '-1', ''];
+                sheet.getRange(1, 1, 2, HEADERS.length).setValues([HEADERS, selectedRow]);
+                id = spreadsheet.getId();
+                props.setProperty('SPREADSHEET_ID', id);
+            }
+        } finally {
+            lock.releaseLock();
+        }
+    }
+    return SpreadsheetApp.openById(id).getSheetByName(TAB_NAME);
+}
 
 function parseQuestions(sheet) {
     const data = sheet.getDataRange().getValues();
@@ -33,7 +56,7 @@ function getAllQuestions() {
             if (error) {
                 return { success: false, error: error };
             }
-            const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(TAB_NAME);
+            const sheet = getSheet();
             const questions = parseQuestions(sheet);
             cache.put('questions', JSON.stringify(questions), 5);
             return { success: true, questions: questions };
@@ -56,7 +79,7 @@ function addQuestion(q) {
     q.status = 'none';
 
     try {
-        const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(TAB_NAME);
+        const sheet = getSheet();
         const newRow = HEADERS.map((h) => q[h]);
 
         const lock = LockService.getScriptLock();
@@ -99,7 +122,7 @@ function updateQuestion(newQ) {
             return { success: false, error: 'Question not found.' };
         }
 
-        const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(TAB_NAME);
+        const sheet = getSheet();
         const newRow = HEADERS.map((h) => newQ[h]);
 
         const lock = LockService.getScriptLock();
@@ -135,7 +158,7 @@ function updateQuestionStatus(newQ) {
             return { success: false, error: 'Question not found.' };
         }
 
-        const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(TAB_NAME);
+        const sheet = getSheet();
 
         sheet.getRange(row, STATUS_COL, 1, 1).setValues([[newQ.status]]);
         return { success: true };
@@ -147,7 +170,7 @@ function updateQuestionStatus(newQ) {
 
 function updateSelectedQuestion(timestamp) {
     try {
-        const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(TAB_NAME);
+        const sheet = getSheet();
         sheet.getRange(SELECTED_ROW, TEXT_COL, 1, 1).setValues([[timestamp]]);
         return { success: true };
     } catch (err) {
@@ -175,7 +198,7 @@ function deleteQuestion(timestamp) {
             return { success: false, error: 'Question not found.' };
         }
 
-        const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(TAB_NAME);
+        const sheet = getSheet();
 
         const lock = LockService.getScriptLock();
         lock.waitLock(5000);
@@ -193,7 +216,7 @@ function deleteQuestion(timestamp) {
 
 function deleteAllQuestions() {
     try {
-        const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(TAB_NAME);
+        const sheet = getSheet();
         const lastRow = sheet.getLastRow();
         if (lastRow <= SELECTED_ROW) {
             return { success: false, error: 'No questions to delete.' };

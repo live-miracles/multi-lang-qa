@@ -9,6 +9,11 @@ import { buildAppsScript } from './build-apps-script.mjs';
 
 const root = process.cwd();
 const claspConfigPath = path.join(root, '.clasp.json');
+
+// Values from a real environment variable win over .env (loadEnvFile never overrides them).
+if (fs.existsSync(path.join(root, '.env'))) {
+    process.loadEnvFile(path.join(root, '.env'));
+}
 const devScriptId = process.env.APPS_SCRIPT_DEV_ID;
 
 if (devScriptId) {
@@ -28,8 +33,8 @@ if (!fs.existsSync(claspConfigPath)) {
             '  2. Pick an Apps Script project (the production one is fine: pushes only update',
             '     HEAD, served by its /dev URL; /exec stays on the last tagged version).',
             "     It shares that project's spreadsheet, so avoid testing during live sessions.",
-            '  3. APPS_SCRIPT_DEV_ID=<script id> npm run dev',
-            '     (written to the git-ignored .clasp.json, so later runs need no variable)',
+            '  3. Copy .env.example to .env and set APPS_SCRIPT_DEV_ID=<script id>',
+            '  4. npm run dev',
         ].join('\n'),
     );
     process.exit(1);

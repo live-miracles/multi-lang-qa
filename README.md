@@ -2,7 +2,6 @@
 
 [![Build and deploy](https://github.com/live-miracles/multi-lang-qa/actions/workflows/deploy.yml/badge.svg)](https://github.com/live-miracles/multi-lang-qa/actions/workflows/deploy.yml)
 [![Version](https://img.shields.io/github/v/tag/live-miracles/multi-lang-qa?label=version)](https://github.com/live-miracles/multi-lang-qa/tags)
-[![Last commit](https://img.shields.io/github/last-commit/live-miracles/multi-lang-qa)](https://github.com/live-miracles/multi-lang-qa/commits/master)
 [![License: MIT](https://img.shields.io/github/license/live-miracles/multi-lang-qa)](LICENSE)
 [![Node.js 22+](https://img.shields.io/badge/node-%E2%89%A522-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
 

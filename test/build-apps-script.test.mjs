@@ -22,7 +22,7 @@ function createFixture() {
         path.join(fixtureDir, 'frontend', 'index.html'),
     );
     fs.writeFileSync(path.join(fixtureDir, 'frontend', 'output.css'), 'body{content:"é"}');
-    for (const file of ['bundle.umd.min.js', 'test-utils.js', 'google-api.js', 'script.js']) {
+    for (const file of ['bundle.umd.min.js', 'google-api.js', 'script.js']) {
         const name = file.replace(/\W/g, '_');
         fs.writeFileSync(
             path.join(fixtureDir, 'frontend', file),

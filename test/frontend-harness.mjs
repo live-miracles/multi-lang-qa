@@ -111,7 +111,7 @@ export function loadFrontendScripts(files, { trimScriptBoot = false, googleRun =
     for (const file of files) {
         let source = fs.readFileSync(path.join(root, file), 'utf8');
         if (trimScriptBoot && file === 'frontend/script.js') {
-            source = source.split("\nif (typeof google === 'undefined')")[0];
+            source = source.split('\nlet questions = [];')[0];
         }
         vm.runInContext(source, context, { filename: file });
     }

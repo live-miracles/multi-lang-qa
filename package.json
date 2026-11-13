@@ -17,8 +17,6 @@
         "@google/clasp": "^3.3.0",
         "@tailwindcss/cli": "^4.2.1",
         "@tailwindcss/typography": "^0.5.19",
-        "browser-sync": "^3.0.4",
-        "concurrently": "^9.2.1",
         "esbuild": "^0.28.2",
         "execa": "^9.6.0",
         "prettier": "^3.8.1",

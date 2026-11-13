@@ -4,10 +4,6 @@
 
 A Google Apps Script web app that uses a Google Sheet as a database. People can submit questions with translations, and the host can star or mark any of the questions as completed.
 
-## Demo
-
-A demo is available at [live-miracles.github.io/multi-lang-qa](https://live-miracles.github.io/multi-lang-qa/), but all changes will be gone after a refresh.
-
 ## Project structure
 
 ```
@@ -16,20 +12,27 @@ A demo is available at [live-miracles.github.io/multi-lang-qa](https://live-mira
 │   ├── index.html   # Main HTML page
 │   ├── script.js    # UI logic
 │   ├── google-api.js  # Calls to the Apps Script backend
-│   ├── test-utils.js  # Test/demo data
 │   └── input.css    # Tailwind CSS source
 └── build-tools/
-    └── dev.mjs      # Local dev server
+    └── dev.mjs      # Local dev loop: build + push to a dev Apps Script project
 ```
 
 ## Local development
 
+There is no standalone or mock version of the frontend. Development runs the same generated Apps Script project that production ships, against a separate dev Apps Script project and spreadsheet, so translation and everything else behaves as it does in production.
+
+One-time setup:
+
+1. Pick the Apps Script project to develop against. Reusing the production project is fine: `clasp push` only updates the project's HEAD code, which is served by the `/dev` test deployment, while the public `/exec` deployment stays on the last tagged version. The spreadsheet is shared, so don't test while a live session is running (a dev "delete all" would wipe real questions). For full isolation, use a separate project with its own `SPREADSHEET_ID` instead.
+2. Log in to clasp: `npx clasp login`
+3. Start the loop with the dev script ID. It is saved to the git-ignored `.clasp.json`, so later runs need no variable.
+
 ```bash
 npm install
-npm run dev
+APPS_SCRIPT_DEV_ID=<dev script id> npm run dev
 ```
 
-This does an initial CSS compile, then watches for changes and auto-reloads the browser at `http://localhost:3000`.
+`npm run dev` compiles the CSS, builds `dist/apps-script/`, and runs `clasp push` to the dev project. It repeats whenever `Code.js` or a file in `frontend/` changes. Open the dev project's test deployment URL (Apps Script editor → Deploy → Test deployments, ends in `/dev`) and refresh after each "Deployed" line.
 
 To only compile CSS:
 
@@ -39,7 +42,7 @@ npm run css
 
 ## Releases
 
-GitHub Pages always serves the current `master` (the demo, plus the images the Apps Script app links to). Old versions are not kept there.
+GitHub Pages serves only the images the Apps Script app links to (`logo.png`, `funny-cat.svg`), from the current `master`. Old versions are not kept there.
 
 Pushing a git tag deploys to Google Apps Script. The generated Apps Script `Index.html` keeps the full app markup from `frontend/index.html` but inlines the CSS and all JavaScript, so a deployed version is self-contained. Only the images (`logo.png`, `funny-cat.svg`) are loaded from GitHub Pages.
 

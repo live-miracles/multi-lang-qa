@@ -486,10 +486,6 @@ async function updateSelected(e) {
     updateTime = Date.now();
 }
 
-if (typeof google === 'undefined') {
-    window.google = googleMock;
-}
-
 let questions = [];
 let updateTime = 0;
 

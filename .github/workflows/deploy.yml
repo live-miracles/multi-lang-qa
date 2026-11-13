@@ -45,10 +45,10 @@ jobs:
             - name: Build CSS
               run: npm run css
 
-            - name: Stage site
+            - name: Stage hosted images
               run: |
                   mkdir -p site
-                  cp -r frontend/. site/
+                  cp frontend/logo.png frontend/funny-cat.svg site/
 
             - name: Deploy to gh-pages
               uses: peaceiris/actions-gh-pages@v4.1.0

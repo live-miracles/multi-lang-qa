@@ -13,7 +13,7 @@ const pagesBaseUrl = (
 ).replace(/\/$/, '');
 
 // Loaded in this order, same as the <script> tags in frontend/index.html.
-const scriptFiles = ['bundle.umd.min.js', 'test-utils.js', 'google-api.js', 'script.js'];
+const scriptFiles = ['bundle.umd.min.js', 'google-api.js', 'script.js'];
 
 // Apps Script's HTML service is fragile with non-ASCII text and treats `//` inside a template
 // literal as a line comment, so keep inlined assets plain ASCII with no `//` sequences.
@@ -42,7 +42,7 @@ export async function buildAppsScript({ rootDir = root, version, pagesBaseUrl })
 
     const indexHtml = await fs.readFile(path.join(frontendDir, 'index.html'), 'utf8');
     const assetBlockPattern =
-        /    <link rel="icon" type="image\/png" href="\.\/logo\.png" \/>\r?\n    <link rel="stylesheet" href="\.\/output\.css" \/>\r?\n    <script src="\.\/bundle\.umd\.min\.js"><\/script>\r?\n    <script crossorigin src="\.\/test-utils\.js" defer><\/script>\r?\n    <script crossorigin src="\.\/google-api\.js" defer><\/script>\r?\n    <script crossorigin src="\.\/script\.js" defer><\/script>/;
+        /    <link rel="icon" type="image\/png" href="\.\/logo\.png" \/>\r?\n    <link rel="stylesheet" href="\.\/output\.css" \/>\r?\n    <script src="\.\/bundle\.umd\.min\.js"><\/script>\r?\n    <script crossorigin src="\.\/google-api\.js" defer><\/script>\r?\n    <script crossorigin src="\.\/script\.js" defer><\/script>/;
 
     if (!assetBlockPattern.test(indexHtml)) {
         throw new Error(

@@ -6,7 +6,9 @@
 [![License: MIT](https://img.shields.io/github/license/live-miracles/multi-lang-qa)](LICENSE)
 [![Node.js 22+](https://img.shields.io/badge/node-%E2%89%A522-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
 
-<img width="900" alt="Multi Lang QA Demo" src="https://github.com/user-attachments/assets/0d3efd90-c10d-4ae8-b584-40371833049d" />
+[![Demo: add a question, translate it, star it for the host, mark questions as done, and hide original text or completed questions](assets/multi-lang-qa-demo.gif)](assets/multi-lang-qa-selected.png)
+
+_The demo above uses made-up questions and a simulated backend. To re-record it, see `.agents/skills/record-demo/SKILL.md`._
 
 A Google Apps Script web app that uses a Google Sheet as a database. People can submit questions with translations, and the host can star or mark any of the questions as completed.
 

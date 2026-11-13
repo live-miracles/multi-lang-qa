@@ -264,17 +264,17 @@ async function renderQuestions(questions) {
     renderLanguages(questions);
     const stats = getQuestionStats(questions);
     const filterLang = document.getElementById('filter-q-language');
-    for (let i = 0; i < filterLang.options.length; i++) {
+    // Remove (not just hide) languages without questions: browsers ignore `display: none` on <option>.
+    for (let i = filterLang.options.length - 1; i >= 0; i--) {
         const option = filterLang.options[i];
         const val = option.value;
         if (!stats[val]) {
-            option.classList.add('hidden');
+            option.remove();
         } else {
             const text = `${val} (${stats[val].answered}/${stats[val].total})`;
             if (option.text != text) {
                 option.text = text;
             }
-            option.classList.remove('hidden');
         }
     }
 
